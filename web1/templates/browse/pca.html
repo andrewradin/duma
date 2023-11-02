@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load process %}
+{% load navtools %}
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block headline %}
+    PCA
+{% endblock headline %}
+{% block header_left %}
+	<form method="post">
+	{% csrf_token %}
+    {{ config_form.as_p }}
+	<input type='submit' name='display_btn' value='Display'/>
+	</form>
+{% endblock header_left %}
+{% block header_right %}
+{{ view.n_samples }} drugs<br>
+{{ view.n_attributes }} attributes<br>
+{{ view.n_targets }} known treatments<br>
+{% endblock header_right %}
+{% block body %}
+	{% for plot in plotly_plots %}
+		{% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+	{% endfor %}
+{% endblock body %}

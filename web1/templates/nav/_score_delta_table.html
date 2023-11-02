@@ -1,0 +1,39 @@
+{% load browse_tags %}
+<table class="table table-condensed">
+	<tr>
+		<th>Drug</th>
+		<th>{{ view.y_data.gcode }}</th>
+		<th>{{ view.x_data.gcode }}</th>
+		<th>Z-Score Delta</th>
+		<th>Rank Delta</th>
+	</tr>
+	{% for row in rows %}
+		<tr>
+			<td>
+			{% if row.6 %}
+				{% if view.dtc == 'wsa' %}
+					<a href="{% url 'moldata:annotate' ws.id row.0 %}">
+						{{ row.6 }}
+					</a>
+				{% endif %}
+				{% if view.dtc == 'uniprot' %}
+					<a href="{% url 'protein' ws.id row.0 %}">
+						{{ row.6 }}
+					</a>
+				{% endif %}
+			{% else %}
+				({{ row.0 }})
+			{% endif %}
+            {% if row.3 %}
+				{% glyph_icon 'flag' color='red' hover='Known Treatment' %}
+            {% endif %}
+			</td>
+			<td>{{ row.1|sci_fmt }} (#{{ row.7 }})</td>
+			<td>{{ row.2|sci_fmt }} (#{{ row.8 }})</td>
+			<td>
+			{{ row.9|sci_fmt }} ({{ row.4|sci_fmt }} to {{ row.5|sci_fmt }})
+			</td>
+			<td>{{ row.10 }}</td>
+		</tr>
+	{% endfor %}
+</table>

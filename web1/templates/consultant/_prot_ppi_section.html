@@ -1,0 +1,34 @@
+{% extends "collapse_section.html" %}
+{% load navtools %}
+{% load tissue %}
+{% block section_label %}Protein Interactions{% endblock %}
+{% block section_body %}
+	<h2>Protein Interactions</h2>
+	<p><i>{{ protlist|length }} high evidence interacting proteins found</i></p>
+    <div style='display:inline-block'>
+	<table id='ppi_table' class="table">
+    <thead>
+	<tr>
+		<th>Uniprot</th>
+		<th>Evidence</th>
+		<th>Direction</th>
+	</tr>
+    </thead>
+    <tbody>
+	{% for p in protlist %}
+		<tr>
+		<td>
+            <a href='/consultant/{{view.ws.id}}/protein/{{p.0.prot2}}'>{{p.0.prot2 | prot2gene}}</a>
+		</td>
+		<td>{{ p.0.evidence }}</td>
+		<td>{{ p.1 }}</td>
+		</tr>
+	  {% endfor %}
+    </tbody>
+    </table>
+    </div>
+    <script>
+        $('#ppi_table').DataTable();
+
+    </script>
+{% endblock %}

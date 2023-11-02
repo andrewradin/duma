@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    {{ headline }}
+{% endblock headline %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+    <h3>Drug Clustering Information</h3>
+
+    {% if name_mode %}
+        <a href='?'>show all names</a><br>
+    {% endif %}
+    {% if name_mode != 'hide' %}
+        <a href='?name_mode=hide'>hide names</a><br>
+    {% endif %}
+    {% if name_mode != 'collapse' %}
+        <a href='?name_mode=collapse'>collapse redundant names</a><br>
+    {% endif %}
+	<div style="border:2px solid black;">
+	<div id="cy" style="width:100%; height:600px;"> </div>
+	</div>
+    <script src="/static/lib/cytoscape.min.js"></script>
+	<script src="/static/lib/cytoscape-qtip.js"></script>
+	<script src="/static/lib/jquery.qtip.min.js"></script>
+	<script>
+	var cy = cytoscape({
+		container: document.getElementById('cy'), // container to render in
+		elements:{{ cy.elements }},
+		style:{{ cy.style }},
+		layout:{{ cy.layout }},
+		userZoomingEnabled: true,
+		maxZoom: 2,
+		minZoom: 0.125,
+		});
+	</script>
+
+	<ul>{{ cluster_html }}</ul>
+{% endblock body %}

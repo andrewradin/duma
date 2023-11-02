@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+    <h2>Review Summary</h2>
+    <br>
+ {% if summary_plots %}
+        {% for plot in summary_plots %}
+            {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+        {% endfor %}
+        {% include "_plotly_clear.html" %}
+    {% endif %}
+
+    <h2>Prescreen Plots</h2>
+ {% if scoreboard_plots %}
+        {% for plot in scoreboard_plots %}
+            {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+        {% endfor %}
+        {% include "_plotly_clear.html" %}
+    {% endif %}
+    <br>
+    <h2>Vote Plots</h2>
+    <br>
+    {% if vote_plots %}
+        {% for plot in vote_plots %}
+            {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+        {% endfor %}
+        {% include "_plotly_clear.html" %}
+	{% endif %}
+{% endblock body %}

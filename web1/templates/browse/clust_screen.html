@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+{% block headline %}
+    Bulk Pre-screen
+{% endblock headline %}
+{% block header_right %}
+{% if view.prescreen %}
+<a href="{{ view.prescreen_url }}">Return to pre-screening</a>
+{% endif %}
+{% endblock header_right %}
+{% block body %}
+    <form method="post">
+		{% if selection_form.fields %}
+			{% csrf_token %}
+			{{ reclassify_form.as_p }}
+			<input type="submit" name='reclassify_btn'
+					value="Reclassify as inactive"/>
+			{% bulk_update_links 'sel_' %}
+        {% else %}
+			All members of cluster are classified
+        {% endif %}
+		<table class="table">
+			<tr>
+			{% for header_html in table.headers %}
+				{{ header_html }}
+			{% endfor %}
+			</tr>
+			{% for row in table.rows %}
+			<tr>
+				{% for cell_html in row %}
+					{{ cell_html }}
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</table>
+	</form>
+{% endblock body %}

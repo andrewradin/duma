@@ -1,0 +1,22 @@
+
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Timeline
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+{% endblock header_left %}
+{% block body %}
+    {% if plotly_plots %}
+        {% for plot in plotly_plots %}
+            {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+            {% include "_plotly_clear.html" %}
+        {% endfor %}
+        {% include "_plotly_clear.html" %}
+	{% endif %}
+{% endblock body %}

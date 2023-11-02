@@ -1,0 +1,33 @@
+{% extends "collapse_section.html" %}
+{% load navtools %}
+{% load process %}
+{% block section_label %}Scores{% endblock %}
+{% block section_body %}
+	<h2>Scores</h2>
+	<table class="table">
+	<tr>
+		<th>Score type</th>
+		<th >Job</th>
+		<th style="text-align:right">Score</th>
+		<th style="text-align:right">Maximum score</th>
+		<th style="text-align:right">Higher</th>
+		<th style="text-align:right">Tied</th>
+		<th style="text-align:right">Lower</th>
+	</tr>
+	{% for r in scores %}
+		<tr>
+		<td>{{ r.0 }}</td>
+		<td>
+			{% if r.1 %}
+				{% job_summary r.1 %}
+			{% endif %}
+		</td>
+		{{ r.2 }}
+		{{ r.3 }}
+		{{ r.4 }}
+		{{ r.5 }}
+		{{ r.6 }}
+		</tr>
+	{% endfor %}
+    </table>
+{% endblock %}

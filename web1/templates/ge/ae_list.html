@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+{% block javascript %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+
+{% block headline %}
+Omics Search Results
+{% endblock headline %}
+{% block header_right %}
+<a href={{ ge_eval_url }}>Gene expression evaluation criteria</a>
+<br>
+<br>
+<b><a href="{% url "ge:ae_bulk" ws.id search.id %}">Bulk Review</a></b>
+{% endblock header_right %}
+{% block body %}
+	<table>
+	<tr>
+		<th>Search Term:</th>
+		<td>&nbsp;&nbsp;</td>
+		<td>{{ search.term }}</td>
+	</tr>
+	<tr>
+		<th>Search Mode:</th>
+		<td>&nbsp;&nbsp;</td>
+		<td>{{ search.mode_label }}</td>
+	</tr>
+	<tr>
+		<th>Search Date:</th>
+		<td>&nbsp;&nbsp;</td>
+		<td>{{ search.when }}</td>
+	</tr>
+	</table>
+<style>
+#dis-names {
+}
+#dis-names span {
+	display: inline-block;
+	border: 1px solid #ccc;
+	padding: 0.1rem;
+	padding-left: 0.3rem;
+	padding-right: 0.3rem;
+	border-radius: 3px;
+
+	margin: 0.1rem;
+	background-color: #f8fafd;
+	font-size: 95%;
+}
+.samples-table td {
+	vertical-align: middle !important;
+}
+.hover {
+	background-color: #f0f0ff;
+}
+.acc-desc {
+	max-width: 1024px;
+	text-align: justify;
+	padding-top: 1rem;
+}
+
+</style>
+
+<div id='dis-names'>
+	<b>Names:</b> {% for name in dis.names %} <span> {{ name }} </span> {% endfor %}
+</div>
+<div id='dis-names'>
+	<b>Syns:</b> {% for name in dis.syns %} <span> {{ name }} </span> {% endfor %}
+</div>
+<div id='dis-names'>
+	<b>Children:</b> {% for name in dis.children %} <span> {{ name }} </span> {% endfor %}
+</div>
+
+	{% if detail %}
+	<div class='panel panel-primary'>
+		<div class='panel-heading'>
+		<h4>First {{ detail_type }} Accession
+			({{ detail_rank }}/{{ score_list|length }})
+		</h4>
+		</div>
+		<div class='panel-body'>
+		Score: {{ detail.score }}<br>
+		{{ detail.ae_highlighted_link }}
+        {{ detail.native_link }}
+        {{ detail.accession.pub_link }}
+        {{ detail.accession.samples }}<br>
+		<b>{{ detail.accession.title }}</b><br>
+		{% if detail.accession.experiment_type %}
+			<i>{{ detail.accession.experiment_type }}</i><br>
+		{% endif %}
+		<p class='acc-desc'>{{ detail.accession.desc }}</p>
+		<hr>
+		{% if detail_sample_table.rows_data %}
+		<div class='panel panel-default'>
+			<div class='panel-title panel-heading' style='cursor:pointer' data-toggle='collapse' href='#samples-panel'>Samples ({{ detail_sample_table.rows_data | length }})</div>
+			<div id='samples-panel' class='panel-body panel-collapse collapse' style='overflow:auto'>
+			<table id='detail_sample_table' class='table table-condensed samples-table table-bordered'>
+			</table>
+			</div>
+		</div>
+		<hr>
+		<script>
+        {
+            const columns = {{ detail_sample_table.headers_data | safe }};
+            const table = $('#detail_sample_table').DataTable({
+                data: {{ detail_sample_table.rows_data | safe }},
+                columns: columns,
+				drawCallback: makeDataTableMerger(),
+            });
+			table.on('page.dt', function() {
+				// This table becomes super big and then shrinks (due to trunc/rowspan). Datatables bootstrap
+				// tries to keep focus on the page button you selected, which causes us to scroll
+				// to the bottom of where the big table would have been.
+				// By blurring here, we prevent that.
+				$('thead tr th:first-child').focus().blur();
+			});
+
+        }
+		</script>
+		{%endif%}
+
+
+    
+    </script>
+		<form method="post">
+			{% csrf_token %}
+			<b>Reject reason:</b>
+			<input type='text' name='reason'/>
+			<input type='submit' name='reject_btn' value='Reject'/>
+			<input type='hidden' name='item_id'
+						value='{{ detail.accession.id }}'/>
+		</form>
+		<hr>
+		<form action="/ge/{{ ws.id }}/tissues/?op=new_tissue" method="post">
+			{% csrf_token %}
+			<b>Source:</b>{{ tissue_form.source }}
+			{{ tissue_form.geo_id.as_hidden }}
+			<b>Tissue Name:</b>{{ tissue_form.tissue }}
+			<b>Tissue Set:</b>{{ tissue_form.tissue_set }}
+			<br>
+			<b>Tissue Note:</b>{{ tissue_form.tissue_note }}
+			<input type='submit' value='Fetch'/>
+		</form>
+		</div>
+	</div>
+	{% endif %}
+	<h3>All Accessions in search</h3>
+	<table class="table">
+	<tr>
+		<th>Rank</th>
+		<th>GeoID</th>
+		<th>Score</th>
+		<th>Status</th>
+		<th></th>
+		<th>Title</th>
+        <th>Alt Ids</th>
+	</tr>
+	{% for item in score_list %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+			<td>{{ item.accession.link }}</td>
+			<td><a href='?detail={{item.accession.geoID}}'>{{ item.score }}</a></td>
+			<td>{{ item.status }}</td>
+			<td>
+				{% if item.clear_btn %}
+					<form method="post">
+					{% csrf_token %}
+					<input type='hidden' name='item_id'
+						value='{{ item.accession.id }}'/>
+					<input type='submit' name='clear_btn' value='Clear'/>
+					</form>
+				{% endif %}
+			</td>
+			<td>
+			{{ item.accession.title }}
+			</td>
+            <td>
+                {{ item.accession.alt_ids_as_links }}
+            </td>
+		</tr>
+	{% endfor %}
+	</table>
+{% endblock body %}

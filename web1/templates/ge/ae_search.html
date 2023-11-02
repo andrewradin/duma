@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+Search Omics
+{% endblock headline %}
+{% block header_right %}
+<a href={{ ge_eval_url }}>Gene expression evaluation criteria</a>
+{% endblock header_right %}
+{% block body %}
+    <a href="{{ search_url }}">
+        Run a new search
+    </a>
+    {% if search_list.count %}
+        <h3>Existing searches:</h3>
+        <table class="table">
+        <tr>
+            <th>Search Term</th>
+            <th>Mode</th>
+            <th>Species</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Imported</th>
+            <th>Rejected</th>
+            <th>Unclassified</th>
+        </tr>
+        {% for search in search_list %}
+            <tr>
+                <td>
+					<a href="{% url 'ge:ae_list' ws.id search.id %}">
+						{{ search.term }}
+					</a>
+				</td>
+                <td>{{ search.mode_label }}</td>
+                <td>{{ search.species_label }}</td>
+                <td>{{ search.when }}</td>
+                <td>{{ search.scores.count }}</td>
+                <td>{{ search.imported|length }}</td>
+                <td>{{ search.rejected|length }}</td>
+                <td>{{ search.unclassified|length }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <h3>No existing searches</h3>
+    {% endif %}
+{% endblock body %}

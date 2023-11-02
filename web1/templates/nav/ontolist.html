@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    {{ page_label }}
+{% endblock headline %}
+{% block header_left %}
+    Displaying {{ view.row_source|length }} names
+	{% if view.filter_col %}
+		with {{ view.filter_col }} &gt;= {{ view.cutoff }}.
+		<form method="post">
+			{% csrf_token %}
+			{{ cutoff_form.as_p }}
+			<input type="submit" name='redisplay_btn' value="Re-display"/>
+		</form>
+	{% endif %}
+{% endblock header_left %}
+{% block header_right %}
+	<a href="{% url 'nav_ontobrowse' ws.id view.disease_vocab.name %}">
+	Word Search
+	</a>
+    {% with view.disease_vocab.list_help as list_help %}
+        {% if list_help %}
+            <hr>
+            {{ list_help }}
+        {% endif %}
+    {% endwith %}
+{% endblock header_right %}
+{% block body %}
+	<br>
+    {% include "_table.html" %}
+{% endblock body %}

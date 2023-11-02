@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block headline %}
+    {{ headline }}
+{% endblock headline %}
+{% block header_left %}
+	<form method="post">
+	{% csrf_token %}
+	{{ option_form.as_p }}
+	<input type='submit' name='display_btn' value='Display'/>
+	</form>
+{% endblock header_left %}
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+	{% include "_plotly_div.html" with div_id=0 src=plot %}
+	{% include "_plotly_clear.html" %}
+{% endblock body %}

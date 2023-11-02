@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% load process %}
+{% load navtools %}
+
+{% block headline %}
+    {{ heading|default:"Background Job Summary" }}
+{% endblock headline %}
+{% block header_left %}
+{{ pause_resume }}<br>
+<br>
+{% if ws %}
+<a href="{% url 'jobs' ws.id %}">Legacy Jobs Page</a>
+{% endif %}
+<hr>
+Activity since {{ after }}<br>
+(first job {{ after_job }}) <a href="?from=-{{ after_job }}">earlier...</a><br>
+{{ stats_table }}
+{% endblock header_left %}
+{% block header_right %}
+{% if maint_locks %}
+    <h4>Maintenance Locks</h4>
+    {% include "_table.html" with table=maint_locks %}
+{% endif %}
+<h4>Instance size information</h4>
+{% include "_table.html" with table=instance_table %}
+		<table style='margin:5px'>
+		{% if worker %}
+			<tr><td><b>Assigned Worker:</b></td></tr>
+			{% with inst=worker.get_ec2_instance %}
+			<tr>
+            <td>
+            {{ worker.name }} ({{ inst.instance_type }}) {{ inst.state }}
+			&nbsp;&nbsp;
+            </td>
+            <td>
+<form method="post">
+{% csrf_token %}
+<input type='hidden' name="machine" value='{{ worker.name }}'/>
+{% start_stop_button worker %}
+{% change_type_buttons worker %}
+</form>
+            </td>
+            </tr>
+			{% endwith %}
+			<tr>
+<form method="post">
+{% csrf_token %}
+				<td>
+					&nbsp;&nbsp;
+				</td>
+				<td>
+{% job_clear_controls %}
+				</td>
+</form>
+			</tr>
+        {% endif %}
+		<tr><td><b>Other Machines:</b></td></tr>
+		{% for m,inst in others %}
+			<tr>
+              {% if inst %}
+				<td>
+					{{ m.name }} ({{ inst.instance_type }}) {{ inst.state }}
+					&nbsp;&nbsp;
+				</td>
+				<td>
+<form method="post">
+{% csrf_token %}
+<input type='hidden' name="machine" value='{{ m.name }}'/>
+{% start_stop_button m %}
+{% change_type_buttons m %}
+</form>
+				</td>
+              {% else %}
+                <td>
+                    <span style="color:red">
+                        {{ m.name }} instance missing
+                    </span>
+                </td><td></td>
+              {% endif %}
+			</tr>
+		{% endfor %}
+		</table>
+{% endblock header_right %}
+{% block body %}
+{% include "_tooltip_activator.html" %}
+{% endblock body %}

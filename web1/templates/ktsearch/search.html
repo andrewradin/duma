@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block javascript %}
+{% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block headline %}
+    Treatment Search
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+    {% if past_searches %}
+        <h3>Past searches</h3>
+        {% for search in past_searches %}
+            <a href="{% url "kts_summary" view.ws.id search.id %}">
+                {{ search.user }}@{{ search.created }}
+            </a><br>
+        {% endfor %}
+    {% endif %}
+
+{% endblock header_right %}
+{% block body %}
+    <form method="post">
+        {% csrf_token %}
+		{% for form in view.form_list %}
+			{{ form.as_p }}
+		{% endfor %}
+        <input type="submit" name='search_btn' value="Search"/>
+    </form>
+    <hr>
+
+    {% with section_name="scores" section_label="FAERS Data" content_url=faers_data_url autoshow=True %}
+        {% include '_deferred_section.html' %}
+    {% endwith %}
+
+    <hr>
+    Update Status: {% workflow_status_button 'KTSearch' %}
+{% endblock body %}

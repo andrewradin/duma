@@ -1,0 +1,72 @@
+{% extends 'consultant/base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    {{ protein.get_name }} ({{ protein_label }}, {{ protein.gene }})
+{% endblock headline %}
+{% block javascript %}
+    {% include "_datatables_load.html" %}
+{% endblock %}
+{% block header_left %}
+<style>
+    ul {
+        list-style-position: inside;
+        padding-left: 0.5rem;
+    }
+    .link-section {
+        display: inline-block;
+        vertical-align: top;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        box-shadow: -1px -1px 10px -7px rgba(0, 0, 0, 1.0);
+        border-radius: 1rem;
+        margin-right: 2rem;
+    }
+</style>
+    Alt Names: <ul>
+    {% for alt_name in protein.get_alt_names %}
+        <li>{{ alt_name }} </li>
+    {% endfor %}
+    </ul>
+	{% if aliases %}
+		Aliases:
+		{% for a in aliases %}
+			&nbsp;&nbsp;<a
+				href="{% url 'protein' ws.id a %}"
+				>{{ a }}</a>
+		{% endfor %}<br>
+	{% endif %}
+	{% if gene_other_prots %}
+		Other proteins for this gene:
+		{% for a in gene_other_prots %}
+			&nbsp;&nbsp;{{ a }}
+		{% endfor %}<br>
+	{% endif %}
+{% endblock header_left %}
+{% block header_right %}
+<a href='/consultant/'>Back to Molecules to Review</a>
+{% endblock header_right %}
+{% block body %}
+    {% with title="Database Links" links=db_links %}
+        {% include 'browse/_prot_links_box.html' %}
+    {% endwith %}
+    {% with title="Other Databases" links=other_db_links %}
+        {% include 'browse/_prot_links_box.html' %}
+    {% endwith %}
+    {% with title="Pathway/Disease Associations" links=assoc_links %}
+        {% include 'browse/_prot_links_box.html' %}
+    {% endwith %}
+
+    {% with title="Search Links" links=srch_links %}
+        {% include 'browse/_prot_links_box.html' %}
+    {% endwith %}
+
+    {% with section_name="ppi" %}
+        {% include 'consultant/_prot_ppi_section.html' %}
+    {% endwith %}
+
+    {% with section_name="pathways" %}
+        {% include 'consultant/_prot_pathways_section.html' %}
+    {% endwith %}
+{% endblock body %}
+

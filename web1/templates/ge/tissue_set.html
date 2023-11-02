@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    {% if ts %}
+	Edit
+	{% else %}
+	Create
+	{% endif %}
+	Tissue Set
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+	<b>All existing sets:</b>
+	{% for set in ws.get_tissue_set_choices %}
+        <br>
+        {% if set.0 == ts.id %}
+        {{ set.1 }}
+        {% else %}
+        <a href="{% url 'ge:tissue_set' ws.id set.0 %}">{{ set.1 }}</a>
+        {% endif %}
+	{% endfor %}
+{% endblock header_right %}
+{% block body %}
+    <form method="post">
+        {% csrf_token %}
+		<table>
+		{{ ts_form.as_table }}
+		</table>
+        <input type='submit' name='save_btn' value='Save'/>
+    </form>
+    {% if ts %}
+		{% with ts.tissue_set.all as contents %}
+			{% if contents %}
+				<form method="post">
+				{% csrf_token %}
+				To combine redundent tissues, select below, enter a name:
+				<input type='text' name='combine_name'/>
+				and hit
+				<input type='submit' name='combine_btn' value='Combine'/>
+				<br>
+				<b>Set contains:</b>
+				<table>
+				{% for t in contents %}
+					<tr>
+					<td>
+					{% if t.source == 'comb' %}
+					<input type='submit'
+							name='split_btn_{{ t.id }}'
+							value='Split'
+							/>
+					{% else %}
+					<input name="t_{{ t.id }}" type="checkbox"/>
+					{% endif %}
+					</td>
+					<td>{{ t.name }}</td>
+					</tr>
+				{% endfor %}
+				</table>
+				</form>
+			{% else %}
+				<b>Set is empty</b>
+				{% comment %}
+				XXX Not sure delete is a good idea, because ids could get
+				XXX re-used, and we count on the lowest numbered set being
+				XXX the default
+				<form method="post">
+					{% csrf_token %}
+					<input type='submit' name='delete_btn' value='Delete'/>
+				</form>
+				{% endcomment %}
+			{% endif %}
+		{% endwith %}
+	{% endif %}
+{% endblock body %}

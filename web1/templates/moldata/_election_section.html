@@ -1,0 +1,50 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Selection dated {{ elec.0.due }}{% endblock %}
+{% block section_body %}
+    <table class="table">
+    <tr>
+        <th>Reviewer</th>
+        <th>Vote</th>
+        <th>Note</th>
+        <th></th>
+    </tr>
+    {% for v,prots in elec.1 %}
+        {% with v.get_note_text as txt %}
+        <tr>
+            <td>{{ v.reviewer }}</td>
+            <td>
+                {% vote_icon '' v %}
+            </td>
+            {% if txt %}
+				{% with note_id=v.note_id %}
+					{% include 'browse/_note_columns.html' %}
+				{% endwith %}
+            {% endif %}
+        </tr>
+        {% endwith %}
+		{% for prot,gene,note_id,txt,other_wsas in prots %}
+			<tr>
+				<td>
+                    {% if other_wsas %}
+                        {{gene}} also in:
+                        <ul>
+                        {% for wsa in other_wsas %}
+                            <li>{{ wsa.html_url }} ({{ wsa.indication_label }})</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                </td>
+				<td>{{ gene }} / {{ prot }}</td>
+				{% include 'browse/_note_columns.html' %}
+			</tr>
+		{% endfor %}
+    {% endfor %}
+    </table>
+    <script>
+    $(function () {
+      $('[data-toggle="popover"]').popover()
+      })
+    </script>
+{% endblock %}

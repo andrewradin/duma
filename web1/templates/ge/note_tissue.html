@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    {{ view.tissue }}
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+        <form role="form"
+            method="post"
+            >
+          {% csrf_token %}
+          <input type='hidden' name='tissue_id'
+                    value='{{ note_tissue.id }}'/>
+          <div class="modal-header">
+            <h4 class="modal-title">
+                Edit Tissue Details<br>
+				{{ tissue_edit_form.name }}
+				({{ note_tissue.geoID }})
+            </h4>
+		  <hr>
+            <b>Source:</b><br>
+                {% if tissue_edit_form.source %}
+                    {{ tissue_edit_form.source }}
+					Fallback reason:
+                    {{ tissue_edit_form.fallback_reason }}
+                {% else %}
+                    {{ note_tissue.source_label }}
+                {% endif %}
+                <br>
+            <b>Tissue Set:</b><br>
+			{{ tissue_edit_form.tissue_set }}<br>
+            <b>Note:</b><br>
+			{{ tissue_edit_form.note }}
+            {% if note_tissue.note_id %}
+                <a href="/note/{{ note_tissue.note_id }}">(history)</a>
+            {% endif %}
+		  <hr>
+            <button type="submit" name='modify_btn' class="btn btn-info">
+				Save changes
+			</button>
+            <a href="{% url 'ge:tissues' ws.id %}"
+					class="btn btn-default"
+					>
+                Cancel
+            </a>
+			<hr>
+			<button type="submit"
+				class="btn btn-warning"
+				name="meta_btn"
+				>
+				Re-run meta
+			</button>
+			{{ tissue_edit_form.ignore_missing }} Work around missing data
+			<button type="submit"
+				class="btn btn-danger"
+				name="delete_btn"
+				>
+				Delete tissue
+			</button>
+			<input type="checkbox" name="delete_confirm"/>Confirm delete
+        </form>
+{% endblock body %}

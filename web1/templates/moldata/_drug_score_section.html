@@ -1,0 +1,23 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% load process %}
+{% block section_label %}{{ drug_score.1 }} information{% endblock %}
+{% block section_body %}
+	Source Job {% job_summary drug_score.0.0 '-status -settings' %}<br>
+    <table class="table">
+		<tr>
+            {% for label in drug_score.2 %}
+                <th>{{ label }}</th>
+            {% endfor %}
+		</tr>
+		{% for d in drug_score.3 %}
+		<tr>
+            <td>{{ d.0}}</td>
+            <td>{{ d.1 | sci_fmt }}</td>
+            <td>{{ d.2}}</td>
+            <td>{{ d.3}}</td>
+            <td>{{ d.4}}</td>
+		</tr>
+		{% endfor %}
+    </table>
+{% endblock %}

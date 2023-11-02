@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+Manage Drug Sets
+{% endblock headline %}
+{% block body %}
+    <h3>Pre-load drug list:</h3>
+    <form method="post">
+		Select any options below, then click
+        <input type='submit' name='preload_btn' value='Pre-load'/>
+        <br>Drugs matching any selected option will be placed in the entry box.
+        {% csrf_token %}
+        <p>
+		{{ ind_form.as_p }}
+		{% bulk_update_links 'ind' %}
+		<p>
+		{{ demerit_form.as_p }}
+		{% bulk_update_links 'demerits' %}
+        <p>
+		{{ atc_form.as_p }}
+        {% if drugset_list %}
+			<p>
+            <b>In existing drugset:</b>
+			{{ union_form.as_p }}
+            {% bulk_update_links 'sets' %}
+        {% endif %}
+		{{ drugsetname_form.as_p }}
+    </form>
+	<hr>
+    <h3>Create a drug set:</h3>
+    <form method="post">
+        {% csrf_token %}
+		<table>
+		{{ drugset_form.as_table }}
+		</table>
+        <input type='submit' name='create_btn' value='Create'/>
+    </form>
+    {% if drugset_list.count %}
+        <h3>Existing drug sets:</h3>
+        <table class="table">
+        <tr>
+            <th style="width:100px"></th>
+            <th>Drug set name</th>
+            <th>Drug set description</th>
+            <th>Created By</th>
+            <th>Created On</th>
+            <th>drug count</th>
+        </tr>
+        {% for ds in drugset_list %}
+            <tr>
+                <td>
+                <a href="?edit={{ ds.id }}">edit</a>
+                </td>
+                <td>{{ ds.name }}</td>
+                <td>{{ ds.description }}</td>
+                <td>{{ ds.created_by }}</td>
+                <td>{{ ds.created_on }}</td>
+                <td>
+                    <a href="{% url 'rvw:review' ws.id %}?flavor=ds{{ ds.id }}">
+                    {{ ds.drugs.count }}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <h3>No existing drug sets</h3>
+    {% endif %}
+    <script>
+        // If there are ambiguous terms, there will be a list of possible replacements.
+        // This javascript adds a button to each one, which will perform that replacement on the
+        // input textbox, to reduce the amount of copy+paste required.
+        function replace(term, wsa) {
+            const el = document.getElementById('id_drugs');
+            const input = el.value;
+            let output = []
+            for (const line of input.split('\n')) {
+                const curTerm = line.split('|#')[0]
+                if (curTerm == term) {
+                    output.push(`${term}|#${wsa}`);
+                } else {
+                    output.push(line);
+                }
+            }
+            el.value = output.join('\n');
+            
+        }
+        $('.errorlist').find('a').each((i, a) => {
+            const term = a.getAttribute('term');
+            const wsa = a.getAttribute('id');
+            a.insertAdjacentHTML("afterend", ` <button type='button' onclick='replace("${term}", "${wsa}")' class='btn btn-default btn-xs'>Replace</button>`);
+        });
+    </script>
+{% include "nav/_ds_edit_popup.html" %}
+{% endblock body %}

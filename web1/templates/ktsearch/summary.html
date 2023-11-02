@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Treatment Search Summary
+{% endblock headline %}
+{% block header_left %}
+	{% if unmatched %}
+		<a href="{% url "kts_bulk_name_resolve" ws.id search.id %}">
+			Bulk resolve unmatched drug names
+		</a><br>
+		<a href="{% url 'kts_name_resolve' ws.id search.id %}">
+			Resolve next of {{ unmatched }} distinct unreviewed unmatched drug names
+		</a><br>
+	{% endif %}
+	{% if unresolved %}
+		<a href="{% url 'kts_resolve' ws.id search.id %}">
+			Resolve next of {{ unresolved }} unresolved drugs
+		</a>
+	{% endif %}
+{% endblock header_left %}
+{% block header_right %}
+	{% for line in stats %}
+		{{ line }}<br>
+	{% endfor %}
+	Search configuration:
+	{% for src in view.search_detail %}
+		<br>&nbsp;&nbsp;{{ src.0 }}: {{ src.1 }}
+	{% endfor %}
+{% endblock header_right %}
+{% block body %}
+	{% include '_table_section.html' with section_name="unmatched" section_label="Unmatched Drugs" table=unmatch_table %}
+	{% include '_table_section.html' with section_name="matched" section_label="Matched Drugs" table=match_table %}
+	{% with section_name='autods' %}
+		{% include 'ktsearch/_summary_autods_section.html' %}
+    {% endwith %}
+{% endblock body %}

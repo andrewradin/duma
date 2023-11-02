@@ -1,0 +1,30 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% load process %}
+{% block section_label %}{{ gsig.1 }} information{% endblock %}
+{% block section_body %}
+	Source Job {% job_summary gsig.0.0 '-status -settings' %}<br>
+    <table class="table">
+		<tr>
+            <th>Protein</th>
+            <th>DPI evidence</th>
+            <th>DPI direction</th>
+            {% for label in gsig.2 %}
+            	<th>{{ label }}</th>
+            {% endfor %}
+		</tr>
+		{% for p in gsig.3 %}
+		<tr>
+            <td>{% protlink p.0.0.uniprot_id %}</td>
+            <td>{{ p.0.0.evidence|sci_fmt }}</td>
+			<td>{{ p.0.1 }}</td>
+			{% for v in p.1 %}
+				<td>{{ v.0.0|sci_fmt }}, 
+				    {{ v.1.0|sci_fmt }},
+			        {{ v.1.1|sci_fmt }},
+                    {{ v.1.2|sci_fmt }}</td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
+    </table>
+{% endblock %}

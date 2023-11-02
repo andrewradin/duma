@@ -1,0 +1,39 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Selected Drug Summary{% endblock %}
+{% block section_body %}
+<style>
+.selected {
+}
+.unselected {
+}
+.unselected a {
+    color: #589;
+}
+#drug-summary td:nth-child(3) {
+    white-space: pre-wrap;
+    font-family: monospace;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loader {
+    display: inline-block;
+    border: 3px solid #ddd;
+    border-top: 3px solid #4ad;
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+    width: 25px;
+    height: 25px;
+}
+</style>
+<div style='margin: 1rem; ' id='drug-summary'>
+    <span class='loader'></span>
+</div>
+    <script src='/static/js/election_drug_summary.js'></script>
+    <script>
+        setupWhenShown({{ ws.id }}, {{ wsa_ids | safe }});
+    </script>
+{% endblock %}

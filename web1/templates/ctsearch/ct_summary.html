@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    {{ page_label }}
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+	Search by {{ view.search.user }}
+	on {{ view.search.created }}
+    <br>{{ view.search.description }}
+	<br>Total drug names found: {{ view.search.ctdrugname_set.count }}
+	{% for status,count in view.stats %}
+		<br>{{ status }}: {{ count }}
+	{% endfor %}
+{% endblock header_right %}
+{% block body %}
+    {% include "_table.html" %}
+{% endblock body %}

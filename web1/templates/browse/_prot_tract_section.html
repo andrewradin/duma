@@ -1,0 +1,66 @@
+{% extends "collapse_section.html" %}
+{% load navtools %}
+{% block section_label %}Tractability{% endblock %}
+{% block section_body %}
+<style>
+#buckets_table tbody tr td {
+    padding: 0;
+    text-align: center;
+    border-right: 1px solid #aaa;
+}
+#buckets_table th {
+    text-align: center;
+    border-right: 1px solid #aaa;
+    padding-right: 10px !important;
+}
+#buckets_table .active {
+    display: block;
+    background-color: #008800;
+    font-weight: bold;
+    color: white;
+    width: 100%;
+    height: 100%;
+    padding: 4px;
+}
+#buckets_table .inactive {
+    display: block;
+    color: #777;
+    padding: 4px;
+}
+</style>
+<div class='panel panel-primary' style='display: inline-block'>
+    <div class='panel-heading'>Buckets</div>
+    <table id='buckets_table' class='table table-condensed '> </table>
+</div>
+<div class='panel panel-primary'>
+    <div class='panel-heading'>Other Data</div>
+    <table id='tract_other_table' class='table table-condensed'></table>
+</div>
+    <script>
+        {
+            const columns = {{ tract_bucket_table.headers_data | safe }};
+            const table = $('#buckets_table').DataTable({
+                data: {{ tract_bucket_table.rows_data | safe }},
+                columns: columns,
+                ordering: false,
+                paging: false,
+                searching: false,
+                info: false,
+            });
+
+            $('#buckets_table').find('thead').prepend($('<tr><th></th><th colspan=3>Clinical</th><th colspan=6>Discovery or Predicted</th></tr>'));
+        }
+        {
+            const columns = {{ tract_prop_table.headers_data | safe }};
+            const table = $('#tract_other_table').DataTable({
+                data: {{ tract_prop_table.rows_data | safe }},
+                columns: columns,
+            });
+
+        }
+
+
+
+    
+    </script>
+{% endblock %}

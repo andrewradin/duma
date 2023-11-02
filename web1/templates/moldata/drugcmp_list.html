@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block headline %}
+    Drugs matching '{{ search }}'
+{% endblock headline %}
+{% block header_left %}
+    Click a drug name below to add to the comparison or&nbsp;
+    <a href="?ids={{ ids }}">Cancel</a>
+{% endblock header_left %}
+{% block body %}
+    <table class="table">
+    {% for drug in matches %}
+        <tr>
+            <td>
+            <a href="?ids={{ ids }},{{ drug.id }}">
+            {{ drug.agent.canonical }}
+            </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock body %}

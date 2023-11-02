@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% load django_tables2 %}
+{% load browse_tags %}
+{% block body %}
+    <h1>Drug Path Detail for {% drugname wsa %}</h1>
+    {% render_table table %}
+{% endblock body %}

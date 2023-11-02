@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+{% block headline %}
+	{% if drug_name %}
+		{{ drug_name }}
+	{% endif %}
+	Target Data
+{% endblock headline %}
+{% block javascript %}
+	{% include "_plotly_load.html" %}
+	{% if cy %}
+		<link rel="stylesheet" href="/static/lib/jquery.qtip.min.css">
+	{% endif %}
+{% endblock javascript %}
+{% block header_left %}
+	<form method="post">
+		{% csrf_token %}
+		{{ display_form.as_p }}
+		<input type="submit" name='display_btn' value="Display"/>
+	</form>
+{% endblock header_left %}
+{% block body %}
+	{% if not plotly_plots %}
+		<div class="well">
+			Choose a DPI, PPI, and tissue set ID, then click Display.
+		</div>
+	{% endif %}
+{% if table_stats %}
+	<h3>Summary Statistics</h3>
+	<br>
+	{% for table in table_stats %}
+    	<h2>{{ table.0 }}</h2>
+	    <br>
+    	<table class="table">
+    	<tr>
+        	{% for cell in table.1.0 %}
+            	<th style="text-align:right">{{ cell }}</th>
+        	{% endfor %}
+    	</tr>
+    	{% for r in table.1.1 %}
+        	<tr>
+        	<td>{{ r.0 }}</td>
+        	{{ r.1 }}
+        	{{ r.2 }}
+        	{{ r.3 }}
+        	{{ r.4 }}
+        	</tr>
+    	{% endfor %}
+    	</table>
+	    <br>
+   	{% endfor %}
+{% endif %}
+{% if plotly_plots %}
+    <h3>Gene Expr. Fold Change Heatmaps</h3>
+    <br>
+    {% for plot in plotly_plots %}
+        {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+    {% endfor %}
+    {% include "_plotly_clear.html" %}
+{% endif %}
+{% if cy %}
+    <h3>Target network</h3>
+    <div style="border:2px solid black;">
+        <div id="cy" style="width:100%; height:600px;"> </div>
+    </div>
+    <script src="/static/lib/cytoscape.min.js"></script>
+    <script src="/static/lib/cytoscape-qtip.js"></script>
+    <script src="/static/lib/jquery.qtip.min.js"></script>
+    <script>
+    var cy = cytoscape({
+      container: document.getElementById('cy'), // container to render in
+      elements: {{ cy.elements }},
+      style:{{ cy.style }},
+        layout: {
+            name: 'preset',
+            positions: {{ cy.positions }},
+            }
+      });
+    cy.on('mouseover','node',function(event) {
+        var tips = {{ cy.tips }};
+        var node = event.cyTarget;
+            node.qtip({
+                     content: tips[node.id()],
+                     show: {
+                        event: event.type
+                        },
+                     hide: {
+                        event: 'mouseout unfocus'
+                        }
+                    }, event);
+        });
+    </script>
+{% endif %}
+{% endblock body %}

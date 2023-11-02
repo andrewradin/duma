@@ -1,0 +1,22 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Molecule attributes{% endblock %}
+{% block section_body %}
+	{% regroup drug_ws.agent_strings_by_prop by prop.name as prop_list %}
+	<table class='table'>
+	{% for attr in prop_list %}
+	<tr>
+	<th>{{ attr.grouper }}
+	</th>
+	<td>
+		{% for item in attr.list %}{% if not forloop.first %},&nbsp;{% endif %}
+		{{ item.value }}{% endfor %}
+	</td>
+	</tr>
+	{% endfor %}
+	</table>
+
+	{% if mol_list %}
+		Molecules with MoA: {{ mol_list }}
+	{% endif %}
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    {{ tissue.name }}
+{% endblock headline %}
+{% block header_left %}
+    {{ tissue.geoID }} {{ src_link }}
+    {% with ccc=tissue.case_control_counts %}
+    <br>{{ ccc.0 }} cases, {{ ccc.1 }} controls
+    {% endwith %}
+{% endblock header_left %}
+{% block header_right %}
+    {{ top_table }}
+{% endblock header_right %}
+{% block body %}
+	{% for x in sections %}
+    {% with section_name=x.0 %}
+		{% include 'ge/_sig_qc_section.html' %}
+    {% endwith %}
+    {% endfor %}
+{% endblock body %}

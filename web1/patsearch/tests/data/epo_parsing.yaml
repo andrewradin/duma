@@ -1,0 +1,425 @@
+interactions:
+- request:
+    body: !!python/unicode 'grant_type=client_credentials'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Authorization:
+      - Basic dGZ2TWhkVGFRNVNCWlFWdXNjbDA1cEc3SlpyNHV6OXQ6aWlOaXU2THN5Szd4N0hqZA==
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '29'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      User-Agent:
+      - python-requests/2.21.0
+    method: POST
+    uri: https://ops.epo.org/3.2/auth/accesstoken
+  response:
+    body:
+      string: !!python/unicode "{\n  \"refresh_token_expires_in\": \"0\",\n  \"api_product_list\"\
+        : \"[ops-prod]\",\n  \"api_product_list_json\": [\n    \"ops-prod\"\n  ],\n\
+        \  \"organization_name\": \"epo\",\n  \"developer.email\": \"darin@twoxar.com\"\
+        ,\n  \"token_type\": \"BearerToken\",\n  \"issued_at\": \"1560813794027\"\
+        ,\n  \"client_id\": \"tfvMhdTaQ5SBZQVuscl05pG7JZr4uz9t\",\n  \"access_token\"\
+        : \"hvtTv8qj1MW3z6YeV6xTUwn1PzTf\",\n  \"application_name\": \"bab72e2e-bfad-47a0-a071-bb9c20fcd778\"\
+        ,\n  \"scope\": \"core\",\n  \"expires_in\": \"1199\",\n  \"refresh_count\"\
+        : \"0\",\n  \"status\": \"approved\"\n}"
+    headers:
+      access-control-allow-headers:
+      - Authorization
+      access-control-allow-methods:
+      - POST
+      access-control-allow-origin:
+      - '*'
+      connection:
+      - keep-alive
+      content-length:
+      - '510'
+      content-type:
+      - application/json
+      date:
+      - Mon, 17 Jun 2019 23:23:14 GMT
+      x-epo-client-ip:
+      - 54.214.196.186
+      x-epo-forwarded:
+      - '[54.214.196.186]'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!python/unicode '(CA2142016)'
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Authorization:
+      - Bearer hvtTv8qj1MW3z6YeV6xTUwn1PzTf
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '11'
+      Content-Type:
+      - text/plain
+      User-Agent:
+      - python-requests/2.21.0
+    method: POST
+    uri: https://ops.epo.org/3.2/rest-services/published-data/publication/epodoc/claims
+  response:
+    body:
+      string: !!python/unicode '<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet
+        type="text/xsl" href="/3.2/style/pub-ftxt-claims.xsl"?>
+
+        <ops:world-patent-data xmlns="http://www.epo.org/exchange" xmlns:ops="http://ops.epo.org"
+        xmlns:xlink="http://www.w3.org/1999/xlink"><ftxt:fulltext-documents xmlns="http://www.epo.org/fulltext"
+        xmlns:ftxt="http://www.epo.org/fulltext"><ftxt:fulltext-document system="ops.epo.org"
+        fulltext-format="text-only"><bibliographic-data><publication-reference data-format="docdb"><document-id><country>CA</country><doc-number>2142016</doc-number><kind>A1</kind></document-id></publication-reference></bibliographic-data><claims
+        lang="EN"><claim><claim-text>PCT/US93/07242 I claim: An orally-ingestible
+        pharmaceutical composition for the effective oral treatment or prevention
+        of irritable bowel syndrome, including diarrhea, constipation, and pain aspects
+        thereof, in a human patient, consisting essentially of a dry powdered admixture
+        of an amount of an anionbinding polymer and a hydrophilic polymer, or a polymer
+        which is both an anion-binding polymer and a hydrophilic polymer, optionally
+        together with a pharmaceuticallyacceptable diluent or carrier, which can conveniently
+        be admixed with and suspended in a minor amount of fluid just prior to oral
+        ingestion, which is effective for such purpose. The pharmaceutical composition
+        of Claim 1, wherein the weight ratio of the anion-binding polymer to the hydrophilic
+        polymer is between about 2:1 and about 1:2. The pharmaceutical composition
+        of Claim 1, wherein the total amount of all polymers per dose of the composition
+        is adapted to be between about 1g and 24g. The pharmaceutical composition
+        of Claim 1, wherein the weight ratio of the anion-binding polymer to the hydrophilic
+        polymer is between about 2:1 and about 1:2 and wherein 18 PCT/US93/07242 the
+        total amount of all polymers per dose of the composition is adapted to be
+        between about 1g and about 24g. The pharmaceutical composition of Claim 4,
+        wherein the anion-binding polymer is cholesstyramine, a colestipol pharmaceutically-acceptable
+        acid addition salt, MCI-196, or diethylaminoethyl dextran, and the hydrophilic
+        polymer is selected from the group consisting of pectin, guar gum, psyllium
+        hydrophilic colloid, locust bean gum, alginic acid, cellulose gum, carrageenan,
+        oat bran beta-glucan, xanthan gum, methylcellulose, and polycarbophil. The
+        pharmaceutical composition of Claim 4, wherein the anion-binding polymer is
+        cholestyramine or a colestipol salt and wherein the hydrophilic polymer is
+        pectin. The pharmaceutical composition of Claim 1, wherein the polymer employed
+        is bath an anion-binding polymer and a hydrophilic polymer. The pharmaceutical
+        composition of Claim 7, wherein the polymer is chitosan. A method of treating
+        or preventing irritable bowel syndrome, including diarrhea, constipation,
+        and pain aspects thereof, in a human patient, consisting essentially of the
+        step of orally administering to the said human patient an amount of an anion-binding
+        polymer and a hydrophilic polymer, either simultaneously, concurrently, or
+        in the form of a pharmaceutical composition consisting essentially of the
+        anion-binding polymer and the hydrophilic polymer, or consisting essentially
+        of a polymer which is both an anion-binding polymer and a hydrophilic polymer,
+        19 PCT/US93/07242 which is effective for alleviation or prevention of the
+        said irritable bowel syndrome, preferably wherein the weight ratio of the
+        anion-binding polymer to the hydrophilic polymer is between about 2:1 and
+        about 1:2, especially wherein the total amount of all polymers per dose is
+        between about 1g and 24g, preferably wherein the weight ratio of the anion-binding
+        polymer to the hydrophilic polymer is between about 2:1 and about 1:2 and
+        wherein the total amount of all polymers per dose is between about 1g and
+        about 24g, preferably wherein the anion-binding polymer is cholestyramine,
+        a colestipol pharmaceutically-acceptable acid addition salt, MCI-196, or diethylaminoethyl
+        dextran, and the hydrophilic polymer is selected from the group consisting
+        of pectin, guar gum, psyllium hydrophilic colloid, locust bean gum, alginic
+        acid, cellulose gum, carrageenan, oat bran beta-glucan, xanthan gum, methylcellulose,
+        and polycarbophil, or wherein the anion-binding and hydrophilic characteristics
+        are combined in a single polymer, especially wherein the polymer is chitosan,
+        and preferably wherein the anion-binding polymer is cholestyramine or a colestipol
+        salt and wherein the hydrophilic polymer is pectin. Use of a dry powdered
+        admixture of a polymer or polymers, optionally together with a pharmaceuticallyacceptable
+        diluent or carrier, as defined in Claim 9, for the preparation of an orally-ingestible
+        pharmaceutical composition useful for the effective oral treatment or prevention
+        of irritable bowel syndrome.</claim-text></claim></claims></ftxt:fulltext-document></ftxt:fulltext-documents></ops:world-patent-data>'
+    headers:
+      access-control-allow-headers:
+      - Authorization
+      access-control-allow-methods:
+      - POST
+      access-control-allow-origin:
+      - '*'
+      connection:
+      - keep-alive
+      content-length:
+      - '4932'
+      content-type:
+      - application/xml;charset=utf-8
+      date:
+      - Mon, 17 Jun 2019 23:23:15 GMT
+      server:
+      - Apache
+      vary:
+      - Accept
+      x-api:
+      - ops-v3.2
+      x-elapsed-time:
+      - '22'
+      x-epo-client-ip:
+      - 54.214.196.186
+      x-epo-forwarded:
+      - '[54.214.196.186]'
+      x-individualquotaperhour-used:
+      - '10984714'
+      x-registeredquotaperweek-used:
+      - '11926145'
+      x-throttling-control:
+      - idle (images=green:200, inpadoc=green:60, other=green:1000, retrieval=green:200,
+        search=green:30)
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!python/unicode '(CA2142016)'
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Authorization:
+      - Bearer hvtTv8qj1MW3z6YeV6xTUwn1PzTf
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '11'
+      Content-Type:
+      - text/plain
+      User-Agent:
+      - python-requests/2.21.0
+    method: POST
+    uri: https://ops.epo.org/3.2/rest-services/published-data/publication/epodoc/biblio
+  response:
+    body:
+      string: "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet type=\"\
+        text/xsl\" href=\"/3.2/style/exchange.xsl\"?>\n<ops:world-patent-data xmlns=\"\
+        http://www.epo.org/exchange\" xmlns:ops=\"http://ops.epo.org\" xmlns:xlink=\"\
+        http://www.w3.org/1999/xlink\">\n    <exchange-documents>\n        <exchange-document\
+        \ system=\"ops.epo.org\" family-id=\"25456335\" country=\"CA\" doc-number=\"\
+        2142016\" kind=\"A1\">\n            <bibliographic-data>\n               \
+        \ <publication-reference>\n                    <document-id document-id-type=\"\
+        docdb\">\n                        <country>CA</country>\n                \
+        \        <doc-number>2142016</doc-number>\n                        <kind>A1</kind>\n\
+        \                        <date>19940303</date>\n                    </document-id>\n\
+        \                    <document-id document-id-type=\"epodoc\">\n         \
+        \               <doc-number>CA2142016</doc-number>\n                     \
+        \   <date>19940303</date>\n                    </document-id>\n          \
+        \      </publication-reference>\n                <classification-ipc>\n  \
+        \                  <text>A61K31/785</text>\n                </classification-ipc>\n\
+        \                <classifications-ipcr>\n                    <classification-ipcr\
+        \ sequence=\"1\">\n                        <text>A61K   9/    58         \
+        \   A I                    </text>\n                    </classification-ipcr>\n\
+        \                    <classification-ipcr sequence=\"2\">\n              \
+        \          <text>A61K  31/   715            A I                    </text>\n\
+        \                    </classification-ipcr>\n                    <classification-ipcr\
+        \ sequence=\"3\">\n                        <text>A61K  31/   785         \
+        \   A I                    </text>\n                    </classification-ipcr>\n\
+        \                </classifications-ipcr>\n                <patent-classifications>\n\
+        \                    <patent-classification sequence=\"1\">\n            \
+        \            <classification-scheme office=\"\" scheme=\"CPC\"/>\n       \
+        \                 <section>A</section>\n                        <class>61</class>\n\
+        \                        <subclass>K</subclass>\n                        <main-group>31</main-group>\n\
+        \                        <subgroup>715</subgroup>\n                      \
+        \  <classification-value>I</classification-value>\n                    </patent-classification>\n\
+        \                    <patent-classification sequence=\"2\">\n            \
+        \            <classification-scheme office=\"\" scheme=\"CPC\"/>\n       \
+        \                 <section>A</section>\n                        <class>61</class>\n\
+        \                        <subclass>K</subclass>\n                        <main-group>31</main-group>\n\
+        \                        <subgroup>785</subgroup>\n                      \
+        \  <classification-value>I</classification-value>\n                    </patent-classification>\n\
+        \                    <combination-set sequence=\"1\">\n                  \
+        \      <group-number>1</group-number>\n                        <combination-rank>\n\
+        \                            <rank-number>1</rank-number>\n              \
+        \              <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/785</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                        <combination-rank>\n \
+        \                           <rank-number>2</rank-number>\n               \
+        \             <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/715</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                    </combination-set>\n     \
+        \               <combination-set sequence=\"2\">\n                       \
+        \ <group-number>2</group-number>\n                        <combination-rank>\n\
+        \                            <rank-number>1</rank-number>\n              \
+        \              <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/785</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                        <combination-rank>\n \
+        \                           <rank-number>2</rank-number>\n               \
+        \             <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/715</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                    </combination-set>\n     \
+        \               <combination-set sequence=\"3\">\n                       \
+        \ <group-number>3</group-number>\n                        <combination-rank>\n\
+        \                            <rank-number>1</rank-number>\n              \
+        \              <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/785</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                        <combination-rank>\n \
+        \                           <rank-number>2</rank-number>\n               \
+        \             <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/715</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                    </combination-set>\n     \
+        \               <combination-set sequence=\"4\">\n                       \
+        \ <group-number>4</group-number>\n                        <combination-rank>\n\
+        \                            <rank-number>1</rank-number>\n              \
+        \              <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/715</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                        <combination-rank>\n \
+        \                           <rank-number>2</rank-number>\n               \
+        \             <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/715%2</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                    </combination-set>\n     \
+        \               <combination-set sequence=\"5\">\n                       \
+        \ <group-number>5</group-number>\n                        <combination-rank>\n\
+        \                            <rank-number>1</rank-number>\n              \
+        \              <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/715</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                        <combination-rank>\n \
+        \                           <rank-number>2</rank-number>\n               \
+        \             <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/715%2</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                    </combination-set>\n     \
+        \               <combination-set sequence=\"6\">\n                       \
+        \ <group-number>6</group-number>\n                        <combination-rank>\n\
+        \                            <rank-number>1</rank-number>\n              \
+        \              <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/715</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                        <combination-rank>\n \
+        \                           <rank-number>2</rank-number>\n               \
+        \             <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/715%2</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                    </combination-set>\n     \
+        \               <combination-set sequence=\"7\">\n                       \
+        \ <group-number>7</group-number>\n                        <combination-rank>\n\
+        \                            <rank-number>1</rank-number>\n              \
+        \              <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/715</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                        <combination-rank>\n \
+        \                           <rank-number>2</rank-number>\n               \
+        \             <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K2300/00</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                    </combination-set>\n     \
+        \               <combination-set sequence=\"8\">\n                       \
+        \ <group-number>8</group-number>\n                        <combination-rank>\n\
+        \                            <rank-number>1</rank-number>\n              \
+        \              <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K31/785</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                        <combination-rank>\n \
+        \                           <rank-number>2</rank-number>\n               \
+        \             <patent-classification>\n                                <classification-scheme\
+        \ office=\"\" scheme=\"CPC\"/>\n                                <classification-symbol>A61K2300/00</classification-symbol>\n\
+        \                                <classification-value>I</classification-value>\n\
+        \                            </patent-classification>\n                  \
+        \      </combination-rank>\n                    </combination-set>\n     \
+        \           </patent-classifications>\n                <application-reference\
+        \ doc-id=\"4488045\">\n                    <document-id document-id-type=\"\
+        docdb\">\n                        <country>CA</country>\n                \
+        \        <doc-number>2142016</doc-number>\n                        <kind>A</kind>\n\
+        \                    </document-id>\n                    <document-id document-id-type=\"\
+        epodoc\">\n                        <doc-number>CA19932142016</doc-number>\n\
+        \                        <date>19930802</date>\n                    </document-id>\n\
+        \                    <document-id document-id-type=\"original\">\n       \
+        \                 <doc-number>002142016</doc-number>\n                   \
+        \ </document-id>\n                </application-reference>\n             \
+        \   <priority-claims>\n                    <priority-claim sequence=\"1\"\
+        \ kind=\"national\">\n                        <document-id document-id-type=\"\
+        epodoc\">\n                            <doc-number>US19920928509</doc-number>\n\
+        \                            <date>19920811</date>\n                     \
+        \   </document-id>\n                        <document-id document-id-type=\"\
+        original\">\n                            <doc-number>928,509</doc-number>\n\
+        \                        </document-id>\n                        <document-id\
+        \ document-id-type=\"original\">\n                            <doc-number>PCT/US93/07242</doc-number>\n\
+        \                        </document-id>\n                    </priority-claim>\n\
+        \                </priority-claims>\n                <parties>\n         \
+        \           <applicants>\n                        <applicant sequence=\"1\"\
+        \ data-format=\"epodoc\">\n                            <applicant-name>\n\
+        \                                <name>DAY CHARLES E\u2002[US]</name>\n  \
+        \                          </applicant-name>\n                        </applicant>\n\
+        \                    </applicants>\n                    <inventors>\n    \
+        \                    <inventor sequence=\"1\" data-format=\"epodoc\">\n  \
+        \                          <inventor-name>\n                             \
+        \   <name>DAY CHARLES E\u2002[US]</name>\n                            </inventor-name>\n\
+        \                        </inventor>\n                    </inventors>\n \
+        \               </parties>\n                <invention-title lang=\"fr\">METHODE\
+        \ DE TRAITEMENT ET DE PREVENTION DU COLON IRRITABLE ET COMPOSITIONS PHARMACEUTIQUES\
+        \ UTILISEES A CETTE FIN</invention-title>\n                <invention-title\
+        \ lang=\"en\">METHOD FOR TREATMENT AND PREVENTION OF IRRITABLE BOWEL SYNDROME\
+        \ AND PHARMACEUTICAL COMPOSITIONS THEREFOR</invention-title>\n           \
+        \ </bibliographic-data>\n            <abstract lang=\"en\">\n            \
+        \    <p>2142016 9404136 PCTABS00030 A method of treating or preventing irritable\
+        \ bowel syndrome, including diarrhea, constipation, and pain aspects thereof,\
+        \ in a human patient, consisting essentially of the step of orally administering\
+        \ to the said human patient an amount of an anion-binding polymer and a hydrophilic\
+        \ polymer, either simultaneously, concurrently, or in the form of a pharmaceutical\
+        \ composition consisting essentially of the anion-binding polymer and the\
+        \ hydrophilic polymer, or consisting essentially of a polymer which is both\
+        \ an anion-binding polymer and a hydrophilic polymer, which is effective for\
+        \ prevention or alleviation of the irritable bowel syndrome, is disclosed,\
+        \ as well as orally-ingestible pharmaceutical compositions which are useful\
+        \ in the method.</p>\n            </abstract>\n        </exchange-document>\n\
+        \    </exchange-documents>\n</ops:world-patent-data>"
+    headers:
+      access-control-allow-headers:
+      - Authorization
+      access-control-allow-methods:
+      - POST
+      access-control-allow-origin:
+      - '*'
+      connection:
+      - keep-alive
+      content-length:
+      - '15350'
+      content-type:
+      - application/xml;charset=utf-8
+      date:
+      - Mon, 17 Jun 2019 23:23:16 GMT
+      server:
+      - Apache
+      vary:
+      - Accept
+      x-api:
+      - ops-v3.2
+      x-elapsed-time:
+      - '15'
+      x-epo-client-ip:
+      - 54.214.196.186
+      x-epo-forwarded:
+      - '[54.214.196.186]'
+      x-individualquotaperhour-used:
+      - '11014426'
+      x-registeredquotaperweek-used:
+      - '11955857'
+      x-throttling-control:
+      - idle (images=green:200, inpadoc=green:60, other=green:1000, retrieval=green:200,
+        search=green:30)
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,38 @@
+{% extends "collapse_section.html" %}
+{% load navtools %}
+{% load browse_tags %}
+{% block section_label %}Rejected Datasets{% endblock %}
+{% block section_body %}
+	<table class="table">
+		<tr>
+		<td>+ select</td>
+		{% for header_html in rejection_table.headers %}
+			{{ header_html }}
+		{% endfor %}
+		</tr>
+		{% for row in rejection_table.rows %}
+		<tr>
+			<td>
+				<form method="post">
+					{% csrf_token %}
+					<input type="hidden"
+							name='key'
+							value="{{ row.source_row.make_key }}"
+							/>
+					<span style="white-space:nowrap">
+						<button type="submit" name="select_btn"
+							class="btn btn-info"
+							>
+							+
+						</button>
+						{% include "browse/_gwas_note_icons.html" with gwds=row.source_row %}
+					</span>
+				</form>
+			</td>
+			{% for cell_html in row %}
+				{{ cell_html }}
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

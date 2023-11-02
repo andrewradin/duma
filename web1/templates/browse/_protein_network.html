@@ -1,0 +1,11 @@
+<div style="box-shadow:2px 2px 8px 1px rgba(100, 100, 100, 0.3);">
+    <div id="cy" style="width:100%; height:900px;"> </div>
+</div>
+<script src="/static/js/protein_network.js"></script>
+<script>
+    setupNetwork({
+        wsId: {{ws.id}},
+        ktProts: {{kt_prots}},
+    });
+    addToNetwork({{network_prots}}, 0);
+</script>

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Patent Search
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+    {% if past_searches %}
+        <h3>Past searches</h3>
+        {% for search in past_searches %}
+            <a href="{% url "pats_summary" view.ws.id search.id %}">
+                [{{search.job.status_text}}]
+                {{ search.user }}@{{ search.created }}
+                ({{ search.drug_disease_patent_searchs | length }} drugs,
+                {{ search.num_unresolved }}/{{search.num_patents}} unresolved patents)
+            </a>
+            {% if search.query %}
+            <b>[ </b><a id='load-settings-btn' searchId='{{ search.id }}'>Load Settings</a><b> ]</b>
+            {% endif %}
+            <br>
+        {% endfor %}
+    {% endif %}
+{% endblock header_right %}
+{% block body %}
+    <div id='search-form'>
+        {% csrf_token %}
+        <div class='disease-name'>
+            <h4>Disease Names</h4>
+            <div id='disease-names'></div>
+            <br/>
+            <a id='reload-dis-names' href='#'>Reload Disease Names</a>
+        </div>
+        <div id='drug-names'>
+        </div>
+        <br/>
+        <button id='search-btn'>Search</button>
+        <hr/>
+        <div id='table-selection'>
+            BigQuery table to use: <select>
+                {% for option in table_choices %}
+                <option value="{{option.0}}"> {{ option.1.0 }} </option>
+                {% endfor %}
+            </select>
+        </div>
+
+    </div>
+
+    <link href="/static/js/pat_search.css" rel="stylesheet" type="text/css">
+    <script src='/static/js/pat_search.js'></script>
+    <script>
+        const searchQueries = {};
+        {% for search in past_searches %}
+            {% if search.query %}
+                searchQueries[{{ search.id }}] = {{ search.query | safe }};
+            {% endif %}
+        {% endfor %}
+        const patentSearch = new PatentSearch(
+            {{view.ws.id}},
+            $('#search-form')[0],
+            {{ view.default_search_json | safe }},
+            searchQueries
+        );
+    </script>
+{% endblock body %}

@@ -1,0 +1,15 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}More Protein Links{% endblock %}
+{% block section_body %}
+    {% with title="Other Databases" links=other_db_links %}
+        {% include 'browse/_prot_links_box.html' %}
+    {% endwith %}
+    {% with title="Pathway/Disease Associations" links=assoc_links %}
+        {% include 'browse/_prot_links_box.html' %}
+    {% endwith %}
+
+    {% with title="Search Links" links=srch_links %}
+        {% include 'browse/_prot_links_box.html' %}
+    {% endwith %}
+{% endblock %}

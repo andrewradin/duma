@@ -1,0 +1,92 @@
+
+
+
+.search-row {
+    cursor: pointer;
+}
+
+.btn {
+    border: 1px solid #555;
+}
+
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loader {
+    display: inline-block;
+    border: 3px solid #ddd;
+    border-top: 3px solid #4ad;
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+    width: 14px;
+    height: 14px;
+}
+
+
+.resolve-view {
+    padding: 2rem;
+    box-shadow: 0px 2px 5px 0px rgba(100,150,200,0.5);
+}
+
+.resolve-view h4 {
+    margin-top: 2rem;
+    border-bottom: 1px solid black;
+}
+
+.patent-content {
+    border: 1px solid #eee;
+    background-color: #fdfdfd;
+    padding: 1rem;
+    white-space: pre-wrap;
+}
+
+.selected-row {
+    outline: 1px solid #7af;
+}
+
+.evidence {
+    padding: 0.5rem;
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+    border-radius: 3px;
+    display: block;
+    box-shadow: 0px 2px 4px 0px rgba(0,50,100,0.1);
+    background-color: #fdfdfd;
+    border: 1px solid #eee;
+
+}
+
+
+.status-irrelevant {
+}
+
+.status-Relevant {
+    outline: 1px solid red;
+    background-color: #fdd;
+    color: #007;
+}
+
+.status-review {
+    outline: 1px solid blue;
+    background-color: #def;
+    color: #007;
+}
+
+.status-Unresolved {
+    background-color: #fbf0f8;
+}
+
+
+.query-terms div {
+    display: inline-block;
+    border: 1px solid #aaa;
+    background-color: #fafaff;
+    margin: 0.25rem;
+    padding: 0.25rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    border-radius: 4px;
+}

@@ -1,0 +1,36 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}
+Significant Protein counts by tissue and threshold
+{% endblock %}
+{% block section_body %}
+<table class='table'>
+	<tr>
+		<th>Tissue ( max / avg / min )</th>
+		{% for item in heading %}
+			<th>{{ item }}</th>
+		{% endfor %}
+	</tr>
+	{% for row in rows %}
+		<tr>
+			<td>
+				{{ row.0.name }}
+				{% if row.2.2 %}
+					( {{ row.2.0|sci_fmt }}
+					/ {{ row.2.1|sci_fmt }}
+					/ {{ row.2.2|sci_fmt }}
+					)
+				{% endif %}
+					<a href="{% url 'ge:sigprot' ws.id row.0.id %}">
+						{% glyph_icon "stats" %}
+					</a>
+			</td>
+			{% for val in row.1 %}
+			<td>
+				{{ val }}
+			</td>
+			{% endfor %}
+		</tr>
+	{% endfor %}
+</table>
+{% endblock %}

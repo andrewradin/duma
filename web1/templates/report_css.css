@@ -1,0 +1,32 @@
+    /* These match the report, making copy+paste easier. */
+    body {
+        font-family: Arial;
+        font-size: 12pt;
+        /* 8.5in - 2in (margins) = 6.5in */
+        width: 6.5in;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* This makes the tables copy+paste like MSWord tables. */
+    table {
+        border-collapse:collapse;
+        border:1px solid black;
+        mso-border-alt:solid windowtext .5pt;
+        width: 100%;
+    }
+
+    th, td {
+        padding-left: 0.08in;
+    }
+
+    th {
+        font-weight: normal;
+        text-align: left;
+    }
+    ul {
+        font-size: 12pt;
+    }
+    li::marker {
+        font-size: 12pt;
+    }

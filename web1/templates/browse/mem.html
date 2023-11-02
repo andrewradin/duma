@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+	Memory Usage
+{% endblock headline %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+    {% include "_table.html" with table=table %}
+{% endblock body %}

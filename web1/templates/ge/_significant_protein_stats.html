@@ -1,0 +1,41 @@
+{% extends "collapse_section.html" %}
+{% block section_label %}
+Significant Proteins by Tissue Count
+{% endblock %}
+{% block section_body %}
+{% load navtools %}
+{% if peo.selected <= 1.0 %}
+	evidence level {{ peo.selected }}
+{% else %}
+	Dataset-specific thresholds
+{% endif %}
+
+&nbsp;&nbsp;&nbsp;
+<a href="{% url 'ge:kt_tiss' ws.id ts.id %}?thresh={{ peo.selected }}">Compare with KTs</a>
+&nbsp;&nbsp;&nbsp;
+<a href="{% url 'ge:kt_tiss' ws.id ts.id %}?thresh={{ peo.selected }}&all_drugs=1">Compare with All Drugs</a>
+<br>(see {% option_links peo show=section_name %})
+<table class='table'>
+	<tr>
+		<th>Tissues expressing</th>
+		<th>Proteins</th>
+	</tr>
+	{% for level in peo.level_list %}
+        <tr>
+            <td>
+                {{ level.0 }}
+            </td>
+            <td>
+            {{ level.1|length }}:
+            {% if level.1|length >= 200 %}
+                proteins not displayed
+            {% else %}
+                {% for prot_id in level.1 %}
+                    {% include 'browse/prot_link.html' %}
+                {% endfor %}
+            {% endif %}
+            </td>
+        </tr>
+	{% endfor %}
+</table>
+{% endblock %}

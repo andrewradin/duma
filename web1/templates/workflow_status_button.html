@@ -1,0 +1,12 @@
+<div class='btn-group'>
+    {% csrf_token %}
+    <button id='workflow-status-{{ id }}' class='btn btn-xs dropdown-toggle {{ button_classes }}' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+        <span class='caret'></span> <span id='status'>{{ status_text }}</span>
+</button>
+<ul class='dropdown-menu'>
+    <li><a name='workflow-btn-complete' style='cursor:pointer' onclick='markWorkflowStatus({{ws.id}}, "verified","{{id}}")'>Verified</a></li>
+    <li><a name='workflow-btn-complete' style='cursor:pointer' onclick='markWorkflowStatus({{ws.id}}, "complete","{{id}}")'>Complete</a></li>
+    <li><a name='workflow-btn-active' style='cursor:pointer' onclick='markWorkflowStatus({{ws.id}}, "active","{{id}}")'>Active</a></li>
+    <li><a name='workflow-btn-none' style='cursor:pointer' onclick='markWorkflowStatus({{ws.id}}, "none","{{id}}")'>None</a></li>
+</ul>
+</div>

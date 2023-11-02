@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+{% endblock headline %}
+{% block javascript %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+<style>
+input[type="number"].dt-filter {
+    width: 100%;
+    min-width: 5rem;
+}
+</style>
+	<h2>FAERS Data</h2>
+	<form method='post'>
+		{% csrf_token %}
+		<table>
+		</table>
+    </form>
+    <hr>
+    <table id='run_table' class='table'>
+    </table>
+    <script>
+        const columns = {{ table_cols | safe_json }};
+        const table = $('#run_table').DataTable({
+            data: {{ table_data | safe_json }},
+            columns: columns,
+        });
+        let filters = {
+            0: 'text',
+            1: 'select',
+            2: 'select',
+            3: 'range',
+            4: 'range',
+        };
+        // Everything from here to the end will always be numbers.
+        for (let i = 5; i < columns.length; ++i) {
+            filters[i] = 'range';
+        }
+        addDataTableFilters(table, filters);
+    </script>
+    {% if strata_cols %}
+    <table id='strata_table' class='table'>
+    </table>
+    <script>
+        const s_table = $('#strata_table').DataTable({
+            data: {{ strata_data | safe_json }},
+            columns: {{ strata_cols | safe_json }},
+        });
+    </script>
+
+    {% endif %}
+{% endblock body %}
+

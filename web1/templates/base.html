@@ -1,0 +1,207 @@
+{% load browse_tags %}
+<!DOCTYPE html>
+<html>
+    <head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name='referrer' content='same-origin'>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>
+        Duma
+		{% if page_tab %}
+			{{ page_tab }}
+		{% elif function_root %}
+			{% infer_title %}
+		{% endif %}
+		</title>
+		{% block style %}
+			<link rel="shortcut icon" href="/static/favicon.ico" />
+			<script src="/static/lib/jquery.min.js"></script>
+			<script src="/static/js/common.js"></script>
+			<script src="/publish/js/main.js"></script>
+			<link rel="stylesheet" href="/static/lib/bootstrap.min.css">
+			<style>
+			body { padding-top: 50px; }
+			.section-btn { text-align: left; width: 100% ; margin: 5px 0px 5px 0px}
+			.scrollable-menu {
+				height: auto;
+				max-height: 80vh;
+				overflow-x: hidden;
+			}
+			.dropdown-submenu {
+			    position: relative;
+			}
+			.dropdown-submenu .dropdown-menu {
+			    top: 0;
+			    left: 100%;
+			    margin-top: -1px;
+			}
+			.dropdown-submenu-left .dropdown-menu {
+			    right: 100% !important;
+				left: auto !important;
+			}
+			.helptext {
+				font-size: 95%;
+				color: #777;
+				font-style: italic;
+			}
+            {% comment %}
+            below fixes tooltips inside white-space:nowrap spans
+            {% endcomment %}
+            .tooltip-inner {
+                white-space: normal;
+            }
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            @keyframes fadein {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            .loader {
+                display: inline-block;
+                border: 3px solid #ddd;
+                border-top: 3px solid #4ad;
+                border-radius: 50%;
+                animation: spin 0.75s ease-in-out infinite, fadein 1s ease-in;
+                width: 25px;
+                height: 25px;
+            }
+			</style>
+			<script src="/static/lib/bootstrap.min.js"></script>
+		{% endblock style %}
+			<script>
+				function bulk_update_checks(v,prefix,attr='name') {
+					var elements = document.getElementsByTagName("input");
+					for(var i = 0; i < elements.length; i++){
+						name = elements[i].getAttribute(attr)
+						if (name.lastIndexOf(prefix) == 0) {
+							elements[i].checked = v;
+							}
+						}
+					}
+			</script>
+		{% block javascript %}
+		{% endblock javascript %}
+		{% if refresh %}
+			<meta http-equiv="refresh" content="{{ refresh }}" />
+		{% endif %}
+		{% block extrahead %}
+		{% endblock extrahead %}
+    </head>
+    <body>
+		<nav class="navbar
+                {% if ws %}
+                navbar-inverse
+                {% else %}
+                navbar-default
+                {% endif %}
+                navbar-fixed-top" role="navigation">
+		  <div class="container-fluid">
+			<div class="navbar-header">
+			  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  </button>
+			  <img class="navbar-brand" src="/static/favicon.ico"/>
+			  <span class="navbar-brand">
+              <a href="{% url 'index' %}">
+			  Duma
+              </a>
+			  </span>
+			</div>
+		    <div id="navbar" class="collapse navbar-collapse">
+			  <ul class="nav navbar-nav">
+				{% if ws %}
+                    {% duma_menu 'ws_main' %}
+				{% else %}
+                    {% duma_menu 'main' %}
+				{% endif %}
+			  </ul>
+			  <ul class="nav navbar-nav navbar-right">
+	{% if ws %}
+	<li>
+	<p>
+    <form  class="form-inline" action="/drugs/search/" method="get">
+        <span style='width:300px; display: inline-block' id='ws_search'>
+        </span>
+        <input type='hidden' name='ws_id' value='{{ ws.id }}'>
+		<button type="submit" class="btn btn-default">Search</button>
+    </form>
+    <script>
+        const onSelected = (drug) => {
+            const url = `/mol/{{ ws.id }}/annotate/${drug.wsa_id}/`;
+            window.open(url, '_blank');
+        };
+
+        drawMolSearch($('#ws_search')[0], {{ws.id}}, onSelected, "pattern");
+    </script>
+	</li>
+	{% endif %}
+				{% duma_menu 'other' %}
+			  </ul>
+			</div>
+		  </div>
+		</nav>
+        <div class="container-fluid">
+			{% if messages %}
+			  {% for message in messages %}
+			    <div class="alert alert-danger alert-dismissible">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					{{ message }}
+				</div>
+			  {% endfor %}
+			{% endif %}
+			<div class="row">
+				<div class="col-xs-6">
+					<h3>
+					{{ ws.name }}
+					</h3>
+					<h1>
+						{% block headline %}
+						{% endblock headline %}
+					</h1>
+					{% block header_left %}
+					{% endblock header_left %}
+				</div>
+				<div class="col-xs-6">
+					<div class="text-right">
+						{{ user }}
+						@ {{ now|date:"b d H:i:s"|capfirst }}
+						{% if refresh %}
+							{% glyph_icon 'refresh' %} {{ refresh }}
+						{% endif %}
+                        <br>
+                        {{ ph.get_config.version }}
+					</div>
+					{% block header_right %}
+					{% endblock header_right %}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					{% block body %}
+					{% endblock body %}
+				</div>
+			</div>
+			<span id='page_end_marker'> </span>
+        </div>
+	<script>
+	$(document).ready(function(){
+	  $('.dropdown-submenu a.submenuopen').on("click", function(e){
+		  $(this).parent().siblings().children().next('ul').hide();
+		  $(this).next('ul').show();
+		  e.stopPropagation();
+		  e.preventDefault();
+		});
+        // Initialize all popovers.
+        $('[data-toggle="popover"]').popover()
+	});
+	</script>
+
+    </body>
+</html>

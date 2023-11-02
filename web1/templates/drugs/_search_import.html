@@ -1,0 +1,21 @@
+<script>
+$(document).ready(() => {
+    $('button[name="agent_import"]').on('click', function() {
+        const btn = this;
+        const agent = btn.getAttribute('agent');
+        const csrf = document.getElementsByName("csrfmiddlewaretoken")[0].value
+        const formData = new FormData()
+        formData.append('csrfmiddlewaretoken', csrf)
+        formData.append('agent_id', agent)
+        formData.append('ws_id', {{view.ws.id}})
+        const opts = {
+            method: "POST",
+            body: formData,
+        };
+        fetch('/drugs/import_molecule/', opts).then((resp) => {
+            console.info("Fetch succeeded, reloading");
+            window.location.reload();
+        });
+    });
+});
+</script>

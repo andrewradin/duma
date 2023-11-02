@@ -1,0 +1,24 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Proteins{% endblock %}
+{% block section_body %}
+	{% if view.last_prot_fn %}
+		<b>Current protein data from:</b> {{ view.last_prot_fn }}
+	{% else %}
+		<b>Current protein data is old or invalid</b>
+	{% endif %}<br>
+    <form method="post">
+        {% csrf_token %}
+		{{ prot_form }}
+        <button type="submit" name='prot_refresh_btn'>
+            Update Proteins
+        </button>
+		{% comment %}
+        This also drops all pathways; re-import below.
+		<hr>
+        <b>{{ path_form.gmt.label }}</b>
+        {{ path_form.gmt }}<b>{{ path_form.gmt.errors }}</b>
+        <input type="submit" name='path_import_btn' value="Import"/>
+		{% endcomment %}
+    </form>
+{% endblock %}

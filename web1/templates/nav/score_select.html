@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load process %}
+
+{% block headline %}
+    {{ source_table.page_label }} Source Selection
+{% endblock headline %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+    {{ run_new_html }}
+    <form action="" method="post">
+    {% csrf_token %}
+	{% include '_pager.html' with pager=source_table.pager %}
+	{% include '_table.html' with table=source_table.get_table %}
+    </form>
+{% include "_tooltip_activator.html" %}
+{% endblock body %}

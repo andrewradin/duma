@@ -1,0 +1,7 @@
+{% extends "collapse_section.html" %}
+{% block section_label %}Pathways{% endblock %}
+{% block section_body %}
+	{% for pathway in pathways %}
+		&nbsp;&nbsp;{{ pathway }}<br>
+	{% endfor %}
+{% endblock %}

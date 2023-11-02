@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Cross-WS Score Plots
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+    <div style='display: inline-block'>
+    <form method="post">
+        <table>
+        {% csrf_token %}
+        {{ calc_form.as_table }}
+        </table>
+        <input type="submit" name='calc_btn' value="Show Score"/>
+    </form>
+    </div>
+    <div style='display: inline-block'>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+        {{ wzscalc_form.as_table }}
+        </table>
+        <input type="submit" name='wzscalc_btn' value="Show Score Vs Wzs"/>
+    </form>
+    </div>
+{% endblock header_left %}
+{% block body %}
+    {% if plots %}
+        {% for plot in plots %}
+            {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+        {% endfor %}
+        {% include "_plotly_clear.html" %}
+	{% endif %}
+{% endblock body %}

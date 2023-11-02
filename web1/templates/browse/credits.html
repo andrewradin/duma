@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Credits
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+    <h3>Duma gratefully acknowledges use of the following databases:</h3>
+    {% for credit in db_credits %}
+        {% if credit.author %}
+            {{ credit.author }}:
+        {% endif %}
+        <b><cite>{{ credit.title }}</cite>.</b>
+        {{ credit.ref }}
+        {% if credit.link %}
+            <a href="{{ credit.link }}" target="_blank">
+			{% glyph_icon 'new-window' %}
+            </a>
+        {% endif %}
+        <hr>
+    {% endfor %}
+{% endblock body %}

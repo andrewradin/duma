@@ -1,0 +1,18 @@
+{% extends "collapse_section.html" %}
+{% block section_label %}Global Data Search{% endblock %}
+{% block section_body %}
+<i>Paste in the Drug and Target columns from the Global Data spreadsheet.</i><br/>
+    <textarea id='globaldata-prot-search-input' cols=30 rows=5>
+    </textarea><br/>
+    <button id='globaldata-prot-search-btn' class='btn btn-default btn-sm'>Search</button>
+    <div id='globaldata-prot-search-results'>
+    </div>
+    <script>
+        setupGlobalDataProtSearch(
+            $('#globaldata-prot-search-input')[0],
+            $('#globaldata-prot-search-btn')[0],
+            $('#globaldata-prot-search-results')[0],
+            $('#id_proteins')[0],
+            {{ ws.id }});
+    </script>
+{% endblock %}

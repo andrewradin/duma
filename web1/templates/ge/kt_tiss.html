@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    {{ page_label }}
+{% endblock headline %}
+{% block body %}
+	<a href="{{ graph_link }}">graphs</a>
+    <table class="table">
+		<tr>
+			{% for cell in heading %}
+			<th>
+				{{ cell }}
+			</th>
+			{% endfor %}
+		</tr>
+		{% for row in display %}
+		<tr>
+			<th>
+				{{ row.0 }}
+			</th>
+			{% for cell in row.1 %}
+			<td>
+				{% if cell|length < 6 %}
+					{% for prot in cell %}
+						{% include 'browse/prot_link.html' with prot_id=prot %}
+					{% endfor %}
+				{% else %}
+					{{ cell|length }}
+				{% endif %}
+			</td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+{% endblock body %}

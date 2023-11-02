@@ -1,0 +1,14 @@
+{% extends "collapse_section.html" %}
+{% block section_label %} {{ x.1 }} {% endblock %}
+{% block section_body %}
+{{ x.2 }}
+    {% for y in x.3 %}
+    <div class="well">{{ y.1 }}</div>
+    <iframe
+        src={{ y.0.src }}
+        width={{ y.0.width }}
+        height={{ y.0.height }}
+        >
+    </iframe>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,14 @@
+<td> {{ txt|urlizetrunc:10|linebreaks }} </td>
+<td>
+	<button
+		type="button"
+		class="btn"
+		data-toggle="popover"
+		title="Copy raw text below"
+		data-placement="left"
+		data-content="{{ txt }}"
+	>
+	show raw text
+	</button>
+	<a href="/note/{{ note_id }}">Note History</a>
+</td>

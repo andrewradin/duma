@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load navtools %}
+{% load browse_tags %}
+
+{% block headline %}
+    {{ headline }}
+{% endblock headline %}
+{% block body %}
+	<h3>ADR Links</h3>
+    <ul style="list-style-type:none">
+    {% for link in links %}
+        <li>{{ link }}</li>
+    {% endfor %}
+    </ul>
+	<h3>ADR Key Features</h3>
+	<table>
+		<tr>
+			<th>Model portion</th>
+			<th>&nbsp;&nbsp;&nbsp;</th>
+			<th>Feature</th>
+		</tr>
+		{% for stat in stats_tab %}
+			<tr>
+				<td>{{ stat.1 }}</td>
+				<td></td>
+				<td>{{ stat.0 }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock body %}

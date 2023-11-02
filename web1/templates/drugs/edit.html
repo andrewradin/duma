@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Add/Edit Drug
+{% endblock headline %}
+{% block header_left %}
+{% if ref_drug %}
+<h2>Editing <a href='{{ ref_drug.any_wsa_url }}'>{{ ref_drug.canonical }}</a></h2>
+{% endif %}
+{% endblock header_left %}
+{% block header_right %}
+<div class='well' style='float:right'>
+Supporting materials not available online can be uploaded to box and linked here. <br/>
+<a href='https://twoxar.app.box.com/folder/90056063354'>Box Folder</a>
+</div>
+{% endblock header_right %}
+{% block body %}
+<form>
+{% csrf_token %}
+<div class='panel panel-info'>
+    <div style='cursor:pointer' class='panel-heading' data-toggle='collapse' href='#attr-el'><h4>Attributes</h4></div>
+    <div id='attr-el' class='panel-collapse collapse in'></div>
+
+</div>
+
+<div id='dpi-panel' class='panel panel-info'>
+    <div style='cursor:pointer' class='panel-heading' data-toggle='collapse' href='#dpi-el'><h4>DPI {{ conversion_info_help }}</h4></div>
+    <div id='dpi-el' class='panel-collapse collapse in'></div>
+</div>
+
+<div class='panel panel-default'>
+    <div style='cursor:pointer;' class='panel-heading' data-toggle='collapse' href='#search-el'><h4>Protein Search</h4></div>
+    <div id='search-el' style='position:relative;' class='panel-collapse collapse'>
+        <div class='form-inline form-group-sm'>
+        <input id='prot-search-input' placeholder='e.g. DRD2 or P005'  class='form-control'/>
+        <button type='button' id='prot-search-btn' class='btn btn-default btn-sm'>Search</button>
+        </div>
+        <div id='prot-search-results'></div>
+    </div>
+</div>
+<script src='/static/js/prot_search.js'></script>
+<script>
+    setupProtSearch(
+        $('#prot-search-input')[0],
+        $('#prot-search-btn')[0],
+        $('#prot-search-results')[0],
+        $('#id_proteins')[0],
+        42, // QA Workspace
+        { skipAddButton: true, skipSelect: true, addCopyButton: true },
+    );
+</script>
+<link rel='stylesheet' type='text/css' href='/static/js/drug_edit.css'>
+
+
+<div id='note-panel' class='panel panel-info'>
+    <div class='panel-heading'><h4>Note</h4></div>
+    <div id='note-el' class='panel-content'>
+        <textarea id='note' style='width:100%' rows=5>{{note}}</textarea>
+    </div>
+</div>
+
+<button type='button' id='propose' class='btn btn-primary'>Propose Changes</button>
+
+<script src='/static/js/drug_edit.js'></script>
+<script>
+    setupEditPage(
+        $('#attr-el')[0],
+        {{ attr_json | safe }},
+        $('#dpi-panel #dpi-el')[0],
+        {{ dpi_json | safe }},
+        {{ ref_drug_id }},
+        {{ ref_proposal_id }},
+        {{ best_duma_key  | safe }},
+    );
+</script>
+
+</form>
+{% endblock body %}

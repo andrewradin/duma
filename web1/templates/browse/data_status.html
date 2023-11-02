@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% load navtools %}
+{% load browse_tags %}
+
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% endblock javascript %}
+
+{% block headline %}
+Status Table
+{% endblock headline %}
+{% block header_left %}
+Update Status: {% workflow_status_button 'DataStatusPage' %}
+{% endblock header_left %}
+{% block header_right %}
+        {% include "_plotly_div.html" with div_id=gauge.0 src=gauge.1 %}
+{% endblock header_right %}
+{% block body %}
+        <table class='table'>
+            {% for val in sample_sorter %}
+                <tr
+					{% if val.2 %}
+						class="info"
+					{% endif %}
+				>
+                <td>
+                    {{val.0}}
+                </td>
+                <td>
+                    {{val.1}}
+                </td>
+                </tr>
+            {% endfor %}
+        </table>
+{% endblock body %}
+

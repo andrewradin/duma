@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block headline %}
+    {{ page_label }}
+{% endblock headline %}
+{% block header_left %}
+	Plotly test
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+{% include "_plotly_div.html" with div_id="testdiv" src=plotclass %}
+{% endblock body %}

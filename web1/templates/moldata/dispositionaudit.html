@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+<a href='{{ wsa.drug_url }}'>{% drugname wsa %}</a>
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+
+{% block body %}
+	{% for da in das %}
+		{% if da.ignore %}
+			<div class='panel panel-warning'>
+		{% else %}
+			<div class='panel panel-primary'>
+		{% endif %}
+			<div class='panel-heading'> {{ da.indication_label }} </div>
+			<div class='panel-body'>
+				{{ da.timestamp }}, {{ da.user }} <br/>
+				{{ da.reason }}
+				{% if da.ignore %}
+				<br/>
+				IGNORED
+				{% endif %}
+			</div>
+			<div class='panel-footer'>
+				<form method='POST'>
+					{% csrf_token %}
+					<input type='hidden' name='da_id' value="{{ da.id }}">
+				{% if da.ignore %}
+					<button name='unignore_btn'>Unignore</button>
+				{% else %}
+					<button name='ignore_btn'>Ignore</button>
+				{% endif %}
+				</form>
+				
+			</div>
+		</div>
+	{% endfor %}
+{% endblock body %}

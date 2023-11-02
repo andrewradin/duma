@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+{% block headline %}
+    Drugset View
+{% endblock headline %}
+{% block header_left %}
+    <form method="post">
+        {% csrf_token %}
+        {{ select_form.as_p }}
+        <input type="submit" name='select_btn' value="Display"/>
+    </form>
+{% endblock header_left %}
+{% block header_right %}
+Update Status: {% workflow_status_button 'TestTrainSplit' %}
+{% endblock header_right %}
+{% block body %}
+<style>
+    td { white-space: nowrap; }
+</style>
+<form method='POST'>
+    {% csrf_token %}
+    {% for title, table in tables %}
+    <h2>{{title}}</h2>
+        {% include "_table.html" %}
+    {% endfor %}
+    {% if has_content %}
+		<table style='border-spacing:30px'>
+			<tr>
+				<th style='padding-right:10px'></th>
+				<th style='padding-right:10px'>Drug Count</th>
+				<th style='padding-right:10px'>Gene Count</th>
+			</tr>
+			{% for row in split_sizing %}
+				<tr>
+					<td style='padding-right:10px'><b>{{ row.0 }}</b></td>
+					<td style='padding-right:10px'>{{ row.1 }}</td>
+					<td style='padding-right:10px'>{{ row.2 }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+        <b>Test/Train Gene Overlap:</b> {{ test_train_overlap|join:", " }}<br/>
+        <hr/>
+        Switch selected drugs between test/train sets: <button name='change_test_train_btn'>Switch</button><br/>
+        Rerun autosplit: <button name='autosplit_btn'>AutoSplit</button><br/>
+        Base on:
+        <form method="post">
+            {% csrf_token %}
+            {{ base_form }}
+            <input type="submit" name='base_btn' value="Rebuild from model"/>
+        </form>
+    {% endif %}
+{% endblock body %}

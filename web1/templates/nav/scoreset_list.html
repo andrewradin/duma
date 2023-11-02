@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Score Sets
+{% endblock headline %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+    <table class='table'>
+    <tr>
+		<th>Name</th>
+		<th>ID</th>
+		<th>Created</th>
+		<th>By</th>
+		<th>Job Count</th>
+		<th>Enabled Scores</th>
+		<th></th>
+    </tr>
+    {% for row in scoresets %}
+        <tr>
+		<td>
+			{{ row.desc }}
+			<a href="{% url 'nav_scoreset_edit' ws.id row.id %}">
+				{% glyph_icon 'pencil' %}
+			</a>
+		</td>
+		<td>{{ row.id }}</td>
+		<td>{{ row.created }}</td>
+		<td>{{ row.user }}</td>
+		<td>
+            <a href="{% url 'nav_scoreset' ws.id row.id %}">
+				{{ row.scoresetjob_set.count }}
+            </a>
+		</td>
+		<td>{{ row.enable_count }}</td>
+		<td>
+			<form method="post">
+			{% csrf_token %}
+			<input type='submit' name='load_btn' value='Load Sources'/>
+			<input type='hidden' name='scoreset_id' value='{{ row.id }}'/>
+			</form>
+		</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+{% endblock body %}

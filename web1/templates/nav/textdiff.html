@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    Text Difference
+{% endblock headline %}
+{% block body %}
+    <form method="post">
+    {% csrf_token %}
+    <table class="table">
+        <tr>
+            <th style="background-color:pink">Text 1</th>
+            <td><input
+                    type="text"
+                    name="txt1"
+                    value="{{ txt1 }}"
+                    style="width:100%"
+            /></td>
+        </tr>
+        <tr>
+            <th>Diff</th>
+            <td>
+            {% for d in diff %}
+                {{ d.0 }}
+                <span style="background-color:pink">{{ d.1 }}</span>
+                <span style="background-color:palegreen">{{ d.2 }}</span>
+            {% endfor %}
+            </td>
+        <tr>
+            <th style="background-color:palegreen">Text 2</th>
+            <td><input
+                    type="text"
+                    name="txt2"
+                    value="{{ txt2 }}"
+                    style="width:100%"
+            /></td>
+        </tr>
+    </table>
+    <b>Minimum match characters:</b>
+    <input type="text" name="minmatch" value="{{ minmatch }}"/><br>
+    <input type='submit' value='Redisplay'/>
+    </form>
+{% endblock body %}

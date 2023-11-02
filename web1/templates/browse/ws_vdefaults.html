@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+{% block headline %}
+    {{ view.label }} Version Defaults
+{% endblock headline %}
+{% block header_left %}
+{% if view.label == 'Workspace' %}
+<div class='well'>
+    <a style='cursor:pointer' id='load_defaults' >Select Platform Defaults</a>
+</div>
+{% endif %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+<style>
+.def-warn {
+    margin-left: 1rem;
+    font-size: 80%;
+    color: red;
+    font-weight: bold;
+    background-color: #ddd;
+    padding: 0.3rem;
+    border-radius: 5px;
+}
+.helptext {
+    font-size: 95%;
+    color: #777;
+    font-style: italic;
+}
+.newer-ver {
+    color: purple;
+    display: block;
+}
+td {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1rem;
+}
+tr {
+    border-top: 1px solid #eee;
+}
+</style>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+        {{ defaults_form.as_table }}
+        </table>
+        <input type="submit" name='save_btn' value="Save"/>
+    </form>
+<hr/>
+{% if view.label == 'Workspace' %}
+    Update Status: {% workflow_status_button 'WorkspaceVDefaults' %}
+
+
+    <script>
+        function safeVal(el) {
+            // Special case for checkboxes.
+            if (el.attr('type') == 'checkbox') {
+                return el.is(':checked');
+            }
+            return el.val();
+        }
+
+        function safeSetVal(el, val) {
+            // Special case for checkboxes.
+            if (el.attr('type') == 'checkbox') {
+                el.prop('checked', val);
+            }
+            el.val(val);
+        }
+        const globalDefaults = {{ global_defaults | safe_json }};
+        $('#load_defaults').on('click', () => {
+            for (const key in globalDefaults) {
+                // Skip any FaersInclude keys, these are configured specifically per-workspace and
+                // shouldn't be auto-reset via the button usually used for version upgrades.
+                if (key.startsWith('FaersInclude')) {
+                    continue
+                }
+                const val = globalDefaults[key];
+                const el = $('#id_' + key);
+                const curVal = safeVal(el)
+                if (val != '' && curVal != val) {
+                    safeSetVal($('#id_' + key), val)
+                }
+            }
+        });
+        // For workspace defaults, we indicate when there is a difference between what you've selected
+        // and global defaults.
+        for (const key in globalDefaults) {
+            const val = globalDefaults[key];
+            const el = $('#id_' + key);
+            const curVal = safeVal(el)
+            if (val != '' && curVal != val) {
+                $('#id_' + key).parent().append(`<span class='def-warn'>Default: ${val}</span>`);
+            }
+        }
+    </script>
+{% endif %}
+    <h2>History</h2>
+    <table class="table">
+        {% for row in version_history %}<tr>
+            <td>{{ row.file_class }}</td>
+            <td>{{ row.choice }}</td>
+            <td>{{ row.user }}</td>
+            <td>{{ row.timestamp }}</td>
+        </tr>{% endfor %}
+    </table>
+{% endblock body %}

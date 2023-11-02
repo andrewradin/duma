@@ -1,0 +1,181 @@
+<experiment api-version="3" api-revision="091015" version="1.0" revision="091015">
+<accession>E-GEOD-57405</accession>
+<sample>
+<assay>
+<name>GSM1382215</name>
+</assay>
+<characteristic>
+<category>Sex</category>
+<value>male</value>
+</characteristic>
+<characteristic>
+<category>age</category>
+<value>39</value>
+</characteristic>
+<characteristic>
+<category>cell subtype</category>
+<value>CD14-</value>
+</characteristic>
+<characteristic>
+<category>cell type</category>
+<value>primary cell</value>
+</characteristic>
+<characteristic>
+<category>disease</category>
+<value>psoriatic arthritis</value>
+</characteristic>
+<characteristic>
+<category>disease status</category>
+<value>diseased</value>
+</characteristic>
+<characteristic>
+<category>organism</category>
+<value>Homo sapiens</value>
+</characteristic>
+<extract>
+<name>GSM1382215 extract 1</name>
+</extract>
+<file>
+<type>data</type>
+<name>GSM1382215_5500254085650100710409_101027.F04.CEL</name>
+<url>ftp://ftp.ebi.ac.uk/pub/databases/microarray/data/experiment/GEOD/E-GEOD-57405/E-GEOD-57405.raw.1.zip/GSM1382215_5500254085650100710409_101027.F04.CEL</url>
+<comment>
+<name>ArrayExpress FTP file</name>
+<value>ftp://ftp.ebi.ac.uk/pub/databases/microarray/data/experiment/GEOD/E-GEOD-57405/E-GEOD-57405.raw.1.zip</value>
+</comment>
+</file>
+<file>
+<type>derived data</type>
+<name>GSM1382215_sample_table.txt</name>
+<url>ftp://ftp.ebi.ac.uk/pub/databases/microarray/data/experiment/GEOD/E-GEOD-57405/E-GEOD-57405.processed.1.zip/GSM1382215_sample_table.txt</url>
+<comment>
+<name>Derived ArrayExpress FTP file</name>
+<value>ftp://ftp.ebi.ac.uk/pub/databases/microarray/data/experiment/GEOD/E-GEOD-57405/E-GEOD-57405.processed.1.zip</value>
+</comment>
+</file>
+<labeled-extract>
+<name>GSM1382215 LE 1</name>
+<label>Biotin</label>
+</labeled-extract>
+<source>
+<name>GSM1382215 1</name>
+<comment>
+<name>Sample_source_name</name>
+<value>224_PsA_211_CD14-_wk10</value>
+</comment>
+<comment>
+<name>Sample_title</name>
+<value>224_PsA_211_CD14-_wk10</value>
+</comment>
+</source>
+<variable>
+<name>Sex</name>
+<value>male</value>
+</variable>
+<variable>
+<name>age</name>
+<value>39</value>
+</variable>
+<variable>
+<name>disease</name>
+<value>psoriatic arthritis</value>
+</variable>
+<variable>
+<name>disease status</name>
+<value>diseased</value>
+</variable>
+<variable>
+<name>time</name>
+<value>wk10</value>
+</variable>
+</sample>
+<sample>
+<assay>
+<name>GSM1382214</name>
+</assay>
+<characteristic>
+<category>Sex</category>
+<value>female</value>
+</characteristic>
+<characteristic>
+<category>age</category>
+<value>58</value>
+</characteristic>
+<characteristic>
+<category>cell subtype</category>
+<value>CD14-</value>
+</characteristic>
+<characteristic>
+<category>cell type</category>
+<value>primary cell</value>
+</characteristic>
+<characteristic>
+<category>disease</category>
+<value>psoriatic arthritis</value>
+</characteristic>
+<characteristic>
+<category>disease status</category>
+<value>diseased</value>
+</characteristic>
+<characteristic>
+<category>organism</category>
+<value>Homo sapiens</value>
+</characteristic>
+<extract>
+<name>GSM1382214 extract 1</name>
+</extract>
+<file>
+<type>data</type>
+<name>GSM1382214_5500254085650100710401_101027.A08.CEL</name>
+<url>ftp://ftp.ebi.ac.uk/pub/databases/microarray/data/experiment/GEOD/E-GEOD-57405/E-GEOD-57405.raw.1.zip/GSM1382214_5500254085650100710401_101027.A08.CEL</url>
+<comment>
+<name>ArrayExpress FTP file</name>
+<value>ftp://ftp.ebi.ac.uk/pub/databases/microarray/data/experiment/GEOD/E-GEOD-57405/E-GEOD-57405.raw.1.zip</value>
+</comment>
+</file>
+<file>
+<type>derived data</type>
+<name>GSM1382214_sample_table.txt</name>
+<url>ftp://ftp.ebi.ac.uk/pub/databases/microarray/data/experiment/GEOD/E-GEOD-57405/E-GEOD-57405.processed.1.zip/GSM1382214_sample_table.txt</url>
+<comment>
+<name>Derived ArrayExpress FTP file</name>
+<value>ftp://ftp.ebi.ac.uk/pub/databases/microarray/data/experiment/GEOD/E-GEOD-57405/E-GEOD-57405.processed.1.zip</value>
+</comment>
+</file>
+<labeled-extract>
+<name>GSM1382214 LE 1</name>
+<label>Biotin</label>
+</labeled-extract>
+<source>
+<name>GSM1382214 1</name>
+<comment>
+<name>Sample_source_name</name>
+<value>146_PsA_207_CD14-_wk10</value>
+</comment>
+<comment>
+<name>Sample_title</name>
+<value>146_PsA_207_CD14-_wk10</value>
+</comment>
+</source>
+<variable>
+<name>Sex</name>
+<value>female</value>
+</variable>
+<variable>
+<name>age</name>
+<value>58</value>
+</variable>
+<variable>
+<name>disease</name>
+<value>psoriatic arthritis</value>
+</variable>
+<variable>
+<name>disease status</name>
+<value>diseased</value>
+</variable>
+<variable>
+<name>time</name>
+<value>wk10</value>
+</variable>
+</sample>
+</experiment>

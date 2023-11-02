@@ -1,0 +1,6 @@
+unsupervisedClustering/*.arff
+unsupervisedClustering/*.arff.gz
+initialData
+oldNotWorkingScripts
+toRun.sh
+elki.jar

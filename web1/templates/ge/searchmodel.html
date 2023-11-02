@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    GE Search Model
+{% endblock headline %}
+{% block header_left %}
+<form method='post'>
+    {{ foldselect_form.as_p }}
+    {% csrf_token %}
+    <button name='foldselect_btn'>Show KFold Crosseval</button>
+</form>
+
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+<hr/>
+{% include "_datatables_load.html" %}
+{% for idx, table in tables %}
+    <table class='table table-condensed table-hover' id='table-{{idx}}'></table>
+{% endfor %}
+    
+
+<script>
+function renderFn(v) {
+    if (isNaN(v)) {
+        return v;
+    }  else {
+        return Number(v).toFixed(2);
+    }
+}
+{% for idx, table in tables %}
+{
+    const columns = {{ table.headers_data | safe }};
+    const table = $('#table-{{idx}}').DataTable({
+        data: {{ table.rows_data | safe_json }},
+        columns: columns,
+    });
+    addDataTableFilters(table, {
+        5: 'range',
+        6: 'select',
+    });
+}
+{% endfor %}
+
+</script>
+
+{% endblock body %}

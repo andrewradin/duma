@@ -1,0 +1,23 @@
+query=<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Query>
+<Query  virtualSchemaName = "default" formatter = "TSV" header = "0" uniqueRows = "0" count = "" datasetConfigVersion = "0.6" >
+	<Dataset name = "hsapiens_gene_ensembl" interface = "default" >
+		<Filter name = "with_uniprotswissprot" excluded = "0"/>
+		<Attribute name = "ensembl_gene_id" />
+		<Attribute name = "ensembl_transcript_id" />
+		<Attribute name = "external_gene_name" />
+		<Attribute name = "ensembl_peptide_id" />
+		<Attribute name = "mmusculus_homolog_associated_gene_name" />
+		<Attribute name = "mmusculus_homolog_perc_id_r1" />
+		<Attribute name = "mmusculus_homolog_ensembl_peptide" />
+		<Attribute name = "rnorvegicus_homolog_associated_gene_name" />
+		<Attribute name = "rnorvegicus_homolog_perc_id_r1" />
+		<Attribute name = "rnorvegicus_homolog_ensembl_peptide" />
+		<Attribute name = "drerio_homolog_associated_gene_name" />
+		<Attribute name = "drerio_homolog_perc_id_r1" />
+		<Attribute name = "drerio_homolog_ensembl_peptide" />
+		<Attribute name = "clfamiliaris_homolog_associated_gene_name" />
+		<Attribute name = "clfamiliaris_homolog_perc_id_r1" />
+		<Attribute name = "clfamiliaris_homolog_ensembl_peptide" />
+	</Dataset>
+</Query>

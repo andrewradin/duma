@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    {{ page_label }}
+{% endblock headline %}
+{% block header_left %}
+	{% for link in top_links %}
+	{{ link }}<br>
+	{% endfor %}
+    {% if view.list_size %}
+        <form method="post">
+            {{ view.list_size }} drug names found
+            {% csrf_token %}
+            <input type="submit" name='save_btn' value="Save Search"/>
+        </form>
+	{% endif %}
+    {% if saved_searches %}
+        <h3>Saved Searches</h3>
+        {% for srch in saved_searches %}
+            {{ srch.user }}@{{ srch.created|date:'Y-m-d H:i' }}
+			{% info_icon srch.description %}
+            -
+            {{ srch.remaining }}
+            -
+            <a href="{% url 'cts_resolve' ws.id srch.id %}">resume</a>
+            -
+            <a href="{% url 'cts_summary' ws.id srch.id %}">summary</a>
+            <br>
+        {% endfor %}
+	{% endif %}
+{% endblock header_left %}
+{% block header_right %}
+	<a href="{% url 'nav_ontolist' ws.id 'ClinicalTrials' %}">Disease List</a>
+    <form method="post">
+        {{ search_form.as_p }}
+        {% csrf_token %}
+        <input type="submit" name='display_btn' value="Display"/>
+    </form>
+{% endblock header_right %}
+{% block body %}
+{% include "_table.html" %}
+{% include "_tooltip_activator.html" %}
+{% endblock body %}

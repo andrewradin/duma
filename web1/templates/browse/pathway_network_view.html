@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    Pathway Network
+{% endblock headline %}
+{% block javascript %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+{% endblock header_left %}
+{% block body %}
+<style>
+.hover-text {
+    visibility: hidden;
+    background-color: #fafaff;
+    border: 1px solid black;
+    border-radius: 3px;
+    position: absolute;
+    text-align: left;
+    padding: 0.75rem;
+    font-size: 100%;
+    z-index: 1;
+    min-width: 100px;
+    white-space: nowrap;
+}
+.hoverable {
+    position: relative;
+}
+
+.hoverable:hover .hover-text {
+    visibility: visible;
+}
+
+.hier-link {
+    background-color: #f3f4f0;
+    border: 1px solid #dde;
+    padding: 0.2rem;
+    margin: 0.1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.hier-nonlink {
+    white-space: nowrap;
+    font-size: 90%;
+}
+
+.pathway-summary {
+    padding: 1rem;
+}
+
+.tree-toggle {
+    color: #aaa;
+    margin-right: 0.5rem;
+}
+
+.info-hover {
+    font-size: 95%;
+    color: black;
+}
+
+.score-table-panel {
+    box-shadow: 1px 1px 3px 0px rgba(0,0,0,1.0);
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+}
+
+#PathwayScoreTable td:nth-child(1) a{
+    cursor: pointer;
+}
+
+
+</style>
+    <div id='react'></div>
+
+
+    <script src='/publish/js/main.js'></script>
+    <script>
+        drawPathwayTree(document.getElementById('react'));
+    </script>
+
+{% endblock body %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Retrospective
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+    <form method=POST>
+        {% csrf_token %}
+        {{ calc_form.as_p }}
+        <button name='calc_btn'>Filter</button>
+    </form>
+{% endblock header_left %}
+{% block body %}
+    {% for title, name in sections %}
+        {% with section_name=name section_label=title content_url=url|add:"&plot="|add:name %}
+            {% include '_deferred_section.html' %}
+        {% endwith %}
+    {% endfor %}
+    {% if plotly_plots %}
+        {% include "_plotly_clear.html" %}
+	{% endif %}
+{% endblock body %}

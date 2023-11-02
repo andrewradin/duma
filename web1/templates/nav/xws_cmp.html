@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load navtools %}
+{% load process %}
+{% load browse_tags %}
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block headline %}
+    {{ headline }}
+{% endblock headline %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+{% if view.mode == view.pick_mode %}
+		<div class="well">
+			Choose a score and click Display.
+		</div>
+	Get more scores:
+	{% url 'nav_xws_cmp' ws.id as here %}
+	{% include "nav/_score_select_links.html" with source_types=view.sources.get_source_types %}
+	<form method="post">
+	{% csrf_token %}
+	{% include '_table.html' %}
+    {{ other_form.as_p }}
+	<input type='submit' name='display_btn' value='Display'/>
+	<input type='submit' name='defaults_btn' value='Reload Defaults'/>
+	</form>
+{% else %}
+	<a href="{% url_add_query mode=view.pick_mode %}">Edit parameters</a>
+	<table>
+	<tr><th>Selected Score:</th><td>{{ score_label }}</td></tr>
+	<tr><th>Source Job:</th><td>{% job_summary bji.job %}</td></tr>
+	<tr><th>Evaluation Metric:</th><td>{{ view.metric }}</td></tr>
+	<tr><th>Evaluation Drug Sets:</th><td>{{ ds_name }}</td></tr>
+	</table>
+	{% include "_plotly_div.html" with div_id="testdiv" src=bars %}
+{% endif %}
+{% endblock body %}

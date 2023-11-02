@@ -1,0 +1,16 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Useful external links{% endblock %}
+{% block section_body %}
+{% for title, dl in ext_drug_links %}
+    <div style='display: inline-block; vertical-align: top; padding: 2rem; '>
+        <h4>{{title}}</h4>
+    {% for l in dl %}
+        {% if not forloop.first %}
+            <br>
+        {% endif %}
+        {{ l }}
+    {% endfor %}
+    </div>
+{% endfor %}
+{% endblock %}

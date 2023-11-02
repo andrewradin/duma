@@ -1,0 +1,15 @@
+{% extends "collapse_section.html" %}
+{% block section_label %}Auto Drugset{% endblock %}
+{% block section_body %}
+<span style='display:inline-block'>
+{% with autods_table as table %}
+    {% include '_table.html' %}
+{% endwith %}
+</span>
+
+<form method='POST'>
+{% csrf_token %}
+{{ autods_form.as_p}}
+<button name='create_btn'>Create</button>
+</form>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% if plot_form %}
+<form method='POST'>
+{% csrf_token %}
+{{ plot_form.as_p }}
+<button type='submit' name='{{plot_form_btn.0}}_btn'>{{ plot_form_btn.1 }}</button>
+</form>
+
+{% endif %}
+{% if src.thumbnail %}
+<div style="float:left;">
+    <a href="/cv/{{ ws.id }}/plot/?path={{ src.thumb_loc }}.plotly">
+        <img src="/{{ src.thumb_loc }}.png"></img>
+    </a>
+</div>
+{% elif src %}
+<div
+	id="{{ div_id }}"
+	style="float:left; height: {{ src.height }}px; width: {{ src.width }}px;"
+	class="plotly-graph-div">
+</div>
+<script type="text/javascript">
+Plotly.newPlot("{{ div_id }}",{{ src.data_json }},{{ src.layout_json }},{{ src.config_json }});
+{% if src.handles_click %}
+    document.getElementById('{{ div_id }}').on('plotly_click', function(data){
+        var idLookup = {{ src.id_lookup }};
+        {% if ws %}
+        var wsId = {{ ws.id }};
+        {% endif %}
+		{{ src.click_handler }}
+		});
+{% endif %}
+</script>
+{% endif %}

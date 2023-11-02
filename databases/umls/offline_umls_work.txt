@@ -1,0 +1,23 @@
+The UMLS program to parse the raw data was run on Aaron Daugherty's window's machine to
+  extract the metathes data for specific vocabularies of interest.
+Thus far these specific vocabularies have been extracted individually -
+  resulting in their own set of files
+For each set of files/vocabulary a large number of other files were generated,
+  but the only data we needed for the UMLS to <vocab> conversion is the MRCONSO file.
+So only that is put on S3, and named in the following manner:
+MRCONSO.<vocab name>.RRF.gz
+
+vocab names extracted so far:
+meddra
+icd9_icd10 (both ICD9 and ICD10 extracted together)
+
+
+For later reference:
+This link describes downloading and running the program and raw data:
+ https://www.nlm.nih.gov/research/umls/implementation_resources/metamorphosys/help.html
+The MRSAB.RRF file (in extra files on Glacier),
+ is the go to file for identifying what search term to use to search through MRCONSO
+ (e.g. for meddra it was MDR18_1) if we want to convert other datasources to UMLS or vice versa
+  NOTE this is only applicable if the entire metathesaraus is extracted
+This link describes the various extra files and what's in them:
+ http://www.ncbi.nlm.nih.gov/books/NBK9685/

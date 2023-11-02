@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block headline %}
+    FAERS Explorer
+{% endblock headline %}
+{% block header_left %}
+	<a href="{% url 'faers_demo' ws.id %}">
+        Demographics
+    </a><br>
+	<a href="{% url 'faers_run_table' ws.id %}">
+        General Stats Table
+    </a><br>
+	<a href="{% url 'faers_indi' ws.id %}?ds={{ ws.non_moa_eval_drugset }}">
+	FAERS Indication rankings for KTs
+	</a><br>
+	<a href="{% url 'faers_indi' ws.id %}?{{ co_pattern }}">
+	FAERS Indication co-occurrence
+	</a><br>
+	<br>
+	{% if indi %}
+		<b>Disease Match Pattern:</b> {{ indi }}<br>
+		<br>
+	{% endif %}
+	{% for mode in modes %}
+        {{ mode }}<br>
+    {% endfor %}
+{% endblock header_left %}
+{% block header_right %}
+    {% if joblist %}
+        <h2>FAERS jobs</h2>
+        {% for job in joblist %}
+            {{ job }}<br>
+        {% endfor %}
+    {% else %}
+        <h2>No FAERS jobs</h2>
+    {% endif %}
+{% endblock header_right %}
+{% block body %}
+{% include "_plotly_div.html" with div_id="testdiv" src=plotclass %}
+
+
+<div style='display:inline-block'>
+<h3>Events with overlapping indications</h3>
+<form method='POST'>
+    {% csrf_token %}
+    {{ compare_form.as_p }}
+    <button name='compare_btn'>Compare</button>
+</form>
+{% if overlap_results %}
+<table class='table table-bordered'>
+    <tr><th>[#events (% of row))]</th><th>Matches Query</th><th>Doesn't Match Query</th></tr>
+    <tr><th>{{ ws.name }}</th><td> {{ overlap_results.0 }} </td><td> {{ overlap_results.1 }}</td></tr>
+    <tr><th>No {{ ws.name }}</th><td> {{ overlap_results.2 }} </td><td> {{ overlap_results.3 }}</td></tr>
+</table>
+OR: {{ fisher.0 }}<br/>
+p value: {{ fisher.1 }}
+    
+{% endif %}
+</div>
+
+{% endblock body %}

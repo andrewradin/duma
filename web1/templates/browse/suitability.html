@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Suitability
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+    <form method=POST>
+        {% csrf_token %}
+        {{ calc_form.as_p }}
+        <button name='calc_btn'>Filter</button>
+    </form>
+{% endblock header_left %}
+{% block body %}
+
+<div class='panel panel-default'>
+    <div class='panel-heading'>Normalized Scores</div>
+    <div class='panel-body'>
+        Scores range from 0 to 10.<br/>
+        Scores with <b>sufficient</b> data are scaled between 1 and 10.<br/>
+        Scores with <b>insufficient</b> data are scaled betwen 0 and 1.
+        <hr/>
+    <a id='tsv-download' style='cursor:pointer'">Download as .tsv</a>
+    <table class='table table-condensed table-hover' id="norm_scores">
+    </table>
+    </div>
+</div>
+
+
+<script>
+    $('#norm_scores').DataTable({
+        data: {{ norm_scores | safe_json }},
+        columns: {{ table_columns | safe_json }},
+        paging: false,
+        columnDefs: [
+            {
+                render: (data, type, row) => {
+                    if (type == 'display' && (typeof data) == 'number') {
+                        return data.toFixed(2);
+                    }
+                    return data
+                },
+                targets: "_all",
+            }
+            ]
+    });
+</script>
+<script src='/static/js/tsv.js'></script>
+<script>
+    function download() {
+        const tableCopy = $('table')[0].cloneNode(true);
+        const tsvStr = tableToTsv(tableCopy);
+        downloadContent(tsvStr, 'suitability.tsv');
+    }
+    document.getElementById('tsv-download').addEventListener('click', download);
+</script>
+{% endblock body %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+Omics Bulk Review
+{% endblock headline %}
+{% block header_right %}
+<a href={{ ge_eval_url }}>Gene expression evaluation criteria</a>
+<br>
+<br>
+<b><a href="{% url "ge:ae_list" ws.id search.id %}">Individual Review</a></b>
+{% endblock header_right %}
+{% block body %}
+	<table>
+	<tr>
+		<th>Search Term:</th>
+		<td>&nbsp;&nbsp;</td>
+		<td>{{ search.term }}</td>
+	</tr>
+	<tr>
+		<th>Search Mode:</th>
+		<td>&nbsp;&nbsp;</td>
+		<td>{{ search.mode_label }}</td>
+	</tr>
+	<tr>
+		<th>Search Date:</th>
+		<td>&nbsp;&nbsp;</td>
+		<td>{{ search.when }}</td>
+	</tr>
+	</table>
+	<h3>{{ quant_label }} Unreviewed Accessions in search</h3>
+	<form method="post">
+	{% csrf_token %}
+	<input type='submit' class="btn btn-danger"
+		name='rejectall_btn' value='Reject All Remaining without Review'
+		/>
+	Yes, really! <input type="checkbox" name="confirm" />
+	<p><p>
+	<input type='submit' class="btn btn-primary"
+		name='reject_btn' value='Update All'
+		/>
+	<p>
+	<table class="table">
+	<tr>
+		<th>GeoID</th>
+		<th>Score</th>
+		<th>Reject Reason</th>
+		<th>Title</th>
+	</tr>
+	{% for item in score_list %}
+		<tr>
+			<td>{{ item.accession.link }}</td>
+			<td>{{ item.score }}</td>
+			<td>
+				<input type="text" name="rej_{{ item.id }}" />
+			</td>
+			<td>{{ item.accession.title }}</td>
+		</tr>
+	{% endfor %}
+	</table>
+	</form>
+{% endblock body %}

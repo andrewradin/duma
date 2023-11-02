@@ -1,0 +1,7 @@
+<form action="?op={{ action_op }}" method="post">
+{% csrf_token %}
+<input type='hidden' name='tissue_id' value='{{ action_tissue_id }}'/>
+<button type="submit" class="btn btn-danger">
+    {{ action_label }}
+</button>
+</form>

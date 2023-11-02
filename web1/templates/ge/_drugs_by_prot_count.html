@@ -1,0 +1,29 @@
+{% extends "collapse_section.html" %}
+{% block section_label %}
+Drugs By Bound Proteins
+{% endblock %}
+{% block section_body %}
+<table class='table'>
+	<tr>
+		<th>Number of Bound Proteins</th>
+		<th>Drugs at this level</th>
+	</tr>
+	{% for level in drug_prot_levels %}
+        <tr>
+            <td>
+                {{ level.0 }}
+            </td>
+            <td>
+            {{ level.1|length }}:&nbsp;
+            {% if level.1|length >= 50 %}
+                (Drugs not displayed)
+            {% else %}
+                {% for id in level.1 %}
+                    <a href="{% url 'moldata:annotate' ws.id id %}">{{ id }}</a>&nbsp;
+                {% endfor %}
+            {% endif %}
+            </td>
+        </tr>
+	{% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% load navtools %}
+
+{% block headline %}
+Classify samples for {{ tissue.name }} ({{ tissue.geoID }})
+{% endblock headline %}
+{% block header_left %}
+    {% if tissue.source_url %}
+        <a href="{{ tissue.source_url }}">For more information...</a>
+        <p>
+    {% endif %}
+	{% if sample_sorter %}
+    <button type="button" class="btn btn-info"
+          data-toggle="modal" data-target="#myModal"
+          >
+       Reconfigure Columns
+    </button>
+    {% endif %}
+{% endblock header_left %}
+{% block header_right %}
+	<div class="pull-right">
+        <form action="{% url 'ge:note_tissue' ws.id tissue.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger" name='delete_btn'>
+            Delete Entire Tissue
+        </button>
+		<br>
+		<input type="checkbox" name="delete_confirm"/>Confirm delete
+        </form>
+	</div>
+        <form role="form"
+            method="post"
+            >
+          {% csrf_token %}
+          <input type='hidden' name='tissue_id' value='{{ tissue.id }}'/>
+			<b>Name:</b>{{ tissue_edit_form.name }}<br>
+            <b>Tissue Set:</b>{{ tissue_edit_form.tissue_set }}<br>
+            <b>Note:</b><br>
+			{{ tissue_edit_form.note }}<br>
+            <button type="submit" name='modify_btn' class="btn btn-info">
+				Save changes
+			</button>
+            <a href="{% url 'ge:tissues' ws.id %}"
+					class="btn btn-default"
+					>
+                Cancel
+            </a>
+		<!-- combine forms so all data comes back together -->
+		{% comment %}
+		</form>
+		{% endcomment %}
+		<p/>
+{% endblock header_right %}
+{% block body %}
+	{% comment %}
+    <form method="post">
+	{% endcomment %}
+        {% csrf_token %}
+        <input type="hidden"
+                      name="selector"
+                      value="{{ sample_sorter.selector }}"
+                      />
+        <table class='table'>
+            {% for key,rec in sample_sorter.groups.items %}
+                <tr
+					{% if rec.2 %}
+						class="info"
+					{% endif %}
+				>
+                    {% for keypart in key %}
+                        <td>
+                        {% if forloop.last %}
+                            {{ rec.0 }}
+                        {% else %}
+                            {{ keypart }}
+                        {% endif %}
+                        </td>
+                    {% endfor %}
+                    <td>
+                        {% if rec.1|length_is:'1' %}
+                            {{ rec.1.sample_id }}
+                        {% else %}
+                            {{ rec.1|length }} samples
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <p>
+		{% if sample_sorter %}
+        <button name='process_btn' type="submit" class="btn btn-success">
+            Save and Process
+        </button>
+			<h3>Options:</h3>
+			{{ sig_form.as_p }}
+		{% endif %}
+    </form>
+	<h3>Details:</h3>
+	{% if outliers %}
+		<b>{{ outliers|length }} outliers:</b>
+		{% for sample_id in outliers %}
+			{{ sample_id }}
+		{% endfor %}
+		<br>
+	{% endif %}
+	{% if sample_sorter.desc %}
+		<b>Attributes common to all samples:</b><br>
+		<ul>
+		{% for txt in sample_sorter.desc %}
+			<li>{{ txt }}</li>
+		{% endfor %}
+		</ul>
+	{% endif %}
+
+    <div class="modal fade" id="myModal">
+      <div class="modal-dialog modal-lg">
+	  {% comment %}
+	  XXX In some cases (not yet clear which ones), the text in the dialog
+	  XXX flows out of the right-hand side.  Using the div below instead
+	  XXX of the one above causes the dialog to become wider to accomodate
+	  XXX the text, but it still flows out of view to the right, and doesn't
+	  XXX trigger a browser window scroll bar.  Since it's more obvious that
+	  XXX text is disappearing with the current behavior, I'm leaving it as-is
+	  XXX for now.
+      <div class="modal-dialog modal-lg" style='display:table; position:relative;overflow-y:auto;overflow-x:auto;width:auto;'>
+	  {% endcomment %}
+        <div class="modal-content">
+        <form role="form" method="post">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h4 class="modal-title">
+				Column Configuration
+            </h4>
+          </div>
+          <div class="modal-body">
+			<a href="#" onclick="bulk_update_checks(false,'reconfig_');">
+				deselect all
+			</a>
+			&nbsp;&nbsp;&nbsp;
+			<a href="#" onclick="bulk_update_checks(true,'reconfig_');">
+				select all
+			</a>
+            <table class='table'>
+              {% for col in sample_sorter.columns %}
+                <tr>
+                <td>
+                    <input type="checkbox"
+                        name="reconfig_{{ forloop.counter }}"
+                        {% if col.2 %}
+                        checked
+                        {% endif %}
+                        />
+                </td>
+                <td> {{ col.0 }} </td>
+                <td> {{ col.1 }} </td>
+                </tr>
+              {% endfor %}
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">
+                Cancel
+            </button>
+            <button name='reconf_btn' type="submit" class="btn btn-primary">
+                Redisplay
+            </button>
+          </div>
+        </form>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endblock body %}

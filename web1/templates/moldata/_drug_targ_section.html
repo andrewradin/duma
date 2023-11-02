@@ -1,0 +1,38 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Molecule targets{% endblock %}
+{% block section_body %}
+	<form role="form" method="post">
+		{% csrf_token %}
+		{{ target_form.dpi.errors }}
+		{{ target_form.dpi }}
+		{{ target_form.dpi_thresh.errors }}
+		{{ target_form.dpi_thresh }}
+		<input type='submit' name="target_btn" value='Redisplay'/>
+	</form>
+	<br>
+	<a href='{% url 'pathway_network' %}#{% templatetag openbrace %}"initWsa":{{wsa.id}}{% templatetag closebrace %}'>
+		Target Pathways&nbsp;{% glyph_icon 'new-window' %}</a>
+	<br>
+	<a href="{% url 'target_data' ws.id %}?prots={{binding_list}}&dpi={{dpi}}&dpi_thresh={{dpi_thresh}}" target="_blank">
+		Target Data&nbsp;{% glyph_icon 'new-window' %}</a>
+    {% for key,l in bindings %}
+        <br><b>{{ key }}:</b>
+        {% for x in l %} {{ x }} {% endfor %}
+	{% endfor %}
+	<br>
+	<div class='panel panel-default panel-body' style='display:inline-block'>
+		<table class='table' id='prot_table'></table>
+	</div>
+	<br>
+    <a href='{% url 'drug_edit_view' %}?wsa_id={{ drug_ws.id }}'>Edit Targets</a><br>
+    <script>
+        $('#prot_table').DataTable({
+            data: {{ prot_table.rows_data | safe_json }},
+            columns: {{ prot_table.headers_data | safe_json }},
+            order: [[0, 'asc']],
+            searching: false,
+            lengthChange: false,
+        });
+	</script>
+{% endblock %}

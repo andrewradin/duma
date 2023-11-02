@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Retrospective CT Stats
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+    <form method=POST>
+        {% csrf_token %}
+        {{ select_form.as_p }}
+        <button name='calc_btn'>Calculate</button>
+    </form>
+{% endblock header_left %}
+{% block header_right %}
+	<b> Supported threshold is rank <= {{supd_thrsh}}</b><br>
+	<b> Unsupported threshold is rank > {{unclr_thrsh}}</b><br>
+	<b> All in between considered unclear</b><br>
+	{% if download_link %}
+		<br>
+		<a href="{{ download_link }}">Download {{ tsv_filename }}</a>
+	{% endif %}
+{% endblock header_right %}
+{% block body %}
+	{% for heading,table,plot in output_list %}
+		{% if heading %}
+			<h3>{{heading}}</h3>
+		{% endif %}
+		{% if table %}
+			{% include '_table.html' with table=table %}
+		{% endif %}
+	{% endfor %}
+	{% if plotly_plots %}
+		{% for plot in plotly_plots %}
+			{% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+			{% include "_plotly_clear.html" %}
+		{% endfor %}
+		{% include "_plotly_clear.html" %}
+	{% endif %}
+{% endblock body %}

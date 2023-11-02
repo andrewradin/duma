@@ -1,0 +1,23 @@
+
+<style>
+    /* Name Column (1) */
+    #summary_table td:nth-child(1) {
+        white-space: pre;
+    }
+    /* Molecules Column (5) */
+    #summary_table td:nth-child(5) {
+        white-space: pre;
+    }
+</style>
+
+<table style='white-space: pre-wrap' class='table' id='summary_table'>
+</table>
+<script>
+    const columns = {{ summary_table.headers_data | safe }};
+    const table = $('#summary_table').DataTable({
+        data: {{ summary_table.rows_data | safe }},
+        columns: columns,
+        paging: false, // Not setup for submitting multipage
+
+    });
+</script>

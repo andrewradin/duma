@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% load workflow %}
+
+{% block body %}
+<style>
+.phase {
+    text-align: right;
+}
+table {
+    table-layout: fixed;
+}
+.table-condensed>tbody>tr>td {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+td {
+    white-space: nowrap;
+}
+</style>
+	<script>
+		function showOnly(valOrHigher) {
+			$('tr').show();
+			for (let i = 0; i < valOrHigher; ++i) {
+				$(`tr[max_ind="${i}"]`).hide()
+			}
+		}
+        $(() => {
+            showOnly(3);
+        });
+	</script>
+	<h1>Hits</h1>
+	<a href='#' onclick='showOnly(0);'>All</a> |
+	<a href='#' onclick='showOnly(3);'>Only Hits</a> |
+	<a href='#' onclick='showOnly(4);'>Only Preclin</a>
+    {% for ws, wsas in wsas_by_ws.items %}
+    <div class='panel panel-primary'>
+        <div class='panel-heading panel-title'>{{ ws }}</div>
+        <table class='table table-condensed'>
+            <thead>
+                <tr><th>Molecule</th><th>Report</th><th>TXR</th>
+                    {% for phase_idx, phase_name, phase_ind in phases %}
+                        <th class='phase'>{{ phase_name }}</th>
+                    {% endfor %}
+                    
+            </thead>
+            <tbody>
+            {% for wsa, max_ind, all_inds in wsas %}
+			<tr max_ind="{{max_ind}}">
+                <td><a href='{{ wsa.drug_url }}'>{% drugname wsa %}</a></td>
+                <td>
+                    {% if wsa.doc_href %}
+                    <a href='{{ wsa.doc_href }}'>Link</a>
+                    {% endif %}
+                
+                </td>
+                <td>
+                    {{ wsa.txr_id }}
+                </td>
+                    {% for phase_idx, phase_name, phase_ind in phases %}
+                        {% if max_ind > phase_idx %}
+                            {% if phase_ind in all_inds %}
+                                <td style='background-color:#358'></td>
+                            {% else %}
+                                <td style='background-color:#89b'></td>
+                            {% endif %}
+                        {% elif max_ind == phase_idx %}
+                            {% if wsa.indication == ivals.INACTIVE_PREDICTION %}
+                                <td style='background-color:#358; border-right: 10px solid #c33; text-align: right; color: #f55;font-weight:bold'>{{ wsa.demerit_text }}</td>
+                            {% else %}
+                                <td style='background-color:#358'></td>
+                            {% endif %}
+                        {% else %}
+                            <td style='background-color:#eee'></td>
+                        {% endif %}
+                    {% endfor %}
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+{% endblock body %}

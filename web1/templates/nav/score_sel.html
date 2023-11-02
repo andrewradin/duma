@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load process %}
+
+{% block headline %}
+Score Selection Demo
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{{ view.sources }}
+{% endblock header_right %}
+{% block body %}
+Get more scores:
+{% for ss in view.sources.get_source_types %}
+    {% url 'nav_score_select' ws.id ss.0 as there %}
+    <a href="{{ there }}?done={{ view.here_url }}">{{ ss.1 }}</a>&nbsp;&nbsp;&nbsp;
+{% endfor %}
+<form method="post">
+{% csrf_token %}
+{% include "_table.html" with table=sources_table %}
+<input type='submit' name='display_btn' value='Display'/>
+<input type='submit' name='defaults_btn' value='Reload Defaults'/>
+</form>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% load browse_tags %}
+<i>After searching, cross-reference against the top results in this table to look for anything missing.</i>
+<br>
+<div class='panel panel-info' style='display:inline-block'>
+    <div class='panel-heading' style='margin-bottom: 0.5rem'>FAERS: Most Used For Indication</div>
+    <table id='drug_table' class='table table-condensed'>
+    </table>
+</div>
+<script>
+    const columns = {{ drug_table.headers_data | safe_json }};
+    const table = $('#drug_table').DataTable({
+        data: {{ drug_table.rows_data | safe_json }},
+        columns: columns,
+        order: [[1, 'desc']],
+    });
+</script>

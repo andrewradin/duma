@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    GWAS Search
+{% endblock headline %}
+{% block header_left %}
+<h4>Metric reminder (preferred/required)</h4>
+    &#8226; Total samples: 1,000 / 200
+<br>
+    &#8226; SNPs: 500,000 / 300,000
+<br>
+
+<h4>Favored sources to accept</h4>
+    &#8226; FinnGen
+<br>
+    &#8226; PheWAS
+<br>
+    &#8226; UKBB
+<br>
+<br>
+
+{% endblock header_left %}
+{% block header_right %}
+    Update Status: {% workflow_status_button 'GWASData' %}
+    <hr/>
+    <form method="post">
+        {% csrf_token %}
+        {{ search_form.as_p }}
+        <input type="submit" name='search_btn' value="Search"/>
+    </form>
+	{% if ood_count %}
+		<br>
+		<form method="post">
+			{{ ood_count }} datasets outdated
+			(oldest from {{ ood_oldest }})
+			{% csrf_token %}
+			<input type="submit" name='regen_btn' value="Regenerate"/>
+		</form>
+	{% endif %}
+{% endblock header_right %}
+{% block body %}
+    {{ view.matches|length }} unclassified item(s)
+    matching {{ view.search }}
+	{% if view.ds_filter.selected %}
+		<br> plus {{ view.ds_filter.selected }} already selected
+    {% endif %}
+	{% if view.ds_filter.rejected %}
+		<br> plus {{ view.ds_filter.rejected }} already rejected
+    {% endif %}
+	{% if view.ds_filter.filtered %}
+		<br> plus {{ view.ds_filter.filtered }} excluded by PMID
+    {% endif %}
+    {% with section_name="search_results" %}
+        {% include 'browse/_gwas_search_results_section.html' %}
+    {% endwith %}
+	{{ view.ds_filter.selects|length }} dataset(s) already selected
+    {% with section_name="selected" %}
+        {% include 'browse/_gwas_selected_section.html' %}
+    {% endwith %}
+	{{ view.ds_filter.rejects|length }} dataset(s) already rejected
+    {% with section_name="rejected" %}
+        {% include 'browse/_gwas_rejected_section.html' %}
+    {% endwith %}
+	{{ view.ds_filter.filters|length }} excluded publication(s)
+    {% with section_name="pmid_filt" %}
+        {% include 'browse/_gwas_pmid_filt_section.html' %}
+    {% endwith %}
+{% include "browse/_gwas_shared_popup.html" %}
+{% include "_tooltip_activator.html" %}
+{% endblock body %}

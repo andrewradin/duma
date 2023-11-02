@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load process %}
+{% load browse_tags %}
+
+{% block headline %}
+    {{ past_runs.page_label }}
+{% endblock headline %}
+{% block header_right %}
+	{{ past_runs.load_defaults_html }}
+	<h3>Load past settings</h3>
+	{% include '_pager.html' with pager=past_runs.pager %}
+	{% include '_table.html' with table=past_runs.get_table %}
+{% endblock header_right %}
+{% block header_left %}
+    {% include '_datatables_load.html' %}
+    {% if view.uji.extra_job_template %}
+        {% include view.uji.extra_job_template %}
+    {% endif %}
+    <form action="" method="post">
+        {{ config_html }}
+        {% csrf_token %}
+        <br>
+        <br>
+        <button type="submit" name='run_btn' class="btn btn-primary">
+            Run
+        </button>
+    </form>
+    <hr>
+    {% if sources %}
+		<h3>Configure source jobs</h3>
+        Get more sources:
+        {% include "nav/_score_select_links.html" with source_types=sources.get_source_types %}
+        <form method="post">
+        {% csrf_token %}
+        {% include "_table.html" with table=src_table %}
+        <input type='submit' name='save_btn' value='Save Changes'/>
+        <input type='submit' name='dflt_btn' value='Reload Defaults'/>
+        {% if copy_from %}
+            <input type='submit' name='copy_btn'
+                    value='Reload from past job {{ copy_from }}'
+            />
+        {% endif %}
+        </form>
+    {% endif %}
+{% endblock header_left %}
+{% block body %}
+<style>
+.helptext {
+    font-size: 95%;
+    color: #777;
+    font-style: italic;
+    display: block;
+}
+</style>
+{% include "_tooltip_activator.html" %}
+{% endblock body %}

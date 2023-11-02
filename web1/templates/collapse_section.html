@@ -1,0 +1,13 @@
+<button type="button" class="btn section-btn btn-info"
+		data-toggle="collapse" data-target="#sec_{{ section_name }}"
+		aria-expanded="true" aria-controls="sec_{{ section_name }}"
+		id="sec_{{ section_name }}_toggle"
+		>
+	{% block section_label %}{% endblock %}...
+</button>
+<div id="sec_{{section_name}}"
+		class="collapse{% if section_name in show %} in{% endif %}"
+		>
+	{% block section_body %}
+	{% endblock %}
+</div>

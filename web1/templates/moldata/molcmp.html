@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+{% block headline %}
+    Molecule Comparison
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+
+<style>
+.struct {
+    display: inline-block;
+    height: 70px;
+    max-width: 140px;
+    border: 1px solid #ccc;
+}
+.ref-prots {
+    border-bottom: 3px solid #4f7;
+}
+div.dataTables_paginate {
+    text-align: left !important;
+}
+
+.dt-filter {
+    width: 100% !important;
+    min-width: 140px;
+    font-size: 9pt;
+    overflow: auto;
+}
+
+core {
+    display: none;
+}
+corecount {
+    display: block;
+    cursor: pointer;
+    color: #06b;
+}
+corecount:hover {
+    text-decoration: underline;
+}
+.dpi {
+    white-space: nowrap;
+}
+.toggles {
+    display: inline-block;
+    margin-left: 2rem;
+}
+
+</style>
+
+    <h1 style="color:red;">{{ message }}</h1>
+    <div class='panel panel-primary' style='display: inline-block'>
+        <div class='panel-heading'>Molecule Search</div>
+            <form method="post">
+            <table class='table table-condensed'>
+                    {% csrf_token %}
+                    {{ search_form.as_table }}
+                    <tr><td><input type="submit" name='search_btn' value="Search"/></td></tr>
+            </table>
+            </form>
+    </div>
+{% endblock header_left %}
+{% block header_right %}
+    <a href="{% url 'moldata:hit_selection' ws.id %}?ds={{ds}}">Hit Selection</a><br/>
+    <div class='panel panel-primary' style='display: inline-block'>
+        <div class='panel-heading'>Prot Search</div>
+            <form method="post">
+            <table class='table table-condensed'>
+                    {% csrf_token %}
+                    {{ protsearch_form.as_table }}
+                    <tr><td><input type="submit" name='protsearch_btn' value="Search"/></td></tr>
+            </table>
+            </form>
+    </div>
+{% endblock header_right %}
+{% block body %}
+<hr>
+<div id='main' class='panel panel-primary' style='display: none'>
+    <div class='panel-heading'>Results</div>
+    <div class='panel-body'>
+        <form id="add-selected-form" class='form' method='post'>
+            {% csrf_token %}
+            <div><button type='button' data-toggle='modal' data-target='#new-molset' onclick='newMoleculeSet()' class='btn btn-success btn-xs'>New Molecule Set</button></div>
+            <span class='btn-group'>
+            <button class='btn btn-info btn-sm' name='add_btn'>Add Selected to</button>
+            <span style='display:inline-block'>{{ drugset_form.as_p }}</span>
+            </span>
+            <span class='toggles'>
+                <a style='cursor:pointer' onclick='toggleCore()'>Toggle Core Highlight <span id='hlstate'>Off</span></a><br>
+                <a style='cursor:pointer' onclick='toggleCondense()'>Toggle Core Condense <span id='cndstate'>On</span></a><br>
+                <a style='cursor:pointer' onclick='clearCoreFilter()'>Clear Core Filter</a>
+            </span>
+
+            <hr/>
+
+            <table class='table' id='main_table'>
+            </table>
+        </form>
+    </div>
+</div>
+
+
+<form method='POST'>
+    {% csrf_token %}
+<div class="modal fade" id="new-molset">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+        <h4 class="modal-title">New Molecule Set</h4>
+      </div>
+      <div class="modal-body">
+          <table class='table table-condensed'>
+            {{ newdrugset_form.as_table }}
+          </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button name="create_btn" class="btn btn-primary">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+    <script>
+        let state = {
+            cores: {},
+            condense: false,
+            idxSeen: {},
+        };
+        function toggleCondense() {
+            state.condense = !state.condense;
+            table.draw();
+            $('#cndstate').text(state.condense ? 'Off' : 'On');
+        }
+        const structIdx = 2;
+        const columns = {{ table.headers_data | safe }};
+        const table = $('#main_table').DataTable({
+            data: {{ table.rows_data | safe }},
+            columns: columns,
+            order: [[6, 'desc']],
+            // If we have tons of columns, the paging controls were going off to the right,
+            // which was very unusable.  Use custom dom and a custom style above.
+            dom: "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
+                 "<'row'<'col-sm-12'tr>>" +
+                 "<'row'<'col-sm-5'p><'col-sm-7'i>>",
+
+        });
+        addDataTableFilters(table, {
+            1: 'text',
+            3: 'dropdown',
+            4: 'select',
+            5: 'select',
+            6: 'range',
+        });
+
+        $('table').on('click', 'corecount', function() {
+            const el = this;
+            if (state.coreFilter) {
+                state.coreFilter = null;
+            } else {
+                state.coreFilter = $(el).siblings('core').text();
+            }
+            table.draw();
+        });
+        function clearCoreFilter() {
+            state.coreFilter = null;
+            table.draw();
+        }
+
+        // Big tables are slow to display if we render all rows.  Instead
+        // we display only after applying the datatable decorator which pages.
+        // (This is probably no longer relevant due to initializing via data)
+        $('#main')[0].style.display = 'inline-block';
+
+        $('#add-selected-form').on('submit', function(e) {
+            // Before submitting, find any off-page elements and add their value as hiddens.
+            const form  = this;
+            const parms = table.$('input').serializeArray();
+            $.each(parms, function() {
+                if (!$.contains(document, form[this.name])) {
+                    $(form).append($(`<input type="hidden" name="${this.name}">`).val(this.value));
+                }
+            });
+        });
+    
+        function toggleCore() {
+            table.rows().every(function(rowIdx) {
+                const data = this.data();
+                // This is a bit brittle, depends on the format of the URLs being passed down.
+                const struct = data[structIdx];
+                if (struct.indexOf('core=true&') != -1) {
+                    data[structIdx] = struct.replace(/core=true&/g, '');
+                    state['core'] = false;
+                } else {
+                    data[structIdx] = struct.replace(/\/\?/g, '/?core=true&');
+                    state['core'] = true;
+                }
+                this.data(data);
+            });
+            $('#hlstate').text(state.core ? 'Off' : 'On');
+        }
+    $.fn.dataTable.ext.search.push((settings, data, dataIndex) => {
+        if (settings.nTable != table.table().node()) {
+            // Global filter, different table.
+            return true;
+        }
+        if (dataIndex in state.idxSeen) {
+            // Used to clear this in onDraw, but it seems that in some cases
+            // filtering can get invoked multiple times per draw, in which
+            // case that fails.
+            state.cores = {};
+            state.idxSeen = {}
+        }
+        state.idxSeen[dataIndex] = true;
+
+        if (!state.condense) {
+            return true;
+        }
+        const core = data[structIdx];
+        if (!core) {
+            return true;
+        }
+        if (state.cores[core]) {
+            return false;
+        }
+        state.cores[core] = true;
+        return true;
+    });
+
+    $.fn.dataTable.ext.search.push((settings, data, dataIndex) => {
+        if (settings.nTable != table.table().node()) {
+            // Global filter, different table.
+            return true;
+        }
+        if (!state.coreFilter) {
+            return true;
+        }
+        // This is a bit of a hack - the 'data' version of this cell
+        // includes the core text, along with a ton of whitespace and any
+        // other text in the cell - but the core comes first, so pull that.
+        const core = data[structIdx].trim().split(' ')[0];
+        return core == state.coreFilter;
+    });
+
+
+    </script>
+{% endblock body %}

@@ -1,0 +1,161 @@
+drugsFromFAER records 24723009
+drugsFromFAER distinct event 8116813
+drugsFromFAER distinct drug 2545
+diseasesFromFAER records 10923675
+diseasesFromFAER distinct event 7293130
+diseasesFromFAER distinct indi 12193
+394 drugs have 1 to 9 events
+477 drugs have 10 to 99 events
+587 drugs have 100 to 999 events
+652 drugs have 1000 to 9999 events
+380 drugs have 10000 to 99999 events
+55 drugs have 100000 to 999999 events
+5883 indis have 1 to 9 events
+3854 indis have 10 to 99 events
+1729 indis have 100 to 999 events
+571 indis have 1000 to 9999 events
+138 indis have 10000 to 99999 events
+17 indis have 100000 to 999999 events
+1 indis have 1000000 to 9999999 events
+4173744 events have 1 drugs
+1228507 events have 2 drugs
+707289 events have 3 drugs
+463727 events have 4 drugs
+340446 events have 5 drugs
+253929 events have 6 drugs
+192768 events have 7 drugs
+147235 events have 8 drugs
+114662 events have 9 drugs
+90494 events have 10 drugs
+73611 events have 11 drugs
+59267 events have 12 drugs
+47911 events have 13 drugs
+39193 events have 14 drugs
+32227 events have 15 drugs
+26477 events have 16 drugs
+21190 events have 17 drugs
+17460 events have 18 drugs
+14312 events have 19 drugs
+11800 events have 20 drugs
+9900 events have 21 drugs
+7957 events have 22 drugs
+6778 events have 23 drugs
+5492 events have 24 drugs
+4515 events have 25 drugs
+3787 events have 26 drugs
+3173 events have 27 drugs
+2663 events have 28 drugs
+2141 events have 29 drugs
+1816 events have 30 drugs
+1447 events have 31 drugs
+1354 events have 32 drugs
+1106 events have 33 drugs
+949 events have 34 drugs
+838 events have 35 drugs
+688 events have 36 drugs
+767 events have 37 drugs
+568 events have 38 drugs
+422 events have 39 drugs
+404 events have 40 drugs
+430 events have 41 drugs
+333 events have 42 drugs
+297 events have 43 drugs
+298 events have 44 drugs
+222 events have 45 drugs
+249 events have 46 drugs
+213 events have 47 drugs
+195 events have 48 drugs
+137 events have 49 drugs
+123 events have 50 drugs
+98 events have 51 drugs
+86 events have 52 drugs
+117 events have 53 drugs
+71 events have 54 drugs
+69 events have 55 drugs
+64 events have 56 drugs
+86 events have 57 drugs
+72 events have 58 drugs
+52 events have 59 drugs
+60 events have 60 drugs
+64 events have 61 drugs
+41 events have 62 drugs
+43 events have 63 drugs
+32 events have 64 drugs
+37 events have 65 drugs
+20 events have 66 drugs
+26 events have 67 drugs
+16 events have 68 drugs
+24 events have 69 drugs
+27 events have 70 drugs
+16 events have 71 drugs
+10 events have 72 drugs
+8 events have 73 drugs
+19 events have 74 drugs
+9 events have 75 drugs
+14 events have 76 drugs
+9 events have 77 drugs
+6 events have 78 drugs
+17 events have 79 drugs
+11 events have 80 drugs
+14 events have 81 drugs
+6 events have 82 drugs
+1 events have 83 drugs
+3 events have 84 drugs
+2 events have 85 drugs
+2 events have 86 drugs
+8 events have 87 drugs
+12 events have 88 drugs
+5 events have 89 drugs
+1 events have 90 drugs
+1 events have 96 drugs
+2 events have 97 drugs
+1 events have 98 drugs
+5 events have 100 drugs
+6 events have 101 drugs
+2 events have 102 drugs
+2 events have 103 drugs
+1 events have 105 drugs
+1 events have 113 drugs
+2 events have 116 drugs
+1 events have 124 drugs
+5499431 events have 1 diseases
+1065108 events have 2 diseases
+328291 events have 3 diseases
+158840 events have 4 diseases
+88609 events have 5 diseases
+53747 events have 6 diseases
+33270 events have 7 diseases
+21278 events have 8 diseases
+14303 events have 9 diseases
+9265 events have 10 diseases
+6314 events have 11 diseases
+4310 events have 12 diseases
+3014 events have 13 diseases
+2091 events have 14 diseases
+1350 events have 15 diseases
+1088 events have 16 diseases
+790 events have 17 diseases
+511 events have 18 diseases
+357 events have 19 diseases
+262 events have 20 diseases
+230 events have 21 diseases
+150 events have 22 diseases
+126 events have 23 diseases
+97 events have 24 diseases
+58 events have 25 diseases
+35 events have 26 diseases
+47 events have 27 diseases
+40 events have 28 diseases
+30 events have 29 diseases
+22 events have 30 diseases
+24 events have 31 diseases
+12 events have 32 diseases
+9 events have 33 diseases
+6 events have 34 diseases
+3 events have 35 diseases
+2 events have 36 diseases
+3 events have 38 diseases
+1 events have 39 diseases
+3 events have 40 diseases
+2 events have 41 diseases
+1 events have 42 diseases

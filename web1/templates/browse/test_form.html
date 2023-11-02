@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    This is a test
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" name='form1_btn' value="Form 1"/>
+		<hr>
+        additional forms here
+    </form>
+{% endblock body %}

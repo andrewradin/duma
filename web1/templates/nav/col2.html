@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+{% block headline %}
+Import Collections
+{% endblock headline %}
+{% block header_right %}
+    <a href="{% url 'nav_impstat' ws.id %}">Import Detail</a>
+    <br><a href="{% url 'wsmgr:imphist' ws.id %}">Import History</a>
+	<br>Clustering based on {{ view.ws.get_dpi_default }}
+{% endblock header_right %}
+{% block body %}
+<form method="post">
+	{% csrf_token %}
+    <table class='table'>
+    <tr>
+        <th>Drug count</th>
+        <th>Already Imported</th>
+        <th>Not Imported</th>
+        <th></th>
+        <th>Collection</th>
+        <th></th>
+    </tr>
+        {% for field,c in view.field_with_col %}
+            <tr>
+                <td>{{ c.all_count }}</td>
+                <td>{{ c.ws_count }}</td>
+                <td>{{ c.out_count }}</td>
+                <td>{{ field }}</td>
+                <td>{{ field.label }}</td>
+                <td>{{ field.errors }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% if view.version_ok %}
+<input type='submit' name='imports_btn' value='(Re-)import Selected'/>
+<input type='submit' name='clear_btn' value='Un-import Selected'/>
+{% endif %}
+<hr/>
+Update Status: {% workflow_status_button 'DrugCollections' %}
+</form>
+{% endblock body %}

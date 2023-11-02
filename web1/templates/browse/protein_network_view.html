@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    Protein Network
+{% endblock headline %}
+{% block javascript %}
+{% endblock javascript %}
+{% block header_left %}
+<form method='post'>
+    {{ calc_form.as_p }}
+    {% csrf_token %}
+    <button name='calc_btn'>Calc</button>
+</form>
+{% endblock header_left %}
+{% block body %}
+	<div style="box-shadow:2px 2px 8px 1px rgba(100, 100, 100, 0.3);">
+        <div id="cy" style="width:100%; height:900px;"> </div>
+    </div>
+    {% include "_cytoscape_load.html" %}
+    <script src="/static/js/protein_network.js"></script>
+    <script>
+        setupNetwork({
+            wsId: {{ws.id}},
+            ktProts: [],
+        });
+        addToNetwork({{startProts}}, 1);
+    </script>
+{% endblock body %}

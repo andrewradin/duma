@@ -1,0 +1,6 @@
+{% load tissue %}
+{% if prot_id %}
+    <a href="{% url 'protein' ws.id prot_id %}">
+        {{ prot_id|prot2gene }}
+    </a>
+{% endif %}

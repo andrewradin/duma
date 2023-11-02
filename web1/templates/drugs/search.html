@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Search
+{% endblock headline %}
+{% block javascript %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+<style>
+.helptext {
+    font-size: 95%;
+    color: #777;
+    font-style: italic;
+}
+th {
+    vertical-align: top;
+}
+td {
+    padding-left: 1rem;
+    padding-bottom: 1rem;
+}
+.customlabel {
+    opacity: 0.8;
+}
+</style>
+<div class='panel panel-info'>
+    <div class='panel-heading'>Search Parameters</div>
+    <div class='panel-body'>
+        <form method='POST'>
+        {% csrf_token %}
+        <table>
+            {{ search_form.as_table }}
+        </table>
+            <button type='submit' name='search_btn'>Search</button>
+        </form>
+    </div>
+</div>
+<br>
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+{% if searched %}
+<div class='panel panel-primary'>
+    <div class='panel-heading'>Results</div>
+    <div class='panel-body'>
+        <div>Showing results {{pager.page_start}} to {{pager.page_end}} of {{pager.total_rows}} {{ pager.html }}</div>
+        {% include '_table.html' %}
+        <div>Showing results {{pager.page_start}} to {{pager.page_end}} of {{pager.total_rows}} {{ pager.html }}</div>
+    </div>
+</div>
+<span id='render-time' style='display:inline-block;transform:scale(0.75);' class='alert alert-info'> </span>
+{% endif %}
+
+</div>
+
+
+{% include "drugs/_search_import.html" %}
+<script>
+    const perf = window.performance.timing;
+    const start = perf.connectStart;
+    const end = perf.responseEnd;
+    $('#render-time')[0].innerHTML = 'Search completed in ' + ((end - start) / 1000).toFixed(1) + 's';
+</script>
+
+{% endblock body %}

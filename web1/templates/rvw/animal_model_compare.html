@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block headline %}
+    {{ headline }}
+{% endblock headline %}
+{% block javascript %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+<div class='panel panel-primary' style='display: inline-block'>
+    <div class='panel-heading'>Settings</div>
+    <form method="post">
+        {% csrf_token %}
+        <table class='table table-condensed'>
+            {{ config_form.as_table }}
+        <tr><td><input type="submit" name='show_btn' value="Show"/></td></tr>
+        </table>
+    </form>
+</div>
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% load browse_tags %}
+{% block body %}
+<h1>Animal Model Compare</h1>
+
+<h4>Human vs Animal pathway Spearman correlations, total{{ total_glyph }} & topN{{ top_glyph }}:</h4>
+<ul>
+{% for pw, tot_cor, top_cor in pathway_corrs %}
+    <li> {{ pw }}: {{ tot_cor }} & {{ top_cor }} </li>
+{% endfor %}
+</ul>
+
+<style>
+    .hover {
+        background-color: #f0f0ff;
+    }
+	td {
+		vertical-align: middle !important;
+	}
+    /* Make cells that have details look like links */
+    #cmp_table tr td:nth-child(n+4) {
+        color: #337ab7;
+        cursor: pointer;
+    }
+    #cmp_table tr td:nth-child(n+4):hover {
+        text-decoration: underline;
+    }
+</style>
+<div class='panel panel-default'>
+    <div class='panel-heading'>
+        Comparison
+    </div>
+    <div class='panel-body'>
+    <table class='table' id='cmp_table'>
+    </table>
+    </div>
+
+</div>
+<div class='panel panel-info'>
+    <div class='panel-heading'>
+        Details 
+    </div>
+    <div class='panel-body'>
+        <p id='details-desc'></p>
+        <div style='display: inline-block' id='details_panel'>
+        <table class='table' id='details_table'>
+        </table>
+        </div>
+    </div>
+</div>
+
+    <script>
+        {
+            // A very basic natural sort - there are more sophisticated ones out there, if needed.
+            function preprocess(a) {
+                let floatPart = parseFloat(a);
+                if (isNaN(floatPart)) {
+                    floatPart = -1e99;
+                }
+                out = [floatPart, a];
+                return out;
+            }
+            function naturalsort(a, b) {
+                a = preprocess(a);
+                b = preprocess(b);
+                if (a[0] != b[0]) {
+                    return a[0] - b[0];
+                } else {
+                    return a[1].localeCompare(b[1]);
+                }
+            }
+            $.extend($.fn.dataTable.ext.oSort, {
+                'naturalsort-asc': naturalsort,
+                'naturalsort-desc': function(a, b) {
+                    return -naturalsort(a, b);
+                }
+            });
+            // Merge columns that are molecule-specific rather than prot-specific
+            const mergeCols = [0, 5, 6, 10, 11, 12, 13];
+            const columns = {{ cmp_table.headers_data | safe }};
+            const table = $('#cmp_table').DataTable({
+                data: {{ cmp_table.rows_data | safe_json }},
+                columns: columns,
+                paging: false,
+                drawCallback: makeDataTableMerger(mergeCols, false),
+                //order: [[2, 'desc']],
+                columnDefs: [{
+                    targets: "_all",
+                    type: "naturalsort",
+                }],
+            });
+
+
+            const details = {{details | safe_json }};
+            table.on('click', 'td', function() {
+                $('#details_panel').html('<table class="table table-condensed" id="details_table"></table>')
+                const cell = table.cell(this);
+                const {row, column, ...rest} = cell.index()
+                
+                const colDetails = details[column];
+                if (colDetails) {
+                    let cellDetails;
+                    if (colDetails.type == 'per_cell') {
+                        cellDetails = colDetails['data'][row];
+                    } else {
+                        cellDetails = colDetails['data'];
+                    }
+                    if (cellDetails.length == 0) {
+                        return;
+                    }
+                    const columns = [];
+                    for (const name of Object.keys(cellDetails[0])) {
+                        columns.push({
+                            title: name.replaceAll('_', ' '),
+                            data: name
+                        });
+                    }
+                    const detailsTable = $('#details_table').DataTable({
+                        columns: columns,
+                        data: cellDetails,
+                        destroy: true,
+                    });
+
+
+                    const data = table.data()
+                    const colHead = $(table.column(column).header()).text()
+
+                    let refGene = "";
+                    if (colDetails.type == 'per_cell') {
+                        refGene = `for ${data[row][1]}`;
+                    }
+
+                    $('#details-desc').html(`More information about ${colHead} ${refGene} (${colDetails.type})`);
+                }
+
+            })
+
+        }
+
+    </script>
+{% endblock body %}

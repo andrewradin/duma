@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load process %}
+{% load navtools %}
+{% load browse_tags %}
+{% block headline %}
+    Score Compare
+{% endblock headline %}
+{% block header_left %}
+{% if view.dtc == 'uniprot' %}
+	<p> <a href="{% url 'nav_score_cmp' ws.id 'wsa' %}">Compare drug scores</a> </p>
+{% elif view.dtc == 'wsa' %}
+	<p><a href="{% url 'nav_score_cmp' ws.id 'uniprot' %}">Compare protein scores</a></p>
+{% endif %}
+{% endblock header_left %}
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+{% if view.mode == view.pick_mode %}
+		<div class="well">
+			Choose 2 scores and click Display.
+		</div>
+	Get more scores:
+	{% url 'nav_score_cmp' ws.id view.dtc as here %}
+	{% include "nav/_score_select_links.html" with source_types=view.sources.get_source_types %}
+	<form method="post">
+	{% csrf_token %}
+    {% include "_table.html" %}
+    {{ other_form.as_p }}
+	<input type='submit' name='display_btn' value='Display'/>
+	<input type='submit' name='defaults_btn' value='Reload Defaults'/>
+	</form>
+{% else %}
+	<a href="{% url_add_query mode=view.pick_mode %}">Edit parameters</a>
+	<table>
+	<tr>
+		<td></td>
+		<th>Source</th>
+		<th style="padding-right:15px; white-space:nowrap">Values</th>
+		<th style="padding-right:15px; white-space:nowrap">Non-zeros</th>
+		<th>Job</th>
+		<th>Plot</th>
+		{% if settings_diff %}
+			<th>Diff</th>
+		{% endif %}
+	</tr>
+	<tr>
+		<th style="padding-right:15px; white-space:nowrap">Y Score:</th>
+		<td style="padding-right:15px; white-space:nowrap">
+			{{ view.y_data.label }}
+		</td>
+		<td style="padding-right:15px; white-space:nowrap">
+			{{ view.y_data.count }}
+		</td>
+		<td style="padding-right:15px; white-space:nowrap">
+			{{ view.y_data.non_zeros }}
+		</td>
+		<td style="padding-right:15px; white-space:nowrap">{% job_summary view.y_data.job %}</td>
+		<td style="padding-right:15px">
+        <a href="{% url 'nav_scoreplot' ws.id view.dtc %}?ds={{ view.ds }}&score={{ view.y }}">
+        Scoreplot
+        </a>
+        </td>
+	</tr>
+	<tr>
+		<th style="padding-right:15px">X Score:</th>
+		<td style="padding-right:15px; white-space:nowrap">
+			{{ view.x_data.label }}
+		</td>
+		<td style="padding-right:15px; white-space:nowrap">
+			{{ view.x_data.count }}
+		</td>
+		<td style="padding-right:15px; white-space:nowrap">
+			{{ view.x_data.non_zeros }}
+		</td>
+		<td style="padding-right:15px; white-space:nowrap">{% job_summary view.x_data.job %}</td>
+		<td style="padding-right:15px">
+        <a href="{% url 'nav_scoreplot' ws.id view.dtc %}?ds={{ view.ds }}&score={{ view.x }}">
+        Scoreplot
+        </a>
+        </td>
+		<td>{{ settings_diff }}</td>
+	</tr>
+	</table>
+	<div>
+	{{ view.dual_zeros }} points at (0,0)
+	(of {{ view.pair_count }} points total)
+	will be eliminated from the scatterplots
+	</div>
+	{% for plot in plotly_plots %}
+		{% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+	{% endfor %}
+	{% include "_plotly_clear.html" %}
+    {% for table in data %}
+	<h3>{{ table.0 }}</h3>
+		{% with rows=table.1 %}
+			{% include 'nav/_score_delta_table.html' %}
+		{% endwith %}
+	{% endfor %}
+{% endif %}
+{% include '_tooltip_activator.html' %}
+{% endblock body %}

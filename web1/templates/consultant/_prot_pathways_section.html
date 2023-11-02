@@ -1,0 +1,20 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Pathways{% endblock %}
+{% block section_body %}
+	<h2>Pathways</h2>
+	<p><i>Pathways that directly or indirectly involve this protein/gene.</i></p>
+	<div style='display:inline-block'>
+	<table id='pathways_table' class="table table-condensed"></table>
+	</div>
+	<script>
+		{
+			const columns = {{ pathways.headers_data | safe }};
+			const table = $('#pathways_table').DataTable({
+				data: {{ pathways.rows_data | safe_json }},
+				columns: columns,
+			});
+		}
+
+	</script>
+{% endblock %}

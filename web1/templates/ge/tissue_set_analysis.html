@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    Sig QC Numbers
+{% endblock headline %}
+{% block javascript %}
+	{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+
+
+{% for plot in view.plotly %}
+    {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+{% endfor %}
+
+{% include "_plotly_clear.html" %}
+{% include "_table.html" with table=view.table %}
+{% endblock body %}

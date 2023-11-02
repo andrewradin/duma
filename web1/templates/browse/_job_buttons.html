@@ -1,0 +1,16 @@
+{% if level_status.1 %}
+	<td>
+	<form action="" method="post">
+	{% csrf_token %}
+	<input type='submit' name="make_{{ level }}" value='Update'/>
+	</form>
+	</td>
+{% endif %}
+{% if level_status.2 %}
+	<td>
+	<form action="" method="post">
+	{% csrf_token %}
+	<input type='submit' name="force_{{ level }}" value='Redo all'/>
+	</form>
+	</td>
+{% endif %}

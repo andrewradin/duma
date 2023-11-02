@@ -1,0 +1,39 @@
+{% load navtools %}
+{% if view.pop_headline %}
+    <script type="text/javascript">
+        $(window).load(function(){
+            $('#sharedModal').modal('show');
+        });
+    </script>
+    <div class="modal fade" id="sharedModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+        <form method="post">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h4 class="modal-title">{{ view.pop_headline }}</h4>
+          </div>
+          <div class="modal-body">
+			<input type="hidden" name='key' value="{{ view.pop_key }}"/>
+		    <b>Pubmed Id:</b> {{ view.pop_pmid }}<br>
+			{% if view.pop_phenotype %}
+				<b>Phenotype:</b> {{ view.pop_phenotype }}<br>
+			{% endif %}
+		    <b>Note:</b><br>
+			{{ note_form.note }}
+          </div>
+          <div class="modal-footer">
+            <button type="submit" name="{{ view.pop_button }}_btn"
+				class="btn btn-info"
+				>
+				Save
+			</button>
+			<a class="btn btn-default" href="{% view_url %}" role="button">
+				Cancel
+			</a>
+          </div>
+        </form>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endif %}

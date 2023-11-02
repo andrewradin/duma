@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    ETL Update Order
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+	<table class="table">
+		<tr>
+			<th>Wave</th>
+			<th>Source</th>
+			<th>Last update</th>
+			<th>Source version</th>
+			<th>Update every...</th>
+			<th>Next update</th>
+			<th>Upstream updates</th>
+		</tr>
+		{% for wave in etl_groups %}
+				{% for src in wave %}
+					<tr>
+						<td>
+							{% if forloop.first %}
+							{{ forloop.parentloop.counter }}
+							{% endif %}
+						</td>
+						<td>{{ src.name }}</td>
+						<td>{{ src.published }}</td>
+						<td>{{ src.source_version }}</td>
+						<td>{{ src.update_freq }}</td>
+						<td>{{ src.next_update }} {{ src.update_info }}</td>
+						<td>{{ src.pending_inputs }}</td>
+					</tr>
+				{% endfor %}
+		{% endfor %}
+	</table>
+{% include "_table.html" %}
+{% include "_tooltip_activator.html" %}
+{% endblock body %}

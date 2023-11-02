@@ -1,0 +1,10 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %} ProbeMiner information {% endblock %}
+{% block section_body %}
+	{% include '_table.html' with table=probeminer_data_table %}
+    {% for i in view.probeminer_column_info %}
+        {{i}}
+        <br>
+    {% endfor %}
+{% endblock %}

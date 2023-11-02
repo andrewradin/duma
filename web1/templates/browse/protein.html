@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    {{ protein.get_name }} ({{ protein_label }})
+{% endblock headline %}
+{% block javascript %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+    {% for l in druggability %}
+        <b>{{ l }} </b><br>
+    {% endfor %}
+<style>
+    ul {
+        list-style-position: inside;
+        padding-left: 0.5rem;
+    }
+    .link-section {
+        display: inline-block;
+        vertical-align: top;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        box-shadow: -1px -1px 10px -7px rgba(0, 0, 0, 1.0);
+        border-radius: 1rem;
+        margin-right: 2rem;
+    }
+</style>
+    Alt Names: <ul>
+    {% for alt_name in protein.get_alt_names %}
+        <li>{{ alt_name }} </li>
+    {% endfor %}
+    </ul>
+    <div class='link-section'>
+        <h4>Platform Links</h4>
+        <ul>
+        <li><a href="{% url 'prot_detail' ws.id protein.uniprot %}">Protein Detail</a>
+        <li><a href='{% url 'pathway_network' %}#{"initProt":"{{protein.uniprot}}","initGene":"{{protein.gene}}"}'>Pathway Network</a>
+        <li><a href='{% url 'moldata:molcmp' ws.id %}?search_prots=[["{{protein.uniprot}}","{{protein.gene}}",0]]'>Molecules with this target</a>
+        </ul>
+    </div>
+    {% with title="Database Links" links=db_links %}
+        {% include 'browse/_prot_links_box.html' %}
+    {% endwith %}
+
+{% endblock header_left %}
+{% block header_right %}
+<a href="{% url 'prot_search' ws.id %}">Search</a>
+	{% if aliases %}
+                <hr>
+		Aliases:
+		{% for a in aliases %}
+			&nbsp;&nbsp;<a
+				href="{% url 'protein' ws.id a %}"
+				>{{ a }}</a>
+		{% endfor %}<br>
+	{% endif %}
+	{% if gene_other_prots %}
+                <hr>
+		Other proteins for this gene:
+		{% for a in gene_other_prots %}
+			&nbsp;&nbsp;{{ a }}
+		{% endfor %}<br>
+	{% endif %}
+    {% if pss %}
+        <hr>
+        <b>In ProteinSets:</b>
+        <ul>
+            {% for ps in pss %}
+                <li>{{ ps }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if view.other_ws %}
+        <hr>
+        <b>Also reviewed in:</b>
+        <ul>
+            {% for wsurl in view.other_ws %}
+                <li>{{ wsurl }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if view.hit_sel_links %}
+        <hr>
+        <b>Hit selections:</b>
+        <ul>
+            {% for wsurl in view.hit_sel_links %}
+                <li>{{ wsurl }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock header_right %}
+{% block body %}
+    {% with section_name="notes" %}
+        {% include 'browse/_prot_notes_section.html' %}
+    {% endwith %}
+    {% if safety_data %}
+        {% with section_name="safety" %}
+            {% include 'browse/_prot_safety_section.html' %}
+        {% endwith %}
+    {% endif %}
+    {% if tract_prop_table %}
+        {% with section_name="tract" %}
+            {% include 'browse/_prot_tract_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    {% with section_name="ortho" %}
+        {% include 'browse/_prot_ortho_section.html' %}
+    {% endwith %}
+
+    {% with section_name="links" %}
+        {% include 'browse/_prot_links_section.html' %}
+    {% endwith %}
+	{% if pathways %}
+	    {% with section_name="path" %}
+    	    {% include 'browse/_prot_path_section.html' %}
+	    {% endwith %}
+	{% endif %}
+	{% with section_name="gwas_table" %}
+        {% include 'browse/_prot_gwas_section.html' %}
+    {% endwith %}
+    {% with section_name="Phenotypes" %}
+        {% include 'browse/_prot_pheno_section.html' %}
+    {% endwith %}
+    {% with section_name="dpi" %}
+        {% include 'browse/_prot_dpi_section.html' %}
+    {% endwith %}
+    {% with section_name="ppi" %}
+        {% include 'browse/_prot_ppi_section.html' %}
+    {% endwith %}
+	{% include "_tooltip_activator.html" %}
+{% endblock body %}

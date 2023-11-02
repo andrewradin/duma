@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block headline %}
+    WZS Weight Compare
+{% endblock headline %}
+{% block header_left %}
+	<form method="post">
+	{% csrf_token %}
+	{{ jobs_form.as_p }}
+	<input type='submit' name='display_btn' value='Display'/>
+	</form>
+	{% if view.job_ids.0 and view.job_ids.1 %}
+	<br><a href="{% url 'nav_score_cmp' ws.id 'wsa' %}?x={{ view.job_ids.0 }}_wzs&y={{ view.job_ids.1 }}_wzs">Score Compare</a>
+	{% endif %}
+{% endblock header_left %}
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block header_right %}
+	{% if settings_diff %}
+	<b>Y Job Settings:</b> {{ settings_diff }}
+	{% endif %}
+{% endblock header_right %}
+{% block body %}
+        {% for plot in plotly_plots %}
+                {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+        {% endfor %}
+	{% include "_plotly_clear.html" %}
+{% endblock body %}

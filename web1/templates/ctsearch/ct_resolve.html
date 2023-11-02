@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    {{ page_label }}
+{% endblock headline %}
+{% block header_left %}
+  {% if view.selected_dn %}
+	<h2>{{ view.label }} {{ view.selected_dn.drug_name }}</h2>
+	{% for l in ext_drug_links %}
+		{{ l }}<br>
+	{% endfor %}
+	{% if view.selected_wsa %}
+        <br><a href="{{ view.selected_wsa.drug_url }}">
+            Duma drug page for {{ view.selected_wsa.agent.canonical }}
+        </a>
+		<form method="post">
+			{{ indi_form.as_p }}
+			{% csrf_token %}
+			<input type="submit" name='reclassify_btn' value="Reclassify"/>
+		</form>
+	{% else %}
+		<form method="post">
+			{% csrf_token %}
+			<input type="submit" name='manual_btn' value="Mark resolved"/>
+		</form>
+	{% endif %}
+  {% else %}
+	<h2>All matched drug names resolved</h2>
+  {% endif %}
+{% endblock header_left %}
+{% block header_right %}
+	Search by {{ view.search.user }}
+	on {{ view.search.created }}
+    <br>{{ view.search.description }}
+	<br>Total drug names found: {{ view.search.ctdrugname_set.count }}
+	{% for status,count in view.stats %}
+		<br>{{ status }}: {{ count }}
+	{% endfor %}
+{% endblock header_right %}
+{% block body %}
+  {% if view.selected_dn %}
+	<h2>Related Trials</h2>
+	<table class="table">
+		<tr>
+		<td></td>
+		{% for header_html in table.headers %}
+			{{ header_html }}
+		{% endfor %}
+		</tr>
+		{% for row in table.rows %}
+		<tr>
+			<td>
+			  {% if view.selected_wsa %}
+				<form method="post">
+					{% csrf_token %}
+					<input type="submit" name='phase1_btn' value="Phase 1"/>
+					<input type="submit" name='phase2_btn' value="Phase 2"/>
+					<input type="submit" name='phase3_btn' value="Phase 3"/>
+					<input type="hidden" name='study'
+						value="{{ row.source_row.study }}"
+					/>
+				</form>
+			  {% endif %}
+			</td>
+			{% for cell_html in row %}
+				{{ cell_html }}
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+	{% if view.selected_wsa %}
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" name='reject_btn' value="Not Investigated"/>
+    </form>
+    {% endif %}
+  {% endif %}
+{% endblock body %}

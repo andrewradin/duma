@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+Disease Summary
+{% endblock headline %}
+{% block header_right %}
+	{% if view.ws.disease_note_id %}
+		<b>Disease Note:</b><br>
+		{{ view.ws.get_disease_note_text|urlizetrunc:10|linebreaks }}
+	{% endif %}
+	{% comment %}
+		To support editing, copy addition template text and form handling
+		from the workflow page.
+	{% endcomment %}
+{% endblock %}
+{% block body %}
+	<h3>Disease Descriptions</h3>
+	{% include '_table.html' with table=disease_table %}
+	<h3>Animal Models</h3>
+	{% include '_table.html' with table=agr_table %}
+	<h3>Phenotypes</h3>
+	{% include '_table.html' with table=pheno_table %}
+{% endblock body %}

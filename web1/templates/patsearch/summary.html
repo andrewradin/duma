@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Patent Summary
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+	<a href="{% url 'pats_search' ws.id %}">Search Page</a>
+{% endblock header_right %}
+{% block body %}
+{% for disease_search in search.drug_disease_patent_searchs %}
+    <h2>{{ disease_search.drug_name }}</h2>
+    <a href='{% url "pats_resolve" view.ws.id disease_search.id %}'>Review {{ disease_search.drug_name }} Patents</a><br/>
+    <b>{{ disease_search.patent_search_results|length }}</b>
+    Patents Found
+    <br/>
+    <b>{{ disease_search.resolution_summary.Unresolved }}</b>
+    Unreviewed
+    <br/>
+    <b> {{ disease_search.resolution_summary.Relevant }} </b>
+    Marked As Relevant
+    <br/>
+    <b>{{ disease_search.resolution_summary|lookup:"Needs More Review" }}</b>
+    Marked As Needs More Review
+    <br/>
+
+{% endfor %}
+{% endblock body %}

@@ -1,0 +1,7 @@
+{% for st in source_types %}
+    {% url 'nav_score_select' ws.id st.0 as there %}
+    <a href="{{ there }}?done={{ here|urlencode }}"
+            style="white-space:nowrap;padding-right:8pt">
+        {{ st.1 }}
+    </a>
+{% endfor %}

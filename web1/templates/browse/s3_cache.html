@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block headline %}
+S3 Cache Management
+{% endblock headline %}
+{% block body %}
+	<h3>Select directories to refresh</h3>
+	<form method="post">
+        <input type='submit' name='clear_btn' value='Clear Selected'/>
+        {% csrf_token %}
+        {{ selection_form.as_p }}
+	</form>
+{% endblock body %}

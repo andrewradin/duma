@@ -1,0 +1,27 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Useful external links{% endblock %}
+{% block section_body %}
+{% for title, dl in ext_drug_links %}
+    <div style='display: inline-block; vertical-align: top; padding: 2rem; '>
+        <h4>{{title}}</h4>
+    {% for l in dl %}
+        {% if not forloop.first %}
+            <br>
+        {% endif %}
+        {{ l }}
+    {% endfor %}
+    </div>
+{% endfor %}
+<div style='display: inline-block; vertical-align: top; padding: 2rem; '>
+    <h4>Single Gene Search</h4>
+See target pages for target-specific links and searches.
+<ul>
+{% for key,l in bindings %}
+    {% for x in l %}
+        <li>{{ x }}</li>
+    {% endfor %}
+{% endfor %}
+</ul>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+
+{% load browse_tags %}
+
+<style>
+.ini {
+    background-color: #efe;
+    width: 100%;
+    display: inline-block;
+    font-weight: bold;
+}
+.rvw {
+    background-color: #afb;
+    width: 100%;
+    display: inline-block;
+    font-weight: bold;
+}
+.hit {
+    background-color: #0f0;
+    width: 100%;
+    display: inline-block;
+    font-weight: bold;
+}
+</style>
+
+<form method='POST'>
+    {% csrf_token %}
+    {{ molecules_form.as_p }}
+    <button type='submit' name='molecules_btn'>Display</button>
+</form>
+<hr/>
+
+Displaying any mol/prot that made it through prescreen in at least 2 workspaces.
+
+<hr/>
+{% for table_id, table_data, table_columns, table_order in tables %}
+    <table style='text-align:center' class='table table-condensed table-hover pad' id="{{table_id}}">
+    </table>
+
+    <script>
+        $('#{{table_id}}').DataTable({
+            data: {{ table_data | safe_json }},
+            columns: {{ table_columns | safe_json }},
+            order: {{ table_order | safe_json }},
+            columnDefs: [{
+                'render': function(data, type, row, meta) {
+                    if (type == 'sort') {
+                        const order = ['_filler', 'Ini', 'Rvw', 'Hit']
+                        const val = $(data).text()
+                        const idx = order.indexOf(val)
+                        if (idx != -1) {
+                            return idx
+                        }
+                        if (data == '') {
+                            return 0;
+                        }
+                    }
+
+                    return data
+                },
+                "targets": "_all",
+            }]
+        });
+    </script>
+{% endfor %}

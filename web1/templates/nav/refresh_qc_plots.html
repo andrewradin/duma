@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load process %}
+
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block headline %}
+    Refresh QC
+{% endblock headline %}
+{% block header_left %}
+	<h2>Data from {{ view.group }}</h2>
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+	{% for bji,qc_plots,reports in view.job_info_list %}
+		<h3>{{ bji.role_label }}</h3>
+		{% job_summary bji.job %}<br>
+
+
+    {% for er in bji.get_available_deas %}
+    <br>{{ er.summary_line }}
+    {% endfor %}
+    
+    <br>{% with bji.get_data_catalog.codes_by_key as codelist %}
+        {% if codelist %}
+            <table class="table">
+                <tr>
+                    <th>key</th>
+                    <th>scores</th>
+                    <th>others</th>
+                </tr>
+                {% for row in codelist.items %}
+                    <tr>
+                        <td>{{ row.0 }}</td>
+                        <td>
+                            {% for x in row.1.0 %}
+                                {% if row.0 == 'wsa' %}
+                                     <a href="{% url 'nav_scoreplot' ws.id 'wsa' %}?ds={{ ws.eval_drugset }}&score={{ bji.job.id }}_{{ x }}">
+                                    {{ x }}
+                                    </a>
+                                {% elif row.0 == 'uniprot' %}
+                                    <a href="{% url 'nav_scoreplot' ws.id 'uniprot' %}?score={{ bji.job.id }}_{{ x }}">
+                                    {{ x }}
+                                    </a>
+                                {% else %}
+                                    {{ x }}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for x in row.1.1 %}
+                                {{ x }}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    <br>{% endwith %}
+
+		<br>{% if qc_plots %}
+			{% for link in qc_plots %}
+				{% include "_plotly_div.html" with div_id=link.1 src=link.0 %}
+			{% endfor %}
+			{% include "_plotly_clear.html" %}
+		{% else %}
+			No plots available
+		{% endif %}
+
+        {% if reports %}
+            <h3>Reports</h3>
+            <ul>
+            {% for report in reports %}
+                <li>{{report}}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+	{% endfor %}
+{% include "_tooltip_activator.html" %}
+{% endblock body %}

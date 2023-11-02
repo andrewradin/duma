@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block headline %}
+    {{ headline }}
+{% endblock headline %}
+{% block header_left %}
+	<b>Left Score:</b> {{ view.x_f.label }}
+	<br><b>Right Score:</b> {{ view.y_f.label }}
+	<br><a href="{% url 'nav_score_cmp' ws.id 'wsa' %}?x={{view.x}}&y={{view.y}}">Score Compare</a>
+{% endblock header_left %}
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+	{% include "_plotly_div.html" with div_id=0 src=plot %}
+	{% include "_plotly_clear.html" %}
+{% endblock body %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load navtools %}
+
+{% block headline %}
+Workspace Comparison
+{% endblock headline %}
+{% block header_right %}
+        <form method="post">
+        {% csrf_token %}
+        <input type='submit' name='recalc_btn' value='Recalculate'/>
+		</form>
+        (This will take a while, with no visual feedback)
+{% endblock header_right %}
+{% block body %}
+    {% if show_all %}
+        Showing all workspaces - 
+        <a href="{% url_add_query all=0 %}">See only active workspaces</a>
+    {% else %}
+        Showing active workspaces - 
+        <a href="{% url_add_query all=1 %}">See all workspaces</a>
+    {% endif %}
+    <p>
+	<table class="table table-condensed">
+		<tr>
+			<th>Workspace</th>
+			{% for h in header %}
+				<th
+					style="text-align:right;background:lightgrey"
+					colspan={{ h.1|length }}
+					padding-right="5px"
+					>
+					{{ h.0.1 }}
+				</th>
+				<th></th>
+			{% endfor %}
+		</tr>
+		<tr>
+			<th></th>
+			{% for h in header %}
+				{% for score in h.1 %}
+					<th style="text-align:right">{{ score.label }}</th>
+				{% endfor %}
+				<th></th>
+			{% endfor %}
+		</tr>
+		{% for w in workspaces %}
+			<tr>
+				<td>{{ w.link }}</td>
+				{% for group in w.groups %}
+					{% for item in group %}
+						{{ item }}
+					{% endfor %}
+					<td></td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock body %}

@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    <a href='{{ wsa.drug_url }}?prescreen_id={{ prescreen.id }}'>{% drugname wsa %}</a>
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+    {% include "_datatables_load.html" %}
+<style>
+    .action-section {
+        min-width: 30%;
+        display: inline-block;
+        border-left: 1px solid #ddd;
+        margin: 2rem;
+        padding-left: 5rem;
+        vertical-align: top;
+    }
+
+    .header-panel {
+        display: inline-block;
+    }
+
+    #score_table_wrapper {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+    #mol_table_wrapper {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+    #targ_table_wrapper {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+    ul {
+        padding-left: 0;
+        list-style: none;
+    }
+    .popover {
+        max-width: 100%;
+    }
+
+</style>
+{% endblock javascript %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+    <div class='panel panel-default header-panel'>
+        <div class='panel-heading panel-title'>Workspace Prescreen Stats</div>
+        <div class='panel-body'>
+            <ul>
+                <li>Prescreened: {{ stats | lookup:"screened" }}
+                <li>Marked For Review: {{ stats | lookup:"ever_for_review" }}
+                <li>Unreviewed: {{ stats | lookup:"cur_for_review" }}
+            </ul>
+        </div>
+    </div>
+
+{% endblock header_right %}
+{% block body %}
+    <div class='panel panel-info'>
+        <div class='panel-heading panel-title'>Prescreen Scores</div>
+        <table class='table table-condensed table-bordered' style='display:inline-block'  id='score_table'>
+        </table>
+    </div>
+
+    <div class='panel panel-info'>
+        <div class='panel-heading panel-title'>Targets</div>
+            <table class='table table-condensed' id='targ_table'>
+            </table>
+    </div>
+
+    <div class='panel panel-info'>
+        <div class='panel-heading panel-title'>Molecules</div>
+            <table class='table table-condensed' id='mol_table'>
+            </table>
+    </div>
+
+    {% if clin_imp > 0.01 %}
+    <div class='panel panel-info'>
+        <div class='panel-heading panel-title'>Clinical</div>
+        <div class='panel-body'>
+            Non-target-based Clinical/Structural Importance: <b>{{ clin_imp | floatformat:2 }}</b><br>
+            {% for conn, data in  clin_conn.items %}
+                {{conn}}: {{ data.1.html_url }} ({{ data.1.indication_label }}) <br>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class='panel panel-primary'>
+        <div class='panel-heading panel-title'>Actions</div>
+        <div class='panel-body'>
+            <div class='action-section'>
+                <form method='POST'>
+                    {% csrf_token %}
+                    <h3>Mark For Review</h3>
+                    <hr>
+                    <table class='table table-bordered'>
+                        {{ markreview_form.as_table }}
+                        <tr><td colspan=2><button class='btn btn-primary' name='markreview_btn'>Mark For Review</button></td></tr>
+                    </table>
+                </form>
+            </div>
+            <div class='action-section'>
+                <h3>Reject / Reclassify</h3>
+                <form method='POST'>
+                    {% csrf_token %}
+                    <hr>
+                    {% include "_button_list.html" with list=shortcut_list %}
+                    <hr>
+                    <table class='table table-bordered'>
+                    {{ reclassify_form.as_table }}
+                    <tr><td colspan=2> <button class='btn btn-primary' name='reclassify_btn'>Reclassify Per Form</button> </td></tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $('#score_table').DataTable({
+            data: {{ scores.rows_data | safe_json }},
+            columns: {{ scores.headers_data | safe_json }},
+            searching: false,
+            lengthChange: false,
+            paging: false,
+            info: false,
+            sort: false,
+        });
+        $('#targ_table').DataTable({
+            data: {{ prot_data.rows_data | safe_json }},
+            columns: {{ prot_data.headers_data | safe_json }},
+            order: [[2, 'desc']],
+            searching: false,
+            lengthChange: false,
+        });
+
+        $('#mol_table').DataTable({
+            data: {{ mol_data.rows_data | safe_json }},
+            columns: {{ mol_data.headers_data | safe_json }},
+            order: [[1, 'desc']],
+            searching: false,
+            lengthChange: false,
+        });
+    </script>
+
+    <small><div>{{ prefetched_count }} next mols cached/prefetched</div></small>
+{% endblock body %}

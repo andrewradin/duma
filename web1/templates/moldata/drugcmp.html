@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+{% block headline %}
+    Protein Binding Comparison
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+    <h1 style="color:red;">{{ message }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ target_form.as_p }}
+        <input type="submit" name='find_btn' value="Search by similarity"/>
+    </form>
+    <form method="post">
+        {% csrf_token %}
+        {{ search_form.as_p }}
+        <input type="submit" name='search_btn' value="Search by name"/>
+    </form>
+{% endblock header_left %}
+{% block header_right %}
+{{ plot_toggle_link }}
+{% endblock header_right %}
+{% block body %}
+    <table class="table">
+        <tr>
+            <th></th>
+            {% for d in drugs %}
+                <th><a href="{{ d.drug_url }}">{% drugname d %}</a></th>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td></td>
+            {% for d in drugs %}
+                <td>{{ d.indication_link }}</a></td>
+            {% endfor %}
+        </tr>
+        {% for v in prots%}
+            <tr>
+                <td>{% include 'browse/prot_link.html' with prot_id=v.0 %}</td>
+				{% for d in v.2 %}
+					<td>
+						{% if d %}
+							{{ d }}
+						{% endif %}
+					</td>
+				{% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    {% if plotly_plots %}
+        {% for plot in plotly_plots %}
+            {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+        {% endfor %}
+        {% include "_plotly_clear.html" %}
+    {% endif %}
+{% endblock body %}

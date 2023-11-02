@@ -1,0 +1,51 @@
+[
+{"fields": {"multival": false, "name": "canonical", "prop_type": 0}
+	, "model": "drugs.prop"
+	, "pk": 1
+}
+,
+{"fields": {"multival": false, "name": "my_drugs_id", "prop_type": 0}
+	, "model": "drugs.prop"
+	, "pk": 2
+}
+,
+{"fields": {"multival": false, "name": "m_my_drugs_id", "prop_type": 0}
+	, "model": "drugs.prop"
+	, "pk": 3
+}
+,
+{"fields": {"name": "my_drugs.full","key_name":"my_drugs_id"}
+	, "model": "drugs.collection"
+	, "pk": 1
+}
+,
+{"fields": {"hide": false, "collection": 1}
+	, "model": "drugs.drug"
+	, "pk": 5
+}
+,
+{"fields": {"href": "", "value": "My New Drug", "drug": 5, "prop": 1}
+	, "model": "drugs.tag"
+	, "pk": 1
+}
+,
+{"fields": {"name": "Test Workspace"}
+    , "model": "browse.workspace"
+    , "pk": 1
+}
+,
+{"fields": {"name": "Default Tissue Set"
+			,"ws": 1
+		}
+    , "model": "browse.tissueset"
+    , "pk": 1
+}
+,
+{"fields": {"ws": 1
+		, "indication":0
+		, "agent":5
+		}
+    , "model": "browse.wsannotation"
+    , "pk": 2
+}
+]

@@ -1,0 +1,9 @@
+{% for type,name,label in list %}
+	{% if type %}
+		<button type='submit' class='btn btn-{{ type }}' name='{{ name }}_btn'>
+			{{ label }}
+		</button>
+	{% else %}
+		<br>
+	{% endif %}
+{% endfor %}

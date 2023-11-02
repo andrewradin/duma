@@ -1,0 +1,49 @@
+{% extends "collapse_section.html" %}
+{% block section_label %}{{ section_label }}{% endblock %}
+{% block section_body %}
+
+<div id='{{ section_name }}_content' content_url='{{ content_url | safe }}'>
+    <span class='loader'></span>
+</div>
+
+<script>
+    // This code ends up getting replicated for every deferred section on
+    // the page, which is a bit silly.  Should centralize it.
+    async function loadSection_{{section_name}}(formData) {
+        $('#sec_{{ section_name }}').off('show.bs.collapse');
+
+        let resp;
+        if (formData) {
+            resp = await fetch('{{ content_url | safe }}', {
+                method: 'POST',
+                body: formData
+            });
+        } else {
+            resp = await fetch('{{ content_url | safe }}');
+        }
+        const data = await resp.text()
+        const sectionEl = $('#{{ section_name }}_content');
+        sectionEl.html(data);
+
+        // Intercept any form submits and reload the deferred.
+        // We could alternatively load this as an iframe, but there is quite
+        // a bit of magic in iframe autosizing.
+        const submitBtn = sectionEl.find('button[type="submit"]');
+        submitBtn.on('click', (e) => {
+            const formEl = submitBtn.closest('form');
+            const formData = new FormData(formEl[0]);
+            formData.append(submitBtn[0].name, true);
+            loadSection_{{section_name}}(formData);
+            e.preventDefault();
+            sectionEl.html("<span class='loader'></span>");
+            return false;
+        });
+    }
+    $('#sec_{{ section_name }}').on('show.bs.collapse', () => loadSection_{{section_name}}());
+
+    {% if autoshow %}
+        $('#sec_{{ section_name }}_toggle').click();
+    {% endif %}
+</script>
+
+{% endblock %}

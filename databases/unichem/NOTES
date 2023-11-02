@@ -1,0 +1,86 @@
+This directory started as an evaluation of UniChem for matching drugs across
+databases.  The script ../drugbank/match.py attempts to match all drugbank
+drugs to chembl by various methods and extracts statistics.  The details are
+below, but basically the best strategy is:
+- first try matching by InChI
+- for unmatched drugs, try matching by name
+Lots of other resources were looked at, and none really added any value.
+
+Further enhancements we should look at are:
+- Aaron's structural distance idea
+- sanity checking of results (to guard against database entry errors)
+
+Some principles seem to be emerging:
+- matching is important in several contexts:
+  - building a combo drug collection
+  - building a combo DPI file
+  - assigning foreign DPI keys to drugs
+  - preventing duplicate drug imports
+- it's not clear whether this implies a tool used in all the contexts, or a
+  tool used off-line to build a cross-reference which can be consulted in all
+  these contexts (I suspect the latter)
+- PLAT-526 might best be postponed waiting for this issue to be addressed
+  (although it could be implemented based just on m_ keys in drug collections)
+ 
+Some tools that might be useful are:
+- ChEMBL has a full set of web APIs (see https://www.ebi.ac.uk/chembl/ws);
+  although we should access a local DB copy for production, they can be
+  useful for seeing what data is available on a drug as we learn our way
+  around the schema
+--------------------
+UniChem cross-references keys for different drug databases.
+https://www.ebi.ac.uk/unichem/
+
+Output is available via FTP download:
+ftp://ftp.ebi.ac.uk/pub/databases/chembl/UniChem/data/wholeSourceMapping/
+
+Output is organized by source ids, listed here:
+https://www.ebi.ac.uk/unichem/ucquery/listSources
+Initially relevant are:
+1 - chembl
+2 - drugbank
+22 - pubchem
+31 - bindingdb
+
+See the README file at the FTP URL for organization details.
+
+Also, see http://cactus.nci.nih.gov/
+- the Chemical Identity resolver shows lots of aliases for a given substance
+  - 'pip install cirpy' to get a nice python interface
+
+TODO:
+- modify drugbank/matcher.py so that the ChEMBL name match happens in the
+  upper portion, maybe replacing unichem, which doesn't seem to add much.
+  - inchi
+  - name
+
+Compare drugbank w/ ChEMBL:
+- latest drugbank extract contains 8198 drugs
+- 3978 of them are linked to chembl in unichem
+  - all but 5 of these can also be matched by inchi code
+- 7086 of them have InChI codes
+  - 3113 plus the 3973 above = 7086 matches to chembl
+- of the 1107 that can't be matched by one of the above 2 methods:
+  -  37 have both SMILES and DPI data
+  - 483 have DPI but no SMILES
+  -  24 have SMILES but no DPI
+  - 124 more have external keys (mostly CAS) but no other data
+  - 439 have no DPI, structural data, or external keys
+
+So, 439 are basically nothing but a name, and are probably ok to drop.
+(but as an example, DB05103 gets an inchi code back from CIR using the
+canonical name, and that then matches to ChEMBL as CHEMBL100014; ChEMBL
+had no target info either)
+
+The 520 that have DPI may be more worth matching via something similar to
+the above.  Of those:
+- 315 have no external keys; in a test set of 20 I got zero hits in CIR on
+  the canonical name
+- 169 have only CAS keys; in a test set of 20 I got one hit in CIR on
+  the canonical name; using CAS I got 3 hits
+  - using ChemSpider manually, I was getting more like 50% (4 of 6), but
+    this seems to have commercial restrictions on the API
+
+Attempting name matches in ChEMBL turned up 441 hits out of the entire 1107
+that weren't otherwise matched.  I don't know what the population of the
+residual unmatched compounds looks like.

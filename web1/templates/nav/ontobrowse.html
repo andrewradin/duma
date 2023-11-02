@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+Browse {{ disease_vocab.name }}
+{% endblock headline %}
+{% block header_right %}
+	<a href="{% url 'nav_ontolist' ws.id view.disease_vocab.name %}">
+	Full List
+	</a>
+{% endblock header_right %}
+{% block body %}
+    <form method="post">
+        {% csrf_token %}
+        {{ phrase_form }}
+        <input type="submit" name="findwords_btn" value="Find Target Words"/>
+    </form>
+<hr>
+    <h3>Choose desired target words:</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ tw_bulk_links }}<br><br>
+        {{ wordlist_form }}
+        <input type="submit" name="findmatch_btn" value="Find Matches"/>
+    </form>
+<hr>
+    {% if view.matches %}
+        <h3>Found {{ view.matches|length }} matches:</h3>
+		{% if view.select_multiple %}
+			<form method="post">
+			{% csrf_token %}
+			{{ bulk_links }}<br><br>
+			<input type='submit' name='multi_select_btn' value='Save selection'/>
+		{% endif %}
+        <table class='table'>
+		{% if view.disease_vocab.header %}
+			<tr>
+			{% if view.src %}
+				<th></th>
+			{% endif %}
+			<th></th>
+			{% for item in view.disease_vocab.header %}
+				<th>{{ item }}</th>
+			{% endfor %}
+			</tr>
+		{% endif %}
+        {% for match in view.matches %}
+            <tr>
+            {% if view.select_single %}
+                <td>
+                    <form method="post">
+                    {% csrf_token %}
+                    <input type='submit' name='select_btn' value='Select'/>
+                    <input type='hidden' name='row_val' value='{{ match.2 }}'/>
+                    </form>
+                </td>
+            {% elif view.select_multiple %}
+				<td>
+					{{ match.4 }}
+				</td>
+            {% endif %}
+            <td>{{ match.1 }}</td>
+			{% for entry in match.3 %}
+				<td>{{ entry }}</td>
+			{% endfor %}
+            </tr>
+        {% endfor %}
+		{% if view.select_multiple %}
+			</form>
+		{% endif %}
+        </table>
+    {% endif %}
+{% endblock body %}

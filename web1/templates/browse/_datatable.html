@@ -1,0 +1,23 @@
+
+<table class='table table-condensed table-hover' id="{{table_id}}">
+
+</table>
+
+<script>
+    $('#{{table_id}}').DataTable({
+        data: {{ table_data | safe }},
+        columns: {{ table_columns | safe }},
+        order: {{ table_order | safe }},
+        columnDefs: [
+            {
+                render: (data, type, row) => {
+                    if (type == 'display' && (typeof data) == 'number') {
+                        return data.toFixed(3);
+                    }
+                    return data
+                },
+                targets: "_all",
+            }
+            ]
+    });
+</script>

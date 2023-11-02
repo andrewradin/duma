@@ -1,0 +1,14 @@
+<span style='width: 300px; display: inline-block' id='{{widget.attrs.id}}'></span>
+<input type='hidden' name='{{ widget.name }}' value='{{ widget.value }}'>
+
+
+<script>
+{
+    const onSelected = (drug) => {
+        $('input[name="{{widget.name}}"]').val(drug.wsa_id);
+    };
+
+    drawMolSearch($('#{{widget.attrs.id}}')[0], {{widget.ws.id}}, onSelected, "{{ widget.name }}_name", "{{ widget.initial_name }}");
+}
+</script>
+

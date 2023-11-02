@@ -1,0 +1,38 @@
+{% extends "collapse_section.html" %}
+{% block section_label %}Update indication or note{% endblock %}
+{% block section_body %}
+    <div class="col-xs-8">
+        <form method="post">
+            {% csrf_token %}
+            <table>
+                {{ demerit_form }}
+                {% for field in ann_form %}
+                    <tr>
+                        <td>{{ field.label_tag }}</td>
+                        <td>
+                            {{ field.errors }}
+                            {{ field }}
+        {% if field.id_for_label == 'id_study_note' and drug_ws.study_note_id %}
+            <a href="/note/{{ drug_ws.study_note_id }}">History</a>
+        {% endif %}
+        {% if field.id_for_label == 'id_bd_note' and drug_ws.agent.bd_note_id %}
+            <a href="/note/{{ drug_ws.agent.bd_note_id }}">History</a>
+        {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <input type="submit" name="indication_btn" value="Save"/>
+        </form>
+    </div>
+    {% if drug_ws.marked_by %}
+        <div class="col-xs-4">
+            <table>
+                {% include 'lv_row.html' with label='Marked by' value=drug_ws.marked_by %}
+                {% include 'lv_row.html' with label='Marked on' value=drug_ws.marked_on %}
+                {% include 'lv_row.html' with label='Detail' value=drug_ws.marked_because %}
+                {% include 'lv_row.html' with label='From Prescreen' value=drug_ws.marked_prescreen_id %}
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

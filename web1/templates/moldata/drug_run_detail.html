@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+	{% drugname wsa %}
+{% endblock headline %}
+{% block header_left %}
+    <h3>Score Detail</h3>
+    <br><a href="{{ wsa.drug_url }}">
+                Return to drug page
+                </a>
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+    {% comment %}
+    {% endcomment %}
+
+    {% with section_name='sb_ranks' section_label="Rank in all Prescreens" content_url="?section=sbranks" %}
+        {% include '_deferred_section.html' %}
+    {% endwith %}
+    {% if probeminer_data_table %}
+        {% with section_name="probeminer_data" %}
+            {% include 'moldata/_probeminer_data_table_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    {% for pathset in meta_prot_options %}
+        {% with section_name=pathset.1 section_label=pathset.0 content_url="?section=pathprots&section_info="|add:pathset.1 %}
+            {% include '_deferred_section.html' %}
+        {% endwith %}
+    {% endfor %}
+    {% for gsig in gsig_list %}
+        {% with section_name=gsig.0.1 gsig=gsig %}
+            {% include 'moldata/_gsig_section.html' %}
+        {% endwith %}
+    {% endfor %}
+    {% for esga in esga_list %}
+        {% with section_name=esga.0.1 esga=esga %}
+            {% include 'moldata/_esga_section.html' %}
+        {% endwith %}
+    {% endfor %}
+    {% for defus in defus_list %}
+        {% with section_name=defus.0.1 defus=defus %}
+            {% include 'moldata/_defus_section.html' %}
+        {% endwith %}
+    {% endfor %}
+    {% for drug_score in drug_score_list %}
+        {% with section_name=drug_score.0.1 drug_score=drug_score %}
+            {% include 'moldata/_drug_score_section.html' %}
+        {% endwith %}
+    {% endfor %}
+    {% with section_name="pathway" %}
+        {% include 'moldata/_pathway_section.html' %}
+    {% endwith %}
+    {% include "_tooltip_activator.html" %}
+{% endblock body %}

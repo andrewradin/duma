@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Review Drug Edits
+{% endblock headline %}
+{% block header_left %}
+<a href='{% url "drug_edit_view" %}'>New Drug Proposal</a><br>
+<a href='{% url "drug_changes_view" %}'>Review Version Changes</a>
+{% endblock header_left %}
+{% block header_right %}
+<div class='panel panel-info'>
+    <div class='panel-heading'>
+Duma Collection
+    </div>
+    <div class='panel-body'>
+    <div style='float:right'>
+    <b>Up-To-Date:</b><br/>
+    Published: {{ published }}<br/>
+    ETL Published: {{ generated }}<br/>
+    Imported: {{ imported }}
+    </div>
+<form method='POST'>
+    {% csrf_token %}
+    Collection files: <a href='/drugs/twoxar_attrs/'>Attrs</a> <a href='/drugs/twoxar_dpi/'>DPI</a><br/>
+    {% if request.user|is_button_pusher %}
+        Click to publish latest changes to S3.<br>
+        <button name='publish_btn'>Publish</button>
+    {% endif %}
+
+</form>
+    </div>
+</div>
+{% endblock header_right %}
+{% block body %}
+<div class='panel panel-primary'>
+    <div class='panel-heading'>Proposals</div>
+    <div class='panel-body'>
+<table id='proposals' class='table table-hover'>
+    <thead>
+        <th>State</th><th>User</th><th>Date</th><th>Drug Name</th>
+    </thead>
+    <tbody>
+    </tbody>
+    </div>
+</div>
+<form>
+<link rel='stylesheet' type='text/css' href='/static/js/drug_edit.css'>
+
+
+<script src='/static/js/drug_edit.js'></script>
+    <script>
+        setupProposals({{ proposals | safe }}, '{{ request.user|is_button_pusher }}' == 'True' );
+    {% if preselect %}
+        preselectProposal({{preselect}});
+    {% endif %}
+    </script>
+
+</form>
+{% endblock body %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+Prescreen Edit
+{% endblock headline %}
+{% block header_right %}
+<b>Created:</b> {{ view.prescreen.created }}<br>
+<b>By:</b> {{ view.prescreen.user }}<br>
+<b>Primary score:</b> {{ view.prescreen.primary_score }}<br>
+{% if view.prescreen.filters %}
+	<b>Filter:</b> {{ view.prescreen.filters }}<br>
+{% endif %}
+{% endblock header_right %}
+{% block body %}
+	<form method="post">
+		{% csrf_token %}
+        <table>
+		{{ edit_form.as_table }}
+        </table>
+		<br>
+		<input type="submit" name="save_btn" value="Save Changes"/>
+	</form>
+{% endblock body %}

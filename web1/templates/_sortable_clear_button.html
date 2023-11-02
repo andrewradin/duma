@@ -1,0 +1,6 @@
+<input type="button" class="btn btn-default {% if queryval == sort_type %}btn-primary{% endif %}"
+	value="{{ label }}"
+	onclick="localStorage.removeItem('{{ store_name }}{{ ws.id }}');
+			location.search='?sort={{ queryval }}';
+			"
+	/>

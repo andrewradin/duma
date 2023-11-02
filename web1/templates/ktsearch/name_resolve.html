@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Treatment Name Matching
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+	<a href="{% url 'kts_summary' ws.id search.id %}">See summary</a>
+{% endblock header_right %}
+{% block body %}
+
+	{% if view.drugname %}
+        <h3>{{ view.drugname }}</h3>
+		<b>Search on:</b>
+			{% for link in search_links %}
+				{{ link }}&nbsp;&nbsp;&nbsp;
+			{% endfor %}
+		<br><b>Proposed indication:</b> {{ shared_name_srs.0.indication_label }}
+		<br><b>Evidence:</b>
+		<ul>
+			{% for sr in shared_name_srs %}
+                                <li>{{ sr.0 }} {{ sr.1.extra }}</li>
+                        {% endfor %}
+		</ul>
+		<form method="post">
+			{% csrf_token %}
+			<input type="submit" name='unmatch_btn' value="Confirm Unmatched"/>
+		</form>
+        <hr>
+		<form method="post">
+			{% csrf_token %}
+			{{ search_form.as_p }}
+			<input type="submit" name='search_btn' value="Search Workspace"/>
+		</form>
+		{% if view.search_term %}
+			<h3>Drugs from workspace matching {{ view.search_term }}</h3>
+            {% if too_many_results %}
+                <div class='alert alert-warning'>WARNING: Found too many results to display.  Pick a narrower search term.</div>
+            {% endif %}
+			<table class="table">
+				<tr>
+				<th></th>
+				{% for header_html in search_table.headers %}
+					{{ header_html }}
+				{% endfor %}
+				</tr>
+				{% for row in search_table.rows %}
+				<tr>
+					<td>
+					<form method="post">
+						{% csrf_token %}
+                        {% if row.source_row.4 %}
+                            <input type="hidden"
+                                    name='wsa_id' value="{{row.source_row.4.id}}"/>
+                            <input type="submit" name='match_btn' value="Match"/>
+                        {% endif %}
+					</form>
+					</td>
+					{% for cell_html in row %}
+						{{ cell_html }}
+					{% endfor %}
+				</tr>
+				{% endfor %}
+			</table>
+		{% endif %}
+	{% else %}
+		All names resolved
+	{% endif %}
+	{% include "drugs/_search_import.html" %}
+{% endblock body %}

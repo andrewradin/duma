@@ -1,0 +1,29 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% load process %}
+{% block section_label %}{{ defus.1 }} information{% endblock %}
+{% block section_body %}
+	Source Job {% job_summary defus.0.0 '-status -settings' %}<br>
+    <a href='{% url "rvw:defus_details" view.ws.id %}?ref_jid={{defus.0.0.id}}&wsa_id={{view.wsa.id}}'>
+        Defus Breakdown
+    </a><br>
+    <table class="table">
+		<tr>
+            {% for label in defus.2 %}
+                <th>DEFUS {{ label }}</th>
+            {% endfor %}
+		</tr>
+		{% for d in defus.3 %}
+		<tr>
+            <td>{{ d.0}}</td>
+            <td> <a href="{{ d.1.1.drug_url }}">
+				{% drugname d.1.1 %}
+			</a></td>
+            <td>{{ d.1.0}}</td>
+            <td>{{ d.2}}</td>
+            <td>{{ d.3}}</td>
+            <td>{{ d.4}}</td>
+		</tr>
+		{% endfor %}
+    </table>
+{% endblock %}

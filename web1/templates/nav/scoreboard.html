@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load navtools %}
+{% load browse_tags %}
+
+{% block javascript %}
+	{% if jump_to %}
+		<script>
+			$(document).ready(function() {
+						location.hash='#{{ jump_to }}';
+						});
+		</script>
+	{% endif %}
+{% endblock javascript %}
+{% block headline %}
+	{{ headline }}
+{% endblock headline %}
+{% block header_right %}
+	{% if save_form %}
+		<form method="post">
+		{% csrf_token %}
+		{{ save_form.name.errors }}
+		{{ save_form.name }}
+		<input type='submit' name="save_btn" value='Save as Score Set'/>
+		</form>
+	{% endif %}
+    <hr>
+	{% if target_form %}
+		<form method="post">
+		{% csrf_token %}
+		{{ target_form.dpi.errors }}
+		{{ target_form.dpi }}
+		{{ target_form.dpi_thresh.errors }}
+		{{ target_form.dpi_thresh }}
+		<input type='submit' name="redisplay_btn" value='Redisplay'/>
+		</form>
+	{% endif %}
+{% endblock header_right %}
+{% block body %}
+{% if view.config == view.filt_mode %}
+	<h3>Filter configuration</h3>
+	<div class="row">
+		<div class="col-md-8">
+			<form method=POST>
+				{% csrf_token %}
+				<table class="table">
+					{{ filter_form.as_table }}
+					<tr>
+					<th>{{ indi_form.ind.label }}:</th>
+					<td>
+						{{ indi_form.ind }}
+						{% bulk_update_links 'ind' %}
+					</td>
+					</tr>
+					<tr>
+					<th>{{ deme_form.deme.label }}:</th>
+					<td>
+						{{ deme_form.deme }}
+						{% bulk_update_links 'deme' %}
+					</td>
+					</tr>
+					<tr>
+					<th>{{ ds_form.ds.label }}:</th>
+					<td>
+						{{ ds_form.ds }}
+						{% bulk_update_links 'ds' %}
+					</td>
+					</tr>
+                    {{ condense_form.as_table }}
+					{{ page_size_form.as_table }}
+				</table>
+				<input type='submit' name='filter_btn' value='Display'/>
+			</form>
+		</div>
+		<div class="col-md-4">
+			{% include '_filter_help.html' %}
+		</div>
+	</div>
+{% elif view.config == view.cols_mode %}
+	Get more scores:
+	{% include "nav/_score_select_links.html" with source_types=view.sources.get_source_types here=view.here_url %}
+	<form method="post">
+	{% csrf_token %}
+	{% include '_table.html' with table=column_table %}
+	<input type='submit' name='columns_btn' value='Display'/>
+	<input type='submit' name='defaults_btn' value='Reload Defaults'/>
+	{% bulk_update_links 'en_' %}
+	</form>
+{% else %}
+	<a href="{% url_add_query config='cols' %}">Edit columns</a>
+	<br><a href="{% url_add_query config='filt' %}">Edit filter</a>
+	<h3>Drug Scores</h3>
+	<span>
+		{% with desc=key_filter.get_description total=row_source.row_count %}
+		Ordering
+		{% if desc %}
+			+ Filter ( {{ desc }} )
+		{% endif %}
+		matched {{ total }} Drugs
+		{% if desc and not view.prescreen_id %}
+			<a href="{% url_add_query filt='' indi='' deme='' %}">Clear filter</a>
+		{% endif %}
+		{% endwith %}
+	</span>
+	{{ pager.html }}
+	<table class="table">
+		<tr>
+		{% for header_html in main_table.headers %}
+			{{ header_html }}
+		{% endfor %}
+		</tr>
+		{% for row in main_table.rows %}
+			<tr>
+				{% for cell_html in row %}
+					{{ cell_html }}
+				{% endfor %}
+			</tr>
+			{% if row.source_row.wsa == view.prescreen_wsa %}
+				<tr>
+				<form method="post">
+				{% csrf_token %}
+				<td>
+				</td>
+				<td>
+					{{ reclassify_form.as_p }}
+					<button type='submit' class='btn btn-primary' name='reclassify_btn'>Reclassify per form</button>
+				</td>
+				<td>
+					{{ view.prescreen_flags }}
+				</td>
+				<td>
+				<b>Shortcuts:</b><br>
+				{% include "_button_list.html" with list=shortcut_list %}
+				</td>
+				</form>
+				</tr>
+			{% endif %}
+		{% endfor %}
+	</table>
+{% endif %}
+	{% include "_tooltip_activator.html" %}
+{% endblock body %}

@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load process %}
+
+{% block javascript %}
+{% include "_plotly_load.html" %}
+<style>
+#outputs img {
+    min-width: 30px;
+    min-height: 30px;
+    box-shadow: 0 0 4px -1px rgba(100, 100, 100, 0.4);
+    background-color: #eee;
+    margin: 0.5rem;
+}
+</style>
+{% endblock javascript %}
+{% block headline %}
+    {{ job_info.page_label }}
+	{% if not job_info.job.active %}
+        ({{ job_info.job.id }})
+    {% endif %}
+{% endblock headline %}
+{% block header_left %}
+	{% with job_info.get_subtitle as subtitle %}
+	{% if subtitle %}<h3>{{ subtitle }}</h3>{% endif %}
+	{% endwith %}
+	{% job_summary job_info.job 'log -outlink bottom' %}
+    {{ job_info.job|job_times }}
+    {% if job_info.job.role %}
+    <br><b>Role:</b> {{ job_info.job.role }}
+    {% endif %}
+{% endblock header_left %}
+{% block header_right %}
+    {% if refresh %}
+        <a href="?pause=1">Pause refresh to edit job note</a><br>
+        {% if note_id %}
+        {{ note_form.initial.note|urlizetrunc:10|linebreaks }}<br>
+        {% endif %}
+    {% else %}
+        <form id="noteForm" action="?op=note" method="post">
+            {% csrf_token %}
+            {{ note_form.note }}
+			<p>
+            <input type="submit" value="update note"/>
+            {% if pause %}
+            <a href="?">or resume refresh</a><br>
+            {% endif %}
+            <p>
+        </form>
+    {% endif %}
+    {% if note_id %}
+        <a href="{% url 'note_hist' note_id %}">Note History</a>
+    {% endif %}
+	{% if not job_info.job.active %}
+        {% if scoreset_ids %}
+            <br>In scoresets:
+            {% for ss_id in scoreset_ids %}
+                <a href="{% url 'nav_scoreset' ws.id ss_id %}">
+                    {{ ss_id }}
+                </a>
+            {% endfor %}
+        {% endif %}
+		<br>
+        <a href="{% url 'nav_add_to_scoreset' ws.id job_info.job.id %}">
+			Add to scoreset...
+		</a>
+    {% endif %}
+	<br>
+    {% for er in job_info.enrichment_metric_summaries %}
+    <br>{{ er | safe }}
+    {% endfor %}
+	{% with job_info.get_data_catalog.codes_by_key as codelist %}
+		{% if codelist %}
+			<table class="table">
+				<tr>
+					<th>key</th>
+					<th>scores</th>
+					<th>others</th>
+				</tr>
+				{% for row in codelist.items %}
+					<tr>
+						<td>
+                            {{ row.0 }}
+                            {% if row.0 == 'wsa' %}
+                                <a href="{% url 'nav_scoreboard' ws.id %}?scorejobs={{ job_info.job.id }}">
+                                    (scoreboard)
+                                </a>
+                            {% endif %}
+                        </td>
+						<td>
+							{% for x in row.1.0 %}
+								{% if row.0 == 'wsa' %}
+                                    {% for ds_label, ds_name in job_info.eval_drugsets %}
+                                        <a href="{% url 'nav_scoreplot' ws.id 'wsa' %}?ds={{ ds_name }}&score={{ job_info.job.id }}_{{ x }}">
+                                        {{ x }}
+                                        {% if ds_label %}
+                                            ({{ ds_label }})
+                                        {% endif %}
+                                        </a>
+                                    {% endfor %}
+								{% elif row.0 == 'uniprot' %}
+									<a href="{% url 'nav_scoreplot' ws.id 'uniprot' %}?score={{ job_info.job.id }}_{{ x }}">
+									{{ x }}
+									</a>
+								{% else %}
+									{{ x }}
+								{% endif %}
+							{% endfor %}
+						</td>
+						<td>
+							{% for x in row.1.1 %}
+								{{ x }}
+							{% endfor %}
+						</td>
+					</tr>
+				{% endfor %}
+			</table>
+		{% endif %}
+	{% endwith %}
+{% endblock header_right %}
+{% block body %}
+	<h3>Progress</h3>
+    <ol>
+        {% for s in job_info.get_progress %}
+            <li><b>{{ s.0 }}:&nbsp;</b>{{ s.1 }}</li>
+        {% endfor %}
+    </ol>
+    {% with job_info.get_reported_info as reports %}
+        {% if reports %}
+            <h3>Reports</h3>
+            <div id='reports'>
+                <ul style="list-style-type:none">
+                {% for report in reports %}
+                    <li>{{report}}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endwith %}
+    {% if job_info.job.active %}
+        <p>
+        <form action="?op=abort" method="post">
+            {% csrf_token %}
+            <input type='submit' value='Abort'/>
+        </form>
+		{% if show_stop %}
+			<form action="?op=force_stop" method="post">
+				{% csrf_token %}
+				<input type='submit' value='Force Clean Stop'/>
+				WARNING: verify job has successfully completed;
+				otherwise use abort
+			</form>
+		{% endif %}
+    {% else %}
+        {% with job_info.get_data_catalog as dc %}
+			{% with dc.get_uniprot_keyset_codes as keysets %}
+				{% if keysets %}
+					<h3>Make Protein Set</h3>
+					<ul style="list-style-type:none">
+					{% for code in keysets %}
+						<li>{% make_protset dc code %}</li>
+					{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}
+        {% endwith %}
+        {% with job_info.output_links as links %}
+            {% if links %}
+                <h3>Outputs</h3>
+                <div id='outputs'>
+                <ul style="list-style-type:none">
+                {% for link in links %}
+					{% if not link.0.data_json %}
+                    <li><a href="{{ link.0 }}">{{ link.1 }}</a></li>
+					{% endif %}
+                {% endfor %}
+                </ul>
+                {% for link in links %}
+					{% if link.0.data_json %}
+{% include "_plotly_div.html" with div_id=link.1 src=link.0 %}
+					{% endif %}
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+	{% endif %}
+    {{ job_info.custom_report_html | safe }}
+    {% block logtail %}
+        <h3 style='clear:both'>Log Tail</h3>
+        <div id='joblog' style='clear:both;white-space: pre;border: 1px solid #aaa; max-height:400px; overflow: auto; padding-left: 1rem'>{% job_log_tail job_info.job %}</div>
+    <script>
+        // Display the bottom of the log by default.
+        let joblog = document.getElementById('joblog')
+        joblog.scrollTop = joblog.scrollHeight;
+    </script>
+    {% endblock logtail %}
+	<br>
+{% include "_tooltip_activator.html" %}
+{% endblock body %}

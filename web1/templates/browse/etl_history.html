@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block headline %}
+    ETL Version History
+{% endblock headline %}
+{% block header_left %}
+	<h2>{{view.etl_dir}}</h2>
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+	{% if view.versions %}
+		{% include "_table.html" %}
+
+		{% if plotly_plots %}
+			{% for plot in plotly_plots %}
+			<span style='display: inline-block; border:1px solid #aaa; margin: 1rem; padding: 1rem;'>
+				{% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+			</span>
+			{% endfor %}
+			{% include "_plotly_clear.html" %}
+		{% endif %}
+	{% else %}
+		<h3>Directory not versioned</h3>
+	{% endif %}
+{% endblock body %}

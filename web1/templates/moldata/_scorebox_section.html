@@ -1,0 +1,25 @@
+{% load process %}
+<table class="table table-condensed">
+<tr>
+<th></th>
+<th></th>
+<th style="text-align:right">Score</th>
+<th style="text-align:right">WS Maximum</th>
+<th style="text-align:right">Higher</th>
+<th style="text-align:right">Tied</th>
+<th style="text-align:right">Novel Higher</th>
+<th style="text-align:right">Novel Tied</th>
+</tr>
+{% for score in scorebox.scores %}
+<tr>
+<td>{{ score.0 }}</td>
+<td>{% if score.7 %}{% job_summary score.7.job %}{% endif %}</td>
+{{ score.1 }}
+{{ score.2 }}
+{{ score.3 }}
+{{ score.4 }}
+{{ score.5 }}
+{{ score.6 }}
+</tr>
+{% endfor %}
+</table>

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load process %}
+
+{% block headline %}
+    {{ headline }}
+{% endblock headline %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+{% if view.config %}
+    <h3>Configure Columns</h3>
+    <form method=POST>
+    {% csrf_token %}
+    {{ attrib_form }}
+    <input type='submit' name='new_attrib_btn' value='Add Attribute Column'/>
+    <hr>
+    {{ metric_form }}
+    <input type='submit' name='new_metric_btn' value='Add Metric Column'/>
+    <table class="table">
+    <tr>
+    {% for header_html in attrib_table.headers %}
+        {{ header_html }}
+    {% endfor %}
+    </tr>
+    {% for row in attrib_table.rows %}
+    <tr>
+        {% for cell_html in row %}
+            {{ cell_html }}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    {% for row in metric_table.rows %}
+    <tr>
+        {% for cell_html in row %}
+            {{ cell_html }}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </table>
+    <input type='submit' name='display_btn' value='Display'/>
+    </form>
+{% else %}
+    {{ config_link }}
+    <h3>Score Set {{ view.scoreset.id }}</h3>
+    <h4>{{ view.scoreset.desc }}</h4>
+	<p>Created on {{ view.scoreset.created }} by {{ view.scoreset.user }}</p>
+	{% for label,value in extra_info %}
+		<p><b>{{ label }}:</b> {{ value }}</p>
+	{% endfor %}
+    {% include "_table.html" with table=table %}
+	{% if compare_scores %}
+		<h3>Compare</h3>
+		{% for score in compare_scores %}
+			<h4>{{ score.label }}</h4>
+			{% include "_table.html" with table=score.table %}
+		{% endfor %}
+	{% endif %}
+{% endif %}
+{% include "_tooltip_activator.html" %}
+{% endblock body %}

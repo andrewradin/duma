@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load process %}
+{% load navtools %}
+
+{% block headline %}
+    {{ heading|default:"Background Jobs" }}
+{% endblock headline %}
+{% block header_right %}
+	{% if ws %}
+		{% option_buttons jwo %}
+		{% option_buttons jso %}
+	{% endif %}
+{% endblock header_right %}
+{% block body %}
+	<table class='table'>
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Role</th>
+				<th>Workspace</th>
+				<th>By@Date</th>
+				<th>Status</th>
+			</tr>
+		{% for job in qs %}
+			<tr class='duma-job-row'>
+				<td>{{ job.id }}</td>
+				<td>{{ job.name }}</td>
+				<td>{{ job.role }}</td>
+				<td>{% job_ws job %}</td>
+				<td>{{ job.user }}@{{ job|job_date }}</td>
+				<td>
+					{% job_summary job %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% include "_tooltip_activator.html" %}
+{% endblock body %}

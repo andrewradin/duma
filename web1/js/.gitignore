@@ -1,0 +1,7 @@
+node_modules/
+.cache/
+
+# There is some controversy over whether this should be checked in or not.
+# Going to lean towards leaving it out for now, to match e.g. our python
+# dev flow, but we could change it if this leads to conflicts.
+package-lock.json

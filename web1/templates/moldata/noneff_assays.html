@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+{% block headline %}
+	{% drugname view.wsa %}
+{% endblock headline %}
+{% block javascript %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+{% for title, table_id, table_data, table_columns, table_order in tables %}
+	<h3> {{ title }} </h3>
+	<table style='text-align:left' class='table table-condensed table-hover pad' id="{{table_id}}">
+	</table>
+	<script>
+        {
+        const table = $('#{{table_id}}').DataTable({
+            data: {{ table_data | safe_json }},
+            columns: {{ table_columns | safe_json }},
+            order: {{ table_order | safe_json }},
+	});
+        addDataTableFilters(table, {
+            0: 'text',
+            1: 'select',
+            4: 'select',
+            5: 'select',
+            6: 'select',
+        });
+        }
+	</script>
+{% endfor %}
+{% endblock body %}

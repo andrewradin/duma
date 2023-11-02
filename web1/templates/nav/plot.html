@@ -1,0 +1,13 @@
+ 	{% extends 'base.html' %}
+{% load process %}
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block headline %}
+    {{ headline }}
+{% endblock headline %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+    {% include "_plotly_div.html" %}
+{% endblock body %}

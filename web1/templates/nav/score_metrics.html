@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block headline %}
+	Score Metrics
+{% endblock headline %}
+{% block javascript %}
+{% endblock javascript %}
+{% block header_right %}
+	<form method="post">
+	{% csrf_token %}
+    {{ config_form }}
+	<input type='submit' name='display_btn' value='Re-display'/>
+	</form>
+{% endblock header_right %}
+{% block body %}
+	{% include "_table.html" with table=view.metrics_table %}
+{% endblock body %}

@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+{% block headline %}
+    Hit Selection
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+
+<style>
+.struct {
+    display: inline-block;
+    height: 70px;
+    max-width: 70px;
+    border: 1px solid #ccc;
+}
+div.dataTables_paginate {
+    text-align: left !important;
+}
+
+.score {
+    width: 7rem;
+}
+
+.scorenote {
+    display: block;
+}
+
+.popover {
+    max-width: 600px;
+    font-size: 85%;
+}
+
+.scoring_guide {
+    font-size: 85%;
+    color: #222;
+    white-space: pre;
+    font-weight: normal;
+    overflow-x: auto;
+}
+
+.dpi {
+    white-space: nowrap;
+}
+
+.error {
+    border: 1px solid red;
+}
+.pk-entry {
+    display: inline-block;
+    padding: 0.5rem;
+}
+
+.organism {
+    font-weight: bold;
+    font-size: 80%;
+}
+
+</style>
+
+    <h1 style="color:red;">{{ message }}</h1>
+    <div class='panel panel-primary' style='display: inline-block'>
+        <div class='panel-heading'>Molecule Set</div>
+            <form method="post">
+            <table class='table table-condensed'>
+                    {% csrf_token %}
+                    {{ moleculeset_form.as_table }}
+                    <tr><td><input type="submit" name='select_btn' value="Select"/></td></tr>
+            </table>
+            </form>
+    </div>
+{% endblock header_left %}
+{% block header_right %}
+<a href="{% url 'moldata:molcmp' ws.id %}">Similarity Search</a><br/>
+    {% if ds_name %}
+        <div class='panel panel-primary' style='display: inline-block'>
+            <div class='panel-heading'>MoA for {{ds_name}}</div>
+                <form method="post">
+                <table class='table table-condensed'>
+                        {% csrf_token %}
+                        {{ moa_form.as_table }}
+                        <tr><td><input type="submit" name='moa_btn' value="Update MoA"/></td></tr>
+                </table>
+                </form>
+        </div>
+    {% else %}
+        <div class='panel panel-primary' style='display: inline-block'>
+            <div class='panel-heading'>General Hit Selection Note</div>
+                <form method="post">
+                <table class='table table-condensed'>
+                        {% csrf_token %}
+                        {{ hitselnote_form.as_table }}
+                        <tr><td><input type="submit" name='savehitselnote_btn' value="Save"/></td></tr>
+                </table>
+                </form>
+        </div>
+
+    {% endif %}
+{% endblock header_right %}
+{% block body %}
+{% if ds_name %}
+<hr>
+<div id='main' class='panel panel-primary' style='display:inline-block'>
+    <div class='panel-heading'>Molecules</div>
+    <div class='panel-body'>
+        <a href='{% url 'moldata:hit_selection_report' ws.id %}?ds={{ view.ds }}'>View Report</a>
+        <form method="post" id='mainform'>
+        {% csrf_token %}
+        <button class='btn btn-info btn-sm' name='save_btn'>Save Changes</button>
+        <hr/>
+        <b>MoA Note:</b>
+        <textarea name='hitsel_note' rows=4 cols=40>{{ hitsel_note }}</textarea>
+            <table class='table' id='main_table'>
+            </table>
+        </form>
+
+        <hr>
+        <span style='padding: 1rem; border: 1px solid #bbb; display: inline-block'>
+        <form method="post" id='addform'>
+            {% csrf_token %}
+            {{ addmol_form.as_table }}
+            <button class='btn btn-primary btn-sm' name='addmol_btn'>Insert New Molecules</button>
+        </form>
+        </div>
+    </div>
+</div>
+
+    <script>
+        const columns = {{ table.headers_data | safe }};
+        const table = $('#main_table').DataTable({
+            data: {{ table.rows_data | safe }},
+            columns: columns,
+            order: [[5, 'desc']],
+            // If we have tons of columns, the paging controls were going off to the right,
+            // which was very unusable.  Use custom dom and a custom style above.
+            dom: "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
+                 "<'row'<'col-sm-12'tr>>" +
+                 "<'row'<'col-sm-5'p><'col-sm-7'i>>",
+            paging: false, // Not setup for submitting multipage
+
+        });
+
+        $('#mainform').on('submit', function() {
+            // Let's do some client-side validation before submitting.
+            const form = this;
+            let err = false;
+            // Clear out any error indicators.
+            $('#main_table').find('textarea').each((idx, inp) => {
+                inp.classList.remove('error');
+            });
+            $('#main_table').find('input').each((idx, inp) => {
+                inp.classList.remove('error');
+
+                if (inp.value) {
+                    // Inputs must be between 0 and 4.
+                    const val = parseFloat(inp.value);
+                    if (val < 0 || val > 4) {
+                        inp.classList.add('error');
+                        err = true;
+                    }
+
+                    // Must have a note field if a val is set.
+                    const noteName = inp.name.replace('score', 'note');
+                    const noteEl = $('#main_table').find(`[name="${noteName}"]`);
+                    if (!noteEl.val()) {
+                        noteEl[0].classList.add('error');
+                        err = true;
+                    }
+                }
+            });
+            if (err) {
+                return false;
+            } else {
+                return true;
+            }
+        });
+
+        $('#mainform button').on('click', function() {
+            // This handles the Trash/Delete buttons.
+            const btn = this;
+            const wsa = btn.getAttribute('wsaid');
+            if (!wsa) {
+                return;
+            }
+            const csrf = document.getElementsByName("csrfmiddlewaretoken")[0].value
+            const formData = new FormData()
+            formData.append('csrfmiddlewaretoken', csrf)
+            formData.append('wsa_id', wsa)
+            formData.append('delwsa_btn', true)
+            const opts = {
+                method: "POST",
+                body: formData,
+                redirect: 'manual', // Don't need to follow the redirect
+            };
+            fetch(window.location, opts).then((resp) => {
+                console.info("Fetch succeeded, remove element");
+                const row = btn.closest('tr');
+                table.row(row).remove().draw()
+            });
+        })
+    </script>
+{% else %}
+    {% include "moldata/_hit_selection_summary.html" %}
+{% endif %}
+{% endblock body %}

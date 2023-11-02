@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+	{% drugname view.wsa %}
+{% endblock headline %}
+{% block javascript %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+<h3>Affinity Assays</h3>
+	{% include "_table.html" %}
+
+<h3>Raw Affinity Assays</h3>
+<div id='raw'>
+    {% include "_table.html" with table=raw_table %}
+</div>
+
+<script>
+        const table = $('#raw table').DataTable({
+            order: [[5, 'asc']],
+        });
+        addDataTableFilters(table, {
+            0: 'select',
+            1: 'select',
+            2: 'select',
+            3: 'select',
+            4: 'select',
+            6: 'select',
+        });
+</script>
+{% endblock body %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+	Protein Scores
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+    {% include "_datatables_load.html" %}
+    {% include "_cytoscape_load.html" %}
+    {% include "_plotly_div.html" %}
+{% endblock javascript %}
+{% block header_left %}
+    <form method="post">
+        {% csrf_token %}
+        {{ calc_form.as_p }}
+        <input type="submit" name='calc_btn' value="Calculate"/>
+    </form>
+{% endblock header_left %}
+{% block body %}
+<style>
+    tag {
+        border: 1px solid #aaa;
+        font-size: 80%;
+        margin-right: 0.2rem;
+        padding: 0.2rem;
+        border-radius: 3px;
+        background-color: #f1f9ff;
+        white-space: nowrap;
+
+    }
+</style>
+    {% for title, name in sections %}
+        {% with section_name=name section_label=title content_url=url|add:"&plot="|add:name %}
+            {% include '_deferred_section.html' %}
+        {% endwith %}
+    {% endfor %}
+{% endblock body %}

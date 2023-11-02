@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load navtools %}
+
+{% block headline %}
+Workspace Index
+{% endblock %}
+{% block header_left %}
+    {% if show_all %}
+        Showing all workspaces - 
+        <a href="{% url_add_query all=0 %}">See only active workspaces</a>
+    {% else %}
+        Showing active workspaces - 
+        <a href="{% url_add_query all=1 %}">See all workspaces</a>
+    {% endif %}
+{% endblock %}
+{% block header_right %}
+    {% if show_create_link %}
+        <a href="{% url "wsmgr:create_ws" %}">Create a new workspace</a>
+    {% endif %}
+{% endblock %}
+{% block body %}
+    {% include "_datatables_load.html" %}
+    <p>
+	<table class="table table-condensed">
+        <thead>
+		<tr>
+			<th>Workspace</th>
+            <th>Completion</h>
+			<th>Prediction Stage</th>
+			<th>Latest Review Date</th>
+            <th>Creation Date</th>
+            <th>Data Update Date</th>
+			<th>Hits</th>
+			<th>Notes</th>
+		</tr>
+        </thead>
+        <tbody>
+		{% for ws in workspaces %}
+			<tr>
+				<td>{{ ws.link }}</td>
+                <td data-order='{{ws.completion_frac}}' style='position:relative'>
+                    <span
+                    style='
+                        background:linear-gradient(to right, #395, #395 {{ws.completion}}, #aaa {{ws.completion}});
+                        width: 100px;
+                        display: inline-block;
+                        border: 1px solid #555;
+                        color: white;
+                        text-align: center;
+                        border-radius: 4px;
+                        '
+                    >
+                        {{ ws.completion }}
+                    </span>
+                </td>
+                <td data-order='{{ws.stage_num}}'>{{ ws.stage }}</td>
+                <td>{{ ws.review_date }}</td>
+                <td>{{ ws.created }}</td>
+                <td>{{ ws.data_update_date }}</td>
+                <td>{{ ws.hits }}</td>
+                <td>{{ ws.ref.get_disease_note_text|urlizetrunc:10 }}</td>
+			</tr>
+		{% endfor %}
+        </tbody>
+	</table>
+    <script>
+        $("table").DataTable({
+            paging: false,
+            order: [[3, 'desc']],
+        });
+    </script>
+{% endblock body %}

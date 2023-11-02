@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load navtools %}
+{% load browse_tags %}
+
+{% block headline %}
+    ADRs for {{ view.drugname }}
+{% endblock headline %}
+{% block javascript %}
+    <script src="/static/lib/Sortable.min.js"></script>
+{% endblock javascript %}
+{% block body %}
+{% if view.config == view.filt_mode %}
+	<h3>Filter configuration</h3>
+	<div class="row">
+		<div class="col-md-8">
+			<form method=POST>
+				{% csrf_token %}
+				<table class="table">
+					{{ filter_form.as_table }}
+					{{ page_size_form.as_table }}
+				</table>
+				<input type='submit' name='filter_btn' value='Display'/>
+			</form>
+		</div>
+		<div class="col-md-4">
+			{% include '_filter_help.html' %}
+		</div>
+	</div>
+{% elif view.config == view.cols_mode %}
+	<h3>Column configuration</h3>
+	<a href="{% url_add_query config='' col_order='' %}">
+		Restore column defaults
+	</a>
+	<form id="col-order-form" method=POST>
+		{% csrf_token %}
+		<input type='hidden' name='order' id='order_store' value=''/>
+		<table>
+			<tbody id="col_list_sort" class="list-group">
+				{% for field in columns_form %}
+					<tr>
+						{% include "_sortable_row_handle.html" %}
+						<td>&nbsp;&nbsp;</td>
+						<td>{{ field }} {{ field.label }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<br>
+		{% comment %}
+		The following hidden field provides the expected button name
+		in the POST data, even though the POST is done via javascript
+		{% endcomment %}
+		<input type='hidden' name='columns_btn' value='Display'/>
+		<input type='button' value='Display' onclick='saveOrderAndSubmit()'/>
+	</form>
+	<script>
+	function saveOrderAndSubmit() {
+		var order = document.getElementsByTagName('input')
+		var i = 0;
+		var names = [];
+		for (; i < order.length; i++) {
+			if (order[i].type == 'checkbox') {
+				names.push(order[i].name);
+				}
+			}
+		var node = document.getElementById('order_store');
+		node.value = names.join('|');
+		node = document.getElementById('col-order-form');
+		node.submit();
+		}
+	Sortable.create(
+		document.getElementById('col_list_sort'),
+		{handle: '.glyphicon-move'}
+		);
+	</script>
+{% else %}
+	<a href="{% url_add_query config='cols' %}">Edit columns</a>
+	<br><a href="{% url_add_query config='filt' %}">Edit filter</a>
+	<h3>ADR Scores</h3>
+    <span>
+		{% with desc=key_filter.get_description total=row_source.row_count %}
+		{% if desc %}
+			Filter ( {{ desc }} ) matched {{ total }} ADRs
+			<a href="{% url_add_query filt='' %}">Clear filter</a>
+        {% else %}
+			Selected columns matched {{ total }} ADRs
+        {% endif %}
+		{% endwith %}
+    </span>
+	{{ pager.html }}
+	{% include '_table.html' with table=main_table %}
+{% endif %}
+{% endblock body %}

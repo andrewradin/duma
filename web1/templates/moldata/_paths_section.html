@@ -1,0 +1,74 @@
+{% load browse_tags %}
+{% load process %}
+{% load navtools %}
+	{{ prot_list.9.job.role }}
+	{% job_summary prot_list.9.job '-status -settings' %};
+
+    {{ prot_list.1 }} of {{ prot_list.2 }} binding proteins
+    relate to the disease ({{ prot_list.3|floatformat }}%)
+	<br>(matching {{ prot_list.5|join:', ' }})
+	<form>
+		<select>
+		{% for o in prot_list.6 %}
+			<option {% if o == prot_list.7 %} selected {% endif %} value={% url_add_query mapping=o show=pathset.1 %}>{{o}}</option>
+		{% endfor %}
+		</select>
+		<button type='button' onclick='window.location=this.previousElementSibling.value;'>Select DPI</button>
+	</form>
+
+	{% if prot_list.9.job.job_type == 'capp' %}
+		<div><a href='{{ prot_list.9.faers_table_url }}'>FAERS CAPP Run Table</a>
+		</div>
+	{% endif %}
+
+    <table class="table">
+		<tr>
+            <th>Protein</th>
+			{% for l in prot_list.4 %}
+				<th>DPI {{ l }}</th>
+			{% endfor %}
+            <th>DPI evidence</th>
+            <th>DPI direction</th>
+            <th>Disease match</th>
+		</tr>
+		{% for p in prot_list.0 %}
+		<tr>
+            <td>
+				{% protlink p.0.uniprot_id %}
+			</td>
+			{% for v in p.2 %}
+				<td>{{ v }}</td>
+			{% endfor %}
+            <td>{{ p.0.evidence }}</td>
+			<td>{{ p.3 }}</td>
+			<td>
+				<table class="table">
+				{% if p.1 %}
+					<tr>
+						<th>{{ prot_list.9.pathsum_detail_label }}</th>
+						<th>Linking protein</th>
+						<th>Score</th>
+						<th>Direction</th>
+					</tr>
+					{% for l in p.1 %}
+						<tr>
+							<td>{{ l.tissue }}</td>
+							<td>
+                            {% if l.protID == p.0.uniprot_id %}
+								<b>Direct</b>
+                            {% else %}
+								{% protlink l.protID  %}
+                            {% endif %}
+                            </td>
+							<td>{{ l.score }}</td>
+							<td>{{ l.direction_arrow }}</td>
+						</tr>
+					{% endfor %}
+				{% else %}
+					{{ prot_list.8 }}
+				{% endif %}
+				</table>
+            </td>
+		</tr>
+		{% endfor %}
+    </table>

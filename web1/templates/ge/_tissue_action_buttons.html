@@ -1,0 +1,23 @@
+
+{% if action_tissue.next_action.phase != 'ext' %}
+<form role="form"
+	action="?op={{ action_tissue.next_action.phase }}"
+	method="post"
+	>
+	{% csrf_token %}
+	<input type='hidden' name='tissue_id'
+			value='{{ action_tissue.id }}'/>
+	{% if action_tissue.next_action.platforms %}
+		{% for plat in action_tissue.next_action.platforms %}
+			<button type="submit" class="btn btn-primary btn-xs"
+				onclick='this.form.action="?op=multiple&platform={{ plat }}&&tissue_id={{ action_tissue.id }}"'>
+				Process {{ plat }}
+			</button>
+		{% endfor %}
+	{% elif action_tissue.next_action.primary %}
+		<button type="submit" class="btn btn-primary">
+			{{ action_tissue.next_action.primary }}
+		</button>
+	{% endif %}
+</form>
+{% endif %}

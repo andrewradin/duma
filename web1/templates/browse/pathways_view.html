@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+	Pathways
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+    <style>
+        li {
+            display: inline-block;
+            margin-right: 1rem;
+        }
+    </style>
+    <form method="post">
+        {% csrf_token %}
+        <ul>
+        {{ calc_form.as_ul }}
+        </ul>
+        <br/>
+        <input type="submit" name='calc_btn' value="Calculate"/>
+    </form>
+{% endblock header_left %}
+{% block body %}
+    {% for title, table in tables %}
+        {% include "_table_section.html" with section_name=forloop.counter section_label=title %}
+    {% endfor %}
+    {% if plotly_plots %}
+        {% for plot in plotly_plots %}
+            {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+            {% include "_plotly_clear.html" %}
+        {% endfor %}
+        {% include "_plotly_clear.html" %}
+	{% endif %}
+    <script>
+        $('table').DataTable({
+            order: [[2, 'desc']],
+        })
+    </script>
+{% endblock body %}

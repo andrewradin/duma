@@ -1,0 +1,22 @@
+{% extends "collapse_section.html" %}
+{% load navtools %}
+{% block section_label %}GWAS{% endblock %}
+{% block section_body %}
+	<h2>GWAS</h2>
+	<table class="table">
+	<tr>
+		<th>Phenotype</th>
+		<th>Paper PMID</th>
+		<th>DBSnpID</th>
+		<th style="text-align:right">SNP score</th>
+	</tr>
+	{% for r in gwas_table %}
+		<tr>
+		<td>{{ r.0 }}</td>
+		<td>{{ r.1 }}</td>
+		<td>{{ r.2 }}</td>
+		{{ r.3 }}
+		</tr>
+	{% endfor %}
+    </table>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "collapse_section.html" %}
+{% block section_label %}Edit Filter{% endblock %}
+{% block section_body %}
+<form action="" method="post">
+{% csrf_token %}
+<input type='hidden' name='operation' value='edit-filter'/>
+<div class="row">
+<div class="col-md-8">
+<table class="table">
+	{% for fd in score_table.get_filter_detail %}
+		<tr>
+			<td>{{ fd.colname }}</td>
+			<td>
+				<input
+					type="text"
+					name="flt_{{ fd.index }}"
+					value="{{ fd.value }}"
+				/>
+			</td>
+		</tr>
+	{% endfor %}
+	{% for ef in extra_filters %}
+	<tr>
+        <td>{{ ef.0 }}</td>
+        <td>{{ ef.1 }}</td>
+    </tr>
+	{% endfor %}
+	<tr>
+        <td>Page Size</td>
+        <td>
+            <input type="text" name="page_size" value="{{ page_size }}"/>
+        </td>
+    </tr>
+</table>
+</div>
+<div class="col-md-4">
+Specify filters in the following formats:
+<ul>
+<li>&lt;6.3</li>
+<li>&gt;4</li>
+<li>top50</li>
+<li>top5%</li>
+</ul>
+</div>
+</div>
+<input type='submit' value='Re-filter'/>
+</form>
+{% endblock %}

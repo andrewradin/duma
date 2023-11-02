@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load process %}
+
+{% block headline %}
+    Refresh QC
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+    <form method=POST>
+        {% csrf_token %}
+        {{ config_form }}
+        <input type='submit' name='redisplay_btn' value='Redisplay'/>
+    </form>
+{% endblock header_right %}
+{% block body %}
+    {% if base_dpi %}
+        {% if other_dpi %}
+            Most jobs processed with <b>{{ base_dpi }}</b> except:<br>
+            <font color="firebrick">
+            {% for x in other_dpi %}
+                - {{ x.0 }} {% job_page x.1 %} <b>{{ x.2 }}</b><br>
+            {% endfor %}
+            </font>
+        {% else %}
+            All jobs processed with <b>{{ base_dpi }}</b><br>
+        {% endif %}
+    {% endif %}
+	{% include '_table.html' with table=workflow_jobs %}
+    {% for link in view.output %}
+		{{ link }}<br>
+    {% endfor %}
+	{% include '_table.html' with table=workflow_parts %}
+    {% if agg_jobs %}
+		<b>Aggregation jobs:</b>
+		{% for x in agg_jobs %}
+			{{ x.0 }} {% job_page x.1 %} &nbsp;&nbsp;&nbsp;
+		{% endfor %}
+    {% endif %}
+{% include "_tooltip_activator.html" %}
+{% endblock body %}

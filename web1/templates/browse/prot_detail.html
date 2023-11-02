@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    {{ prot.get_name }} Detail
+{% endblock headline %}
+{% block header_left %}
+	{{ prot.get_uniprot_url }}
+{% endblock header_left %}
+{% block header_right %}
+	<a href="{% url 'prot_search' ws.id %}">Search</a>
+	<form method="post">
+		{% csrf_token %}
+		{{ prescreen_form }}
+		<input type='submit' name="redisplay_btn" value='Redisplay'/>
+	</form>
+{% endblock header_right %}
+{% block body %}
+    {% with section_name="ge" %}
+        {% include 'browse/_prot_ge_section.html' %}
+    {% endwith %}
+    {% with section_name="score" %}
+        {% include 'browse/_prot_score_section.html' %}
+    {% endwith %}
+{% endblock body %}

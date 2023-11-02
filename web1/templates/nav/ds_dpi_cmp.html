@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+{% block headline %}
+	Drugset Compare
+{% endblock headline %}
+{% block javascript %}
+	{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block header_right %}
+{% endblock header_right %}
+{% block header_left %}
+	{% url 'nav_score_cmp' ws.id as here %}
+	<div class="well">
+		Choose 2 drugsets and click Compare.
+	</div>
+		<form method="post">
+		{% csrf_token %}
+		{{ compare_form.as_p }}
+		<input type="submit" name='compare_btn' value="Compare"/>
+	</form>
+{% endblock header_left %}
+{% block body %}
+{% if plotly_plots %}
+	<h3>Comparison</h3>
+	{% for lines,plot in sums_plots %}
+		{% for line in lines %}
+			{{ line }}<br>
+		{% endfor %}
+		<img src="{{ plot }}"></img>
+		<br>
+	{% endfor %}
+	In the prevalence plot, points along the blue line are in equal
+	proportion in both drugsets.  As the angle from the blue line increases,
+	the difference between the sets increases (so, the maximum difference is
+	along the x or y axis, where the protein is completely missing from 
+	one set or the other).  As distance from the origin increases, the
+	protein is more strongly associated with the drugset. Points have a
+	small random jitter assigned, so you can more easily see the number of
+	points with the same prevalence.
+	<br>
+	{% for plot in plotly_plots %}
+		{% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+	{% endfor %}
+	{% include "_plotly_clear.html" %}
+{% endif %}
+{% endblock body %}

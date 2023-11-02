@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load process %}
+
+{% block headline %}
+Add Job To Scoreset
+{% endblock headline %}
+{% block header_left %}
+	{{ job_info.role_label }}
+	({{ job_info.job.id }})
+	<br>
+	{{ job|job_date }}
+	<br>
+	{% job_summary job %}
+	<br>
+	{{ job.role }}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+	<br>
+	<form method="post">
+		{% csrf_token %}
+		{{ add_form.as_p }}
+		<input type="submit" name="add_btn" value="Add to Scoreset"/>
+	</form>
+{% endblock body %}

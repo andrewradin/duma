@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load browse_tags %}
+{% block headline %}
+	Pre-screen Flagging Runs
+{% endblock headline %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+	<form method=POST>
+    {% csrf_token %}
+	<span class='pull-right'>
+	{% bulk_update_links 'flagset_' %}
+    <button type="submit" class='btn btn-primary' name='update_btn'>
+        Save updates
+    </button>
+	</span>
+    {% include "_table.html" with table=table %}
+	</form>
+{% endblock body %}

@@ -1,0 +1,24 @@
+
+<div class='well'>
+    <p>A custom gene signature that can be fed into our other algorithms.</p>
+<button onclick='validateScoreJson()' class='btn btn-success'>Validate Score JSON</button>
+<div id='validation_output' style='white-space: pre; border: 1px solid black; padding: 1rem;'></div>
+</div>
+
+<script>
+
+async function validateScoreJson() {
+    const text = $('#id_sig_json').val()
+    const csrf = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+    const formData = new FormData()
+    formData.append('csrfmiddlewaretoken', csrf)
+    formData.append('data', text)
+    const rsp = await fetch('/api/validate_score_json/', {
+        method: 'POST',
+        body: formData,
+    });
+    const out = await rsp.text();
+    $('#validation_output').text(out);
+}
+
+</script>

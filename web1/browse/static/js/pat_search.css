@@ -1,0 +1,87 @@
+
+
+.disease-name {
+    border-top: 1px solid #aaa;
+    border-left: 1px solid #aab;
+    border-bottom: 1px solid #aaa;
+    padding: 1rem;
+}
+
+.drug-terms {
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.drug-note {
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    white-space: pre;
+}
+
+#drug-names {
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+
+
+.drug-name-set {
+    position: relative;
+    border-left: 1px solid #aab;
+    border-bottom: 1px solid #aab;
+}
+
+.patent-entry {
+    margin-bottom: 1rem;
+    padding: 2rem;
+    box-shadow: 1px 2px 6px 0px rgba(0,0,0,0.25);
+}
+.patent-snippet {
+    margin-bottom: 0.5rem;
+    border-top: 1px solid #bbb;
+    border-bottom: 1px solid #bbb;
+}
+
+.in-remove {
+    position: state;
+    cursor: pointer;
+}
+
+#load-settings-btn {
+    cursor: pointer;
+}
+
+#search-results {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: #fefefe;
+    box-shadow: 1px 2px 6px 0px rgba(0,0,0,0.25);
+    min-width: 100%;
+    white-space: nowrap;
+}
+
+.search-result {
+    cursor: pointer;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.25rem;
+    padding-top: 0.25rem;
+}
+.search-result:hover {
+    background-color: #e3eaff;
+}
+
+.loader {
+    border: 3px solid #ddd;
+    border-top: 3px solid #4ad;
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+    width: 20px;
+    height: 20px;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

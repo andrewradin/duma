@@ -1,0 +1,8 @@
+{% load navtools %}
+{% load browse_tags %}
+{% if gwds.note %}
+	{% note_icon gwds.get_note_text %}
+{% endif %}
+<a href="{% view_url edit=gwds.make_key %}">
+	{% glyph_icon 'pencil' %}
+</a>

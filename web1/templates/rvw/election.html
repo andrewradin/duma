@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    {% if e_form.instance %}
+        Edit
+    {% else %}
+        Create
+    {% endif %}
+    {{ e_form.flavor.label }} Selection Round
+{% endblock headline %}
+{% block body %}
+    <form role="form" action="" method="post">
+        {% csrf_token %}
+        {% for group in e_form.groups %}
+            <b>{{ group.0 }}</b>
+            {% for field in group.1 %}
+                &nbsp;&nbsp;
+                <span style="white-space:nowrap">
+                    {{ field.0 }} {{ field.1 }}
+                </span>
+            {% endfor %}
+            <br>
+        {% endfor %}
+        {{ e_form.errors }}
+        {% with section_name="drug_summary" %}
+            {% include 'rvw/_election_drug_summary_section.html' %}
+        {% endwith %}
+        
+        <button type="submit" name="save_btn" class="btn btn-primary">
+            {% if e_form.instance %}
+                Save
+            {% else %}
+                Create
+            {% endif %}
+        </button>
+    </form>
+	{% if e_form.instance %}
+		{% with e_form.instance.status as status %}
+			{% if status == "Active" %}
+				<h3>Reviewer Progress</h3>
+				<table class="table">
+				{% for r in e_form.instance.reviewer_progress %}
+					<tr>
+						<td>{{ r.0 }}</td>
+						<td>completed {{ r.1 }} of {{ r.2 }} ({{ r.3 }}%)</td>
+					</tr>
+				{% endfor %}
+				</table>
+				{% if can_force_completion %}
+                    <form role="form" action="" method="post">
+                        {% csrf_token %}
+                        <button type="submit"
+                                name="force_btn"
+                                class="btn btn-danger">
+                            Force Completion
+                        </button>
+                    </form>
+				{% endif %}
+				<h3>Candidate Progress</h3>
+				<table class="table">
+				{% for r in cand_progress %}
+					<tr>
+						<td>
+                        {{ r.0 }}
+						</td>
+						<td>completed {{ r.1 }} of {{ r.2 }} ({{ r.3 }}%)</td>
+					</tr>
+				{% endfor %}
+				</table>
+			{% else %}
+				<h3>Candidate Results</h3>
+				<table class="table table-hover">
+					<tr>
+						<th>Score</th>
+						<th>Drug</th>
+						{% for r in results.0 %}
+							<th>{{ r }}</th>
+						{% endfor %}
+						<th>Status</th>
+						<th></th>
+					</tr>
+						{% for r in results.1 %}
+                    <tr style="{{ r.4 }}">
+						<td>{{ r.0 }}</td>
+						<td>{{ r.1 }}
+							<span style="white-space:nowrap">
+							{{ r.2.demerit_text }}
+							</span>
+						</td>
+						{% for u,v in r.3 %}
+						<td>
+							<span style="white-space:nowrap">
+							{% vote_icon u v %}
+							{% if v.note %}
+								{% note_icon v.get_note_text %}
+							{% endif %}
+							</span>
+						</td>
+						{% endfor %}
+					    <form method="post" >
+                            {% csrf_token %}
+						<td>
+						{% include "_button_list.html" with list=shortcuts %}
+						</td>
+						<td>
+							{% disposition_form r.2 %}
+						</td>
+						</form>
+					</tr>
+					{% endfor %}
+				</table>
+			{% endif %}
+		{% endwith %}
+	{% endif %}
+{% include "_tooltip_activator.html" %}
+
+    <script>
+        // During review it can be annoying to click the button and then have
+        // to scroll back to your old position.  Just reload to the same pos.
+
+        // We use session storage so that it doesn't persist beyond the current
+        // session.
+        let posSaved = false;
+        const kStorageKey = 'election_view_{{elec_id}}';
+        function savePosition() {
+            const pos = $(document).scrollTop();
+            console.info(`Saving position ${pos}`);
+            sessionStorage.setItem(kStorageKey, pos);
+            posSaved = true;
+        }
+        function loadPosition() {
+            const pos = sessionStorage.getItem(kStorageKey);
+            if (pos) {
+                console.info(`found position ${pos} to restore`);
+                $(document).scrollTop(pos);
+            }
+        }
+
+        loadPosition();
+        $('button').on('click', () => {
+            savePosition();
+        });
+        $(window).on('beforeunload', () => {
+            if (!posSaved) {
+                // Unset it if you leave the page.
+                // We only want to retain the scroll position if you btn press.
+                sessionStorage.removeItem(kStorageKey);
+            }
+        });
+    </script>
+
+
+{% endblock body %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    ETL Status
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+<a href="{% url 'etl_order' %}">Order of updates</a>
+{% endblock header_right %}
+{% block body %}
+{% include "_table.html" %}
+{% endblock body %}

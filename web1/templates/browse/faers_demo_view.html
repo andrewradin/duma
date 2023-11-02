@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block headline %}
+    FAERS Demographics
+{% endblock headline %}
+{% block header_left %}
+
+    <div class='panel panel-primary' style='display: inline-block'>
+        <div class='panel-heading'>Indications</div>
+            <form method="post">
+            <table class='table table-condensed'>
+                    {% csrf_token %}
+                    {{ show_form.as_table }}
+                    <tr><td><input type="submit" name='show_btn' value="Show"/></td></tr>
+            </table>
+            </form>
+    </div>
+{% endblock header_left %}
+{% block header_right %}
+    <div class='panel panel-info' style='float: right; margin-bottom: 0.5rem'>
+        <div class='panel-heading' style='margin-bottom: 0.5rem'>Most Used For Indication</div>
+        <table id='drug_table' class='table table-condensed'>
+        </table>
+    </div>
+    <script>
+        const columns = {{ drug_table.headers_data | safe_json }};
+        const table = $('#drug_table').DataTable({
+            data: {{ drug_table.rows_data | safe_json }},
+            columns: columns,
+            order: [[1, 'desc']],
+        });
+    </script>
+{% endblock header_right %}
+{% block body %}
+<style>
+.plot {
+    box-shadow: 1px 1px 6px -3px rgba(0,0,0,0.55);
+    padding: 1rem;
+    margin: 2rem;
+    float: left;
+}
+.plot-title {
+    font-size: 125%;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+}
+</style>
+{% for plot in plots %}
+<div class='plot'>
+    <span class='plot-title'>{{plot.0}}</span>
+    {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+</div>
+{% endfor %}
+{% endblock body %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load tissue %}
+{% block headline %}
+	Platform Data Upload
+{% endblock headline %}
+
+{% block body %}
+    {% with section_name="props" %}
+        {% include 'browse/_drug_props_section.html' %}
+    {% endwith %}
+    {% with section_name="coll" %}
+        {% include 'browse/_drug_coll_section.html' %}
+    {% endwith %}
+    {% with section_name="prots" %}
+        {% include 'browse/_load_protein_section.html' %}
+    {% endwith %}
+{% endblock body %}

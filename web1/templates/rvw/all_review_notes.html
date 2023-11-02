@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block headline %}
+    {{ headline }}
+{% endblock headline %}
+{% block javascript %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% load browse_tags %}
+{% block body %}
+<h1>My Review Notes</h1>
+<style>
+td:nth-child(1) {
+    white-space: pre-wrap;
+}
+</style>
+<div class='panel panel-default'>
+    <div class='panel-heading'>
+        Molecule Notes
+    </div>
+    <div class='panel-body'>
+    <table class='table' id='mol_table'>
+    </table>
+    </div>
+</div>
+<div class='panel panel-default'>
+    <div class='panel-heading'>
+        Protein Notes
+    </div>
+    <div class='panel-body'>
+    <table class='table' id='prot_table'>
+    </table>
+    </div>
+</div>
+
+    <script>
+        {
+            const columns = {{ mol_table.headers_data | safe }};
+            const table = $('#mol_table').DataTable({
+                data: {{ mol_table.rows_data | safe_json }},
+                columns: columns,
+                order: [[2, 'desc']],
+            });
+        }
+
+        {
+            const columns = {{ prot_table.headers_data | safe }};
+            const table = $('#prot_table').DataTable({
+                data: {{ prot_table.rows_data | safe_json }},
+                columns: columns,
+                order: [[2, 'desc']],
+            });
+        }
+    </script>
+{% endblock body %}

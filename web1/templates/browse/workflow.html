@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% load workflow %}
+{% load browse_tags %}
+
+{% block header_left %}
+    {% with completion|lookup:'all' as progress %}
+    <h4>
+        <span
+        style='
+            background:linear-gradient(to right, #395, #3b5 {{progress}}, #aaa {{progress}});
+            width: 300px;
+            border: 1px solid #555;
+            color: white;
+            text-align: center;
+            border-radius: 4px;
+            display: inline-block;
+            '
+        >
+            {{ progress }}
+        </span>
+    </h4>
+    {% endwith %}
+{% endblock %}
+
+{% block header_right %}
+	{% if view.ws.disease_note_id %}
+		{{ view.ws.get_disease_note_text|urlizetrunc:10|linebreaks }}
+	{% endif %}
+	<form method="post">
+		{% csrf_token %}
+		{{ note_form.note }}
+		<br>
+		<input type="submit" name="update_note_btn" value="update note"/>
+        {% if view.ws.disease_note_id %}
+            <a href="/note/{{ view.ws.disease_note_id }}">Note History</a>
+        {% endif %}
+	</form>
+{% endblock %}
+
+{% block body %}
+<style>
+.row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.col {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+    margin: 1rem;
+    box-shadow: 0px 0px 5px 1px rgba(64, 64, 160, 0.2);
+}
+
+.qual-badge {
+    float: right;
+}
+.subpanel {
+    border-radius: 2rem;
+}
+.subpanel .panel-heading {
+    border-top-left-radius: 2rem;
+    border-top-right-radius: 2rem;
+}
+.subpanel .panel-heading-0 {
+    border-radius: 2rem;
+}
+.no-border {
+    border: 0;
+}
+
+</style>
+{% csrf_token %}
+    <div class='row'>
+        {% for title, parts in flow %}
+            <div name='{{title}}' class='col panel panel-primary no-border'>
+                <div class='panel-heading' style='position:relative;padding-left:30px;padding-bottom:13px'>
+                    <h2 class='panel-title'>
+                        {{ title }}
+                    {% with completion|lookup:title as progress %}
+                        <span
+                        style='
+                            background:linear-gradient(to right, #3a5, #3c5 {{progress}}, #aaa {{progress}});
+                            width: 100%;
+                            height: 8px;
+                            position: absolute;
+                            left: 0;
+                            bottom: 0;
+                            display: inline-block;
+                            color: white;
+                            border-top: 1px solid black;
+                            '
+                        >
+                        </span>
+                    {% endwith %}
+                        <span class='btn-group' style='margin-left: 1rem;float:right'>
+                            <button class='btn btn-xs btn-primary dropdown-toggle' data-toggle='dropdown' style='border: 1px solid #ddf'><span class='caret'></span> Update All</button>
+                            <ul class='dropdown-menu'>
+                                <li><a style='cursor:pointer' onclick='markAll("{{title}}", "verified")'>Verified</a></li>
+                                <li><a style='cursor:pointer' onclick='markAll("{{title}}", "complete")'>Complete</a></li>
+                                <li><a style='cursor:pointer' onclick='markAll("{{title}}", "active")'>Active</a></li>
+                                <li><a style='cursor:pointer' onclick='markAll("{{title}}", "none")'>None</a></li>
+                            </ul>
+                        </span>
+                    </h2>
+                </div>
+                <div class='panel-body'>
+                {% for f in parts %}
+                    <div class='panel panel-default subpanel'>
+                        <div class='panel-heading panel-heading-{{f.quality_detail|length}}'>
+                            <a href="{{ f.href }}">
+                                <strong>{{ f.name }}</strong>
+                            </a>
+                            <span style='float:right'>
+                                {% workflow_status_button f.id %}
+                            </span>
+                        </div>
+                        {% if f.quality_detail|length > 0 %}
+                        <div class='panel-body'>
+                        {% for key,value in f.quality_detail.items %}
+                            <div class="{{ key }}"><b>{{ key }}:</b>&nbsp;{{ value }}</div>
+                        {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+        
+    </div>
+    <script>
+        function markAll(name, status) {
+            const el = document.querySelector(`[name="${name}"]`);
+            const btns = el.querySelectorAll(`[name="workflow-btn-${status}"]`);
+            for (const btn of btns) {
+                btn.click();
+            }
+        }
+    </script>
+{% endblock body %}

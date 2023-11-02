@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Duma User Status
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+    <form method="POST">
+    {% csrf_token %}
+		<button type="submit" name="bulk_clear_btn">
+			Re-arm all numeric IPs
+		</button>
+    </form>
+{% endblock header_right %}
+{% block body %}
+<table class="table">
+    <tr>
+        <th>Username</th>
+        <th>Clean
+        {% info_icon "no custom permission settings" %}
+        </th>
+        <th>Super
+        {% info_icon "can manage users" %}
+        </th>
+        <th>Ops
+        {% info_icon "can manage worker machines" %}
+        </th>
+        <th>Admin
+        {% info_icon "can manage workspaces" %}
+        </th>
+        <th>Staff
+        {% info_icon "has normal user access" %}
+        </th>
+        <th>2FA
+        {% info_icon "uses two-factor authentication" %}
+        </th>
+        <th>Last login</th>
+        <th>Active sessions</th>
+        <th>Normal access<br>(click to re-arm)</th>
+        <th>Unverified access<br>(click to re-arm)</th>
+    </tr>
+    <form method="POST">
+    {% csrf_token %}
+    {% for user in users %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>{% bool_icon user.clean %}</td>
+            <td>{% bool_icon user.is_superuser %}</td>
+            <td>{% bool_icon user.in_button_pushers %}</td>
+            <td>{% bool_icon user.in_duma_admin %}</td>
+            <td>{% bool_icon user.is_staff %}</td>
+            <td>{% bool_icon user.two_factor %}</td>
+            <td>{{ user.last_login }}</td>
+            <td>
+                {% if user.sessions %}
+                    <button type="submit" name="logout_{{ user.id }}_btn">
+                        logout {{ user.sessions|length }}
+                    </button>
+                {% endif %}
+            </td>
+            <td>
+                {% for access in user.normal_access %}
+                    <button type="submit" name="clear_{{ access.id }}_btn">
+                        {{ access.mapped_host }}
+                    </button>
+                {% endfor %}
+            </td>
+            <td>
+                {% for access in user.unverified_access %}
+                    <button type="submit" name="clear_{{ access.id }}_btn">
+                        {{ access.mapped_host }}
+                    </button>
+                {% endfor %}
+            </td>
+        </tr>
+    {% endfor %}
+    </form>
+</table>
+{% include "_tooltip_activator.html" %}
+{% endblock body %}

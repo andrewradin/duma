@@ -1,0 +1,25 @@
+<div id='{{widget.name}}_holder'></div>
+<input type='hidden' name="{{widget.name}}" id="id_{{widget.name}}"></input>
+
+<script>
+
+    function {{widget.name}}_onSelected(entries) {
+        console.info("Got ", entries);
+        const transform = {{widget.jstype}}.formValueFromSelected;
+        if (transform) {
+            // Apply transform, and filter off anything null.
+            entries = entries.map(transform).filter((x) => x !== null);
+        }
+        const fullStr = JSON.stringify(entries);
+        $('#id_{{widget.name}}').val(fullStr);
+    }
+    $('#id_{{widget.name}}').val(JSON.stringify({{widget.value | safe}}));
+
+    drawMultiInput(
+        {{widget.jstype}},
+        $('#{{widget.name}}_holder')[0],
+        {{widget.name}}_onSelected,
+        {{widget.value | safe}},
+        {{widget.extra_attrs | safe}}
+        );
+</script>

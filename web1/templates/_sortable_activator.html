@@ -1,0 +1,15 @@
+<script>
+	Sortable.create({{ dom_name }}, {
+		handle: '.glyphicon-move',
+		store: {
+			get: function (sortable) {
+				var order = localStorage.getItem("{{ store_name }}{{ ws.id }}");
+				return order ? order.split('|') : [];
+			},
+			set: function (sortable) {
+				var order = sortable.toArray();
+				localStorage.setItem("{{ store_name }}{{ ws.id }}", order.join('|'));
+			}
+		}
+	});
+</script>

@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block javascript %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+
+{% block headline %}
+	{% drugname drug_ws %}
+{% endblock headline %}
+{% block header_left %}
+    from {{ drug_ws.agent.collection.name }}
+	{% if drug_ws.agent.removed %}
+	<b>(REMOVED)</b>
+	{% endif %}
+    {% for pending_link in pending_edits %}
+    <span class='label label-warning'>{{ pending_link }}</span>
+    {% endfor %}
+    {% if view.cluster_mate_links %}
+        <br>Cluster mates:
+        {% for link in view.cluster_mate_links %}
+            &nbsp;&nbsp;&nbsp;{{ link }}
+        {% endfor %}
+    {% endif %}
+    {% for repl_by in drug_ws.replacements.all %}
+    <big><br><span class='label label-warning'>Molecule replaced by: <a href='{{ repl_by.drug_url }}'>{% drugname repl_by %}</a></span></big>
+    {% endfor %}
+    {% for repl_wsa in drug_ws.replacement_for.all %}
+        <big><br><span class='label label-warning'>Replacement for: <a href='{{ repl_wsa.drug_url }}'>{% drugname repl_wsa %}</a></span></big>
+    {% endfor %}
+
+
+	{% if drug_ws.agent.ubiquitous %}
+	<br>Marked as Ubiquitous
+	{% endif %}
+	{% if not drug_ws.invalid %}
+	<br>{% attr_summary drug_ws.agent %}
+	{% if max_phase %} <br>Max phase: {{ max_phase }} {% endif %}
+<style>
+.link-section {
+    display: inline-block;
+    vertical-align: top;
+    padding-right: 2rem;
+}
+.popover {
+    max-width: 100%;
+}
+h4 {
+}
+</style>
+    <br>
+    <div class='link-section'>
+        <h4>Score Links</h4>
+        <a href="{% url 'moldata:drug_run_detail' ws.id drug_ws.id %}{{score_detail_qparms}}">
+                Score Details
+                </a>
+        <br><a href="{% url 'moldata:trg_scr_imp' ws.id drug_ws.id %}{{trg_scr_imp_qparms}}">
+                    Combined Target and Score Importance
+                    {% if not scrimp_qparms %}
+                        (no wzs)
+                    {% endif %}
+                    </a>
+        <br><a href="{% url 'moldata:trgimp' ws.id drug_ws.id %}{{trgimp_qparms}}">
+                    Target Importance
+                    </a>
+        <br><a href="{% url 'moldata:scrimp' ws.id drug_ws.id %}{{scrimp_qparms}}">
+                    Score Importance
+                    {% if not scrimp_qparms %}
+                        (no wzs)
+                    {% endif %}
+                    </a>
+        <br><a href="{% url 'moldata:ind_trg_imp' ws.id drug_ws.id %}{{trg_scr_imp_qparms}}">
+                    Indirect Target Importance
+                    {% if not scrimp_qparms %}
+                        (no wzs)
+                    {% endif %}
+                    </a>
+        {% if compev_qparams %}
+        <br><a href="{% url 'comp_evidence_view' ws.id %}{{compev_qparams}}">
+                    Computational Evidence
+                    </a>
+        {% endif %}
+    </div>
+    <div class='link-section'>
+        <h4>Molecule Links</h4>
+        <a href="{% url 'moldata:molcmp' ws.id %}?search_wsa={{ drug_ws.id }}">Similar Molecules</a>
+        <br><a href="{% url 'nav_adrs' ws.id drug_ws.id %}">
+                    Adverse Drug Reactions
+                    </a>
+        <br><a href="{% url 'nav_matching' ws.id drug_ws.id %}">Clustering info</a>
+        <br><a href="{% url 'moldata:assays' ws.id drug_ws.id %}">Affinity Assays</a>
+        <br><a href="{% url 'moldata:noneff_assays' ws.id drug_ws.id %}">Non-efficacy Assays</a>
+        <br><a href="{% url 'moldata:patent_detail' ws.id drug_ws.id %}">
+                    Patent Details
+                    </a>
+        {% if drug_ws.agent.cas_set %}
+        <br><a href="{% url 'faers_indi' ws.id %}?wsa_list={{ drug_ws.id }}">
+                    FAERS Indications
+                    </a>
+        {% endif %}
+        <br><a href="{% url 'moldata:dispositionaudit' ws.id drug_ws.id %}">Molecule Workspace History</a>
+
+    </div>
+	{% endif %}
+{% endblock header_left %}
+{% block header_right %}
+<a href="{% url 'chem_image' drug_ws.agent.id %}">
+    <img style='display:block;height:200px' src="{% url 'chem_image' drug_ws.agent.id %}">
+</a>
+	{{ drug_ws.indication_link }}
+	{% if cta_status %} <br>{{ cta_status }} {% endif %}
+	{% if drug_ws.doc_href %}
+		<a href="{{ drug_ws.doc_href }}">Write-up</a>
+	{% endif %}
+    {% if drug_ws.agent.bd_note_id %}
+		<hr><b>Global Note:</b>
+		<a href="/note/{{ drug_ws.agent.bd_note_id }}">(history)</a>
+		<br>
+		{% if view.is_demo %}
+		Demo substitute note text
+		{% else %}
+		{{ drug_ws.agent.get_bd_note_text|urlizetrunc:10|linebreaks }}
+		{% endif %}
+    {% endif %}
+    {% if other_notes %}
+        <hr>
+        {% for indication,group in other_notes %}
+		 <b>{{ indication }}:</b>
+         {% for wsa in group %}
+            <span style="white-space:nowrap">
+            <a href="{{ wsa.drug_url }}">
+                {{ wsa.ws.name }}
+            </a>
+			{% if wsa.get_study_text %}
+				{% note_icon wsa.get_study_text placement='bottom' %}
+			{% endif %}
+            </span>
+            &nbsp;&nbsp;&nbsp;
+         {% endfor %}
+		 <br>
+        {% endfor %}
+    {% endif %}
+    {% if drug_ws.study_note_id %}
+		<hr><b>Workspace Note:</b>
+		<a href="/note/{{ drug_ws.study_note_id }}">(history)</a>
+		<br>
+		{% if view.is_demo %}
+		Demo substitute note text
+		{% else %}
+		{{ drug_ws.get_study_text|urlizetrunc:10|linebreaks }}
+		{% endif %}
+    {% endif %}
+    <hr>
+    {{ drug_ws.prescreen_flags }}
+{% endblock header_right %}
+{% block body %}
+	{% if vote_form %}
+		{% with section_name="vote" %}
+			{% include 'moldata/_vote_section.html' %}
+		{% endwith %}
+	{% endif %}
+    {% with section_name="scores" section_label="Scorebox" content_url=scorebox_url %}
+        {% include '_deferred_section.html' %}
+    {% endwith %}
+    {% with section_name="links" %}
+        {% include 'moldata/_drug_links_section.html' %}
+    {% endwith %}
+	{% if condensed_links %}
+		{% with section_name="condensed" %}
+			{% include 'moldata/_chembl_condensed_section.html' %}
+		{% endwith %}
+	{% endif %}
+    {% with section_name="targ" %}
+        {% include 'moldata/_drug_targ_section.html' %}
+    {% endwith %}
+    {% for elec in inactive_elections %}
+        {% with section_name=elec.0.sec_label %}
+            {% include 'moldata/_election_section.html' %}
+        {% endwith %}
+    {% endfor %}
+    {% with section_name="attr" %}
+        {% include 'moldata/_drug_attr_section.html' %}
+    {% endwith %}
+    {% with section_name="struct_attr" %}
+        {% include 'moldata/_drug_struct_attr_section.html' %}
+    {% endwith %}
+
+    {% with section_name="molecules" section_label="MOA molecules" content_url=moa_mols_url %}
+        {% include '_deferred_section.html' %}
+    {% endwith %}
+
+    {% if clinical_trials|length > 0 %}
+        {% with section_name="trials" %}
+            {% include 'moldata/_clin_trials_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    {% with section_name="ctads" section_label="CT Status Drugsets" content_url=cta_ds_url %}
+        {% include '_deferred_section.html' %}
+    {% endwith %}
+
+    {% with section_name="indication" %}
+        {% include 'moldata/_indication_section.html' %}
+    {% endwith %}
+    {% if patent_searches|length > 0 %}
+        {% with section_name="patent_search" %}
+            {% include 'moldata/_patent_search_section.html' %}
+        {% endwith %}
+    {% endif %}
+    {% include "_tooltip_activator.html" %}
+
+    {% if show_faers %}
+    {% with section_name="faers_table" section_label="FAERS Usage Data" content_url=faers_url %}
+      	{% include '_deferred_section.html' %}
+    {% endwith %}
+    {% endif %}
+{% endblock body %}
+
+	{% if dss %} <br><br><b> CT status drugsets:</b> {{ dss }} {% endif %}

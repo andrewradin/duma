@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+Manage Protein Sets
+{% endblock headline %}
+{% block header_right %}
+Update Status: {% workflow_status_button 'ProteinSets' %}
+{% endblock header_right %}
+{% block body %}
+    <h3>Create a protein set:</h3>
+    <hr>
+    <form method="post">
+        {% csrf_token %}
+		<table>
+		{{ protset_form.as_table }}
+		</table>
+        <input type='submit' name='create_btn' value='Create'/>
+
+    </form>
+    <hr/>
+	{% if partslist_html %}
+		<form method="post">
+			To pre-load by combining existing protein sets,
+			check the desired protein sets below, then click
+			<input type='submit' name='union_preload_btn' value='Pre-load'/>
+			{% csrf_token %}
+			<br>
+			{{ partslist_html }}{% pad %}{% bulk_update_links 'parts' %}
+		</form>
+		<hr>
+	{% endif %}
+    <form method="post">
+        To pre-load proteins binding to a drugset,
+        select the desired options below, then click
+        <input type='submit' name='dpi_preload_btn' value='Pre-load'/>
+        {% csrf_token %}
+        <br>
+        {{ d2p_form }}
+    </form>
+    <hr/>
+    <form method="post">
+        To pre-load proteins reviewed in a review round:
+        <input type='submit' name='reviewround_preload_btn' value='Pre-load'/>
+        {% csrf_token %}
+        <br>
+        {{ reviewround_form }}
+    </form>
+
+    <hr/>
+    <div>
+        Search for proteins by name or by gene.
+        <br/>
+        <div class='form-inline form-group-sm'>
+        <input id='prot-search-input' placeholder='e.g. DRD2 or P005'  class='form-control'/>
+        <button id='prot-search-btn' class='btn btn-default btn-sm'>Search</button>
+        </div>
+        <div id='prot-search-results'></div>
+    </div>
+    <script src='/static/js/prot_search.js'></script>
+    <script>
+        setupProtSearch(
+            $('#prot-search-input')[0],
+            $('#prot-search-btn')[0],
+            $('#prot-search-results')[0],
+            $('#id_proteins')[0],
+            {{ ws.id }}
+        );
+    </script>
+    <hr/>
+    {% with section_name="global_data" %}
+        {% include 'nav/_ps_global_data_section.html' %}
+    {% endwith %}
+    </hr>
+    {% if protset_list.count %}
+        <h3>Existing protein sets:</h3>
+        <table class="table">
+        <tr>
+            <th style="width:100px"></th>
+            <th>Protein set name</th>
+            <th>Description</th>
+            <th>Created By</th>
+            <th>Created On</th>
+            <th>Gene count</th>
+            <th>Protein count</th>
+        </tr>
+        {% for ps in protset_list %}
+            <tr>
+                <td>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type='hidden' name='ps_id' value='{{ ps.id }}'/>
+                    <input type='submit' name='delete_btn' value='Delete'/>
+                </form>
+                </td>
+                <td>{{ ps.name }}</td>
+                <td>{{ ps.description}}</td>
+                <td>{{ ps.created_by }} </td>
+                <td>{{ ps.created_on }} </td>
+                <td>{{ ps.unique_genes | length }}</td>
+                <td>{{ ps.proteins.count }}</td>
+            </tr><tr>
+                <td style='border-bottom: 1px solid black'>Proteins</td>
+                <td colspan=6 style='border-bottom:1px solid black'>
+					{% comment %}
+					This doesn't use prot_link.html because we want a
+					protein name rather than a gene name
+					{% endcomment %}
+					{% for prot in ps.gene_sorted_proteins %}
+					<a href="{% url 'protein' ws.id prot.uniprot %}">
+					{{ prot.gene }}
+					</a>
+					{% endfor %}
+				</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <h3>No existing protein sets</h3>
+    {% endif %}
+{% endblock body %}

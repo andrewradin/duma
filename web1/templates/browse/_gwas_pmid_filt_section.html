@@ -1,0 +1,43 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% load navtools %}
+{% block section_label %}Excluded Publications{% endblock %}
+{% block section_body %}
+	<table class="table">
+		<tr>
+		<td>&lt; clear filter</td>
+		{% for header_html in pmid_filt_table.headers %}
+			{{ header_html }}
+		{% endfor %}
+		</tr>
+		{% for row in pmid_filt_table.rows %}
+		<tr>
+			<td>
+				<form method="post">
+					{% csrf_token %}
+					<input type="hidden"
+							name='key'
+							value="{{ row.source_row.pubmed_id }}"
+							/>
+					<span style="white-space:nowrap">
+						<button type="submit" name="filt_clear_btn"
+							class="btn btn-info"
+							>
+							&lt;
+						</button>
+						{% if row.source_row.note %}
+							{% note_icon row.source_row.get_note_text %}
+						{% endif %}
+						<a href="{% view_url filt_edit=row.source_row.pubmed_id %}">
+							{% glyph_icon 'pencil' %}
+						</a>
+					</span>
+				</form>
+			</td>
+			{% for cell_html in row %}
+				{{ cell_html }}
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/lib/bootstrap.min.css">
+<style>
+    .main {
+        display: flex;
+        overflow-x: show;
+    }
+    .entry {
+        flex: 0 0 auto;
+        vertical-align: top;
+        display: inline-block;
+        border-left: 1px solid #ddd;
+        padding: 5rem;
+        max-width: 60rem;
+    }
+    .struct {
+        width: 200px;
+        max-width: 100%;
+        border: 1px solid #ddd;
+    }
+    .section-data {
+        padding-left: 2rem;
+    }
+    h2 {
+        display: inline-block;
+    }
+    h4 {
+        display: inline-block;
+    }
+
+    .pk-entry {
+        display: inline-block;
+        padding: 0.5rem;
+    }
+
+    .organism {
+        font-weight: bold;
+        font-size: 80%;
+    }
+
+    .score {
+    }
+</style>
+    </head>
+<body>
+<div class='container-fluid'>
+<h1>Hit Selection Report</h1>
+<div class='panel panel-default' style='display:inline-block; width: 800px;vertical-align: top; margin-right: 2rem'>
+    <div class='panel-heading'><b>MoA: {{ genes }}</b></div>
+    <div class='panel-body'>
+        {{ moa_note | linebreaks | urlize }}
+    </div>
+</div>
+<div class='panel panel-default' style='display:inline-block; width: 800px; vertical-align: top;'>
+    <div class='panel-heading'><b>Pre-Clin Team Note</b></div>
+    <div class='panel-body'>
+        <form method='POST'>
+            {% csrf_token %}
+            <table>
+            {{ note_form.as_table }}
+            </table>
+            <button class='btn btn-default' name='save_btn'>Save</button>
+        </form>
+    </div>
+</div>
+<div class='main'>
+{% for wsa, wsa_data in report %}
+    <div class='entry'>
+    <h2>{{ wsa.html_url }}<h2>
+    {% for section, section_data in wsa_data %}
+        <h3>{{ section }}</h3>
+        <div class='section-data'>
+            {{ section_data }}
+        </div>
+        <hr>
+    {% endfor %}
+    </div>
+{% endfor %}
+</div>
+</div>
+</body>
+</html>

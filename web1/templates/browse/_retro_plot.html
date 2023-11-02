@@ -1,0 +1,47 @@
+{% load browse_tags %}
+{% if plot_form %}
+<form method='POST'>
+{% csrf_token %}
+{{ plot_form.as_p }}
+<button type='submit' name='{{plot_form_btn.0}}_btn'>{{ plot_form_btn.1 }}</button>
+</form>
+
+{% endif %}
+<div
+	id="{{ div_id }}"
+	style="float:left; height: {{ src.height }}px; width: {{ src.width }}px;"
+	class="plotly-graph-div">
+</div>
+
+<script type="text/javascript">
+Plotly.newPlot("{{ div_id }}",{{ src.data_json }},{{ src.layout_json }},{{ src.config_json }});
+{% if src.handles_click %}
+    document.getElementById('{{ div_id }}').on('plotly_click', function(data){
+        var idLookup = {{ src.id_lookup }};
+        var wsId = {{ ws.id }};
+		{{ src.click_handler }}
+		});
+{% endif %}
+</script>
+
+{% if plot_table %}
+<table id="{{ div_id }}_table" class='table table-condensed table-hover'>
+</table>
+    <script src='/static/js/retro_datatable.js'></script>
+    <script>
+        fromPlotData($('#{{div_id}}_table'), {{ src.data_json }}, {{decimal_places}});
+    </script>
+
+{% endif %}
+
+
+{% if extra_table %}
+<hr/>
+<h3>{{ extra_table_title }}</h3>
+<table id="{{ div_id }}_extra_table" class='table table-condensed table-hover'>
+</table>
+    <script>
+        fromArray($('#{{div_id}}_extra_table'), {{ extra_table | safe_json }}, {{extra_table_header | safe_json}});
+    </script>
+        
+{% endif %}

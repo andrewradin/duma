@@ -1,0 +1,36 @@
+
+{% if edit_ds %}
+    <script type="text/javascript">
+        $(window).load(function(){
+            $('#myModal').modal('show');
+        });
+    </script>
+    <div class="modal fade" id="myModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">
+				Edit Drug Set {{ edit_ds.name }}
+            </h4>
+          </div>
+			<form role="form" method="post" >
+			{% csrf_token %}
+          <div class="modal-body">
+            {{ edit_form }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">
+                Cancel
+            </button>
+			<button type="submit" class="btn btn-primary" name='save_btn'>
+				Save
+			</button>
+            <button type="submit" class="btn btn-danger" name='delete_btn'>
+				Delete Drug Set
+			</button>
+          </div>
+			</form>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endif %}

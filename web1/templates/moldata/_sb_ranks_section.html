@@ -1,0 +1,15 @@
+{% load browse_tags %}
+    <table class="table">
+		<tr>
+            {% for label in sb_ranks.0 %}
+                <th>{{ label }}</th>
+            {% endfor %}
+		</tr>
+        {% for l in sb_ranks.1 %}
+		<tr>
+        	{% for c in l %}
+				<td>{{c}}</td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
+    </table>

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+{% if search.wsa %}
+    <a href="{{ search.wsa.drug_url }}" target="_blank">
+        {{ search.drug_name }}
+    </a>
+{% else %}
+    {{ search.drug_name }}
+{% endif %}
+
+Patents
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+	<a href="{% url 'pats_summary' ws.id search.patent_search.id %}">See search summary</a>
+{% endblock header_right %}
+{% block body %}
+<div class='query-terms well'>
+    <h4>Disease Terms</h4>
+    <div>{{ search.query_data.disease|join:'</div><div>' }}</div>
+    <h4> Drug Terms</h4>
+    <div>{{ search.query_data.terms_used|join:'</div><div>' }}</div>
+</div>
+
+
+{% csrf_token %}
+<table id='patent-table' class='table table-hover'>
+    <thead>
+        <tr><th>Score</th><th>Status</th><th>ID</th><th>Title</th><th>#Drug</th><th>#Dis</th></tr>
+    </thead>
+    <tbody>
+{% for patent_result in search.patent_search_results %}
+<tr class='search-row' searchResultId="{{ patent_result.id }}">
+    <td>{{ patent_result.formatted_score }}</td>
+    <td>{{ patent_result.resolution_text }}</td>
+    <td><a href='{{ patent_result.patent.href }}' target='_blank'>
+        {{ patent_result.patent.pub_id }}
+        {% glyph_icon 'new-window' %}
+        </a></td>
+    <td>{{ patent_result.patent.title }}</td>
+    <td>{{ patent_result.num_drug_evidence }}</td>
+    <td>{{ patent_result.num_disease_evidence }}</td>
+</tr>
+{% endfor %}
+
+    </tbody>
+</table>
+<link href="/static/js/pat_resolve.css" rel="stylesheet" type="text/css">
+<script src='/static/js/pat_resolve.js'></script>
+<script>
+    const patentResolve = new PatentResolve(
+        {{view.ws.id}},
+        {{search.id}},
+        {{resolve_opts|safe}},
+        $('#patent-table')[0]
+    );
+</script>
+
+{% endblock body %}

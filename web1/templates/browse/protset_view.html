@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Protein Sets
+{% endblock headline %}
+{% block javascript %}
+{% endblock javascript %}
+{% block header_left %}
+    <form method=POST>
+        {% csrf_token %}
+        {{ calc_form.as_p }}
+        <button name='calc_btn'>Show</button>
+    </form>
+{% endblock header_left %}
+{% block body %}
+
+{% include "_table.html" %}
+
+{% endblock body %}

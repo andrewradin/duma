@@ -1,0 +1,40 @@
+{% extends 'consultant/base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+	{% drugname drug_ws %}
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% if drug_ws.get_study_text %}
+<div class='panel panel-info'>
+    <div class='panel-heading'>Study Note</div>
+    <div class='panel-body'>
+        {{drug_ws.get_study_text}}
+    </div>
+</div>
+{% endif %}
+{% endblock header_right %}
+{% block body %}
+    {% with section_name="links" %}
+        {% include 'consultant/_drug_links_section.html' %}
+    {% endwith %}
+
+	{% if vote_form %}
+		{% with section_name="vote" %}
+			{% include 'consultant/_vote_section.html' %}
+		{% endwith %}
+	{% endif %}
+
+    {% with section_name="targ" %}
+        {% include 'consultant/_drug_targ_section.html' %}
+    {% endwith %}
+    {% with section_name="attr" %}
+        {% include 'consultant/_drug_attr_section.html' %}
+    {% endwith %}
+
+    {% include "_tooltip_activator.html" %}
+
+{% endblock body %}
+

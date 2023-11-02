@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Selectability Model
+{% endblock headline %}
+{% block header_left %}
+<form method='post'>
+    {% csrf_token %}
+    {{ foldselect_form.as_p }}
+    <button name='foldselect_btn'>Show KFold Crosseval</button>
+</form>
+
+{% endblock header_left %}
+{% block header_right %}
+<form method='post'>
+    {% csrf_token %}
+    {{ wsaselect_form.as_p }}
+    <button name='wsaselect_btn'>Run Model on WSAs</button>
+</form>
+{% endblock header_right %}
+{% block body %}
+<hr/>
+{% include "_datatables_load.html" %}
+{% for idx, name, cols, data, wsaData in tables %}
+    <table class='table table-condensed table-hover' id='table-{{idx}}'></table>
+{% endfor %}
+    
+
+<script>
+function renderFn(v) {
+    if (isNaN(v)) {
+        return v;
+    }  else {
+        return Number(v).toFixed(2);
+    }
+}
+{% for idx, name, cols, data, wsaData in tables %}
+if (true) {
+    const wsaData = {{ wsaData | safe }};
+    function linkRenderFn(v) {
+        const data = wsaData[v];
+        return `<a href='${data.url}'>${data.name}</a>`;
+    }
+    const cols = {{cols|safe}};
+    for (const col of cols) {
+        col['render'] = renderFn;
+    }
+    cols[0]['render'] = linkRenderFn;
+    $("#table-{{idx}}").DataTable({
+        data: {{data|safe}},
+        columns: cols,
+        autoWidth: false,
+    });
+}
+{% endfor %}
+
+</script>
+
+{% endblock body %}

@@ -1,0 +1,9 @@
+license_info="https://open.fda.gov/data/faers/"
+license="https://creativecommons.org/publicdomain/zero/1.0/"
+credit_list=[
+    dict(
+        author='FDA',
+        title='FAERS',
+        link=license,
+        ),
+    ]

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    {{ page_label }}
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block body %}
+    {% with section_name="expression_counts" %}
+		{% include 'ge/_tissue_stats.html' %}
+    {% endwith %}
+    {% with section_name="proteins_by_tissue_count" %}
+		{% include 'ge/_significant_protein_stats.html' %}
+    {% endwith %}
+    {% with section_name="proteins_by_KT_count" %}
+		{% include 'ge/_kt_protein_stats.html' %}
+    {% endwith %}
+    {% with section_name="drugs_by_prot_count" %}
+        {% include 'ge/_drugs_by_prot_count.html' %}
+    {% endwith %}
+
+    {% if plots %}
+        {% for plot in plots %}
+            {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+        {% endfor %}
+        {% include "_plotly_clear.html" %}
+    {% endif %}
+
+
+    <a href="/publish/{{ ws.id }}/tp_heatmap.png">Heatmap</a><br>
+    <iframe
+        src="/publish/{{ ws.id }}/tp_stats.pdf"
+        width=900
+        height=2800
+        >
+    </iframe>
+{% endblock body %}

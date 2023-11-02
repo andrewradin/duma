@@ -1,0 +1,32 @@
+{% extends "collapse_section.html" %}
+{% load navtools %}
+{% load browse_tags %}
+{% block section_label %}Selected Datasets{% endblock %}
+{% block section_body %}
+	<table class="table">
+		<tr>
+		<td>- reject</td>
+		{% for header_html in selection_table.headers %}
+			{{ header_html }}
+		{% endfor %}
+		</tr>
+		{% for row in selection_table.rows %}
+		<tr>
+			<td>
+					<span style="white-space:nowrap">
+						<a role="button"
+							class="btn btn-warning"
+							href="{% view_url rej=row.source_row.make_key %}"
+							>
+							-
+						</a>
+						{% include "browse/_gwas_note_icons.html" with gwds=row.source_row %}
+					</span>
+			</td>
+			{% for cell_html in row %}
+				{{ cell_html }}
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

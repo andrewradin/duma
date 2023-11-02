@@ -1,0 +1,40 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "watch": "parcel watch main.tsx --no-hmr -d ~/2xar/publish/js -o main.js --public-url ./",
+    "build": "parcel build main.tsx -d ~/2xar/publish/js -o main.js --public-url ./"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "@babel/runtime": "^7.13.9",
+    "@emotion/styled": "^10.0.27",
+    "datatables.net": "^1.10.23",
+    "freezer-js": "^0.14.1",
+    "jquery": "^3.5.1",
+    "npm": "^6.14.4",
+    "plotly.js-cartesian-dist-min": "^1.53.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-autosuggest": "^9.4.3",
+    "react-dom": "^16.13.1",
+    "react-plotly.js": "^2.4.0",
+    "react-treebeard": "^3.2.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.8",
+    "@babel/preset-env": "7.13.0",
+    "@types/react": "^16.9.34",
+    "@types/react-dom": "^16.9.6",
+    "parcel-bundler": "^1.12.4",
+    "prettier": "^1.19.1",
+    "typescript": "^3.8.3"
+  },
+  "browserslist": [
+    "since 2019-01"
+  ]
+}

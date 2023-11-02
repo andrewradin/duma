@@ -1,0 +1,45 @@
+{% extends "collapse_section.html" %}
+{% block section_label %}Protein Notes (
+{% if view.global_note_id %}
+	Global,
+{% endif %}
+{% if view.note_id %}
+	Personal,
+{% endif %}
+{% if view.other_notes %}
+{{view.other_notes | length}} other
+{% endif %}
+)
+{% endblock %}
+{% block section_body %}
+<style>
+        .helptext {
+                font-size: 90%;
+                font-style: italic;
+        }
+</style>
+
+
+        <form style='display:inline-block' method="post">
+                {% csrf_token %}
+                <table class='table table-condensed'>
+                {{ protein_note_form.as_table }}
+                </table>
+                <input type='submit' name="save_note_btn" value='Save Note'/>
+                {% if view.global_note_id %}
+                        <br>
+                        <a href="{% url 'note_hist' view.global_note_id %}">Global Note History</a>
+                {% endif %}
+                {% if view.note_id %}
+                        <br>
+                        <a href="{% url 'note_hist' view.note_id %}">Personal Note History</a>
+                {% endif %}
+        </form>
+        <hr>
+        <b>Other notes:</b>
+        <ul>
+            {% for name,text in view.other_notes %}
+                <hr><li><b>{{ name }}:</b> {{ text|urlizetrunc:10|linebreaks }}</li>
+            {% endfor %}
+        </ul>
+{% endblock %}

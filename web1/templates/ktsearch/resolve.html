@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Treatment Resolution
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+	<a href="{% url 'kts_summary' ws.id search.id %}">See summary</a>
+    {% if view.previous_drug %}
+        <br>
+        <br>
+        <b>Your previous drug:</b> {{ view.previous_drug }}
+    {% endif %}
+{% endblock header_right %}
+{% block body %}
+	{% if group %}
+        <h3>{{ drugname }}</h3>
+		<b>Duma drug page:</b> {{ wsa_link }}
+		<br><b>Current indication:</b> {{ group.wsa.indication_link }}
+		<br><b>Proposed indication:</b> {{ group.proposed_indication_label }}
+		<form method="post">
+			<b>Evidence:</b>
+				<table style="border-spacing:5px; border-collapse:separate">
+				{% for item in group.evidence %}
+					<tr>
+						<td>
+							{{ item.link_html }} {{ item.extra }}
+						</td>
+						{% if item.href_usable %}
+							<td>
+							<button type="submit" class="btn btn-info btn-xs"
+								name='rat{{ item.id }}_btn'>
+								Update to "Researched as treatment"
+							</button>
+							</td>
+							<td>
+							{% if item.ind_label %}
+							<button type="submit" class="btn btn-info btn-xs"
+								name='pro{{ item.id }}_btn'>
+								Update to {{ item.ind_label }}
+							</button>
+							{% endif %}
+							</td>
+						{% else %}
+							<td></td><td></td>
+						{% endif %}
+					</tr>
+				{% endfor %}
+				</table>
+			{% csrf_token %}
+			{{ check_id_form }}
+			{% if view.group.href_usable %}
+			<button type="submit" class="btn btn-primary" name='update_btn'
+			>Update to proposed</button>
+			{% else %}
+			<div class="panel panel-warning">
+			<div class="panel-heading">
+			Evidence for "{{ group.proposed_indication_label }}"
+			lacks a useful reference. Please find a useful
+			indication href and update manually.
+			</div>
+			</div>
+			{% endif %}
+			<button type="submit" class="btn btn-info" name='ignore_btn'>
+			Leave as is</button>
+            <br>
+            <b>Any of the buttons above will also save the Workspace note.</b>
+            <hr/>
+            <table>
+			{{ note_form.as_table }}
+			{{ indi_form.as_table }}
+			{{ cta_form.as_table }}
+            </table>
+			<button type="submit" class="btn btn-info" name='reclassify_btn'>
+			Reclassify</button>
+		</form>
+	{% else %}
+		All groups resolved
+	{% endif %}
+{% endblock body %}

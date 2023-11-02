@@ -1,0 +1,6 @@
+{% extends "collapse_section.html" %}
+{% load navtools %}
+{% block section_label %}Pathway information{% endblock %}
+{% block section_body %}
+    <a href='{% url 'pathway_network' %}#{% templatetag openbrace %}"initWsa":{{wsa.id}}{% templatetag closebrace %}'>Target Pathways</a>
+{% endblock %}

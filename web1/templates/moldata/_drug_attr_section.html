@@ -1,0 +1,23 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Molecule identifiers{% endblock %}
+{% block section_body %}
+<a href='{% url 'drug_edit_view' %}?wsa_id={{ drug_ws.id }}'>Edit Attributes</a>
+	<table class='table'>
+	<tr><th>Attribute</th>
+	<th>Value</th>
+	<th>Source</th></tr>
+	{% for tup in name_attrs %}
+	<tr>
+		<th>{{ tup.0 }}</th>
+		{% for inner_tup in tup.1 %}
+			{% if not forloop.first %}
+				</tr><tr><th>  </th>
+			{% endif %}
+			<td>{{ inner_tup.0 }}</td>
+			<td>{{ inner_tup.1 }}</td>
+		{% endfor %}
+	</tr>
+	{% endfor %}
+	</table>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Drug Properties{% endblock %}
+{% block section_body %}
+<form method="post">
+	{% csrf_token %}
+	<button type="submit" name='prop_refresh_btn' class="btn btn-primary">
+		Update from master
+	</button>
+</form>
+<br>
+<table class="table">
+<tr>
+	<th> Property Name </th>
+	<th> Property Type </th>
+	<th> Multi-value </th>
+	<th> Record Count </th>
+</tr>
+{% for prop in props %}
+	<tr>
+		<td> {{ prop.name }} </td>
+		<td> {{ prop.prop_type_name }} </td>
+		<td> {{ prop.multival }} </td>
+		<td> {{ prop.rec_count }} </td>
+	</tr>
+{% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "collapse_section.html" %}
+{% load tissue %}
+{% block section_label %}Expression Data{% endblock %}
+{% block section_body %}
+	<h2>Expression Data</h2>
+    {% include '_table.html' with table=ge_table %}
+{% endblock %}

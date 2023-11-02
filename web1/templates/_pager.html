@@ -1,0 +1,19 @@
+{% load navtools %}
+{% load browse_tags %}
+{% if pager %}
+	<span class='pull-right'>
+		<a href="{% url_add_query page=1 %}">
+		{% glyph_icon "fast-backward" %}
+		</a>
+		<a href="{% url_add_query page=pager.prev_page %}">
+		{% glyph_icon "step-backward" %}
+		</a>
+		Page {{ pager.page_num }} of {{ pager.last_page }}
+		<a href="{% url_add_query page=pager.next_page %}">
+		{% glyph_icon "step-forward" %}
+		</a>
+		<a href="{% url_add_query page=pager.last_page %}">
+		{% glyph_icon "fast-forward" %}
+		</a>
+	</span>
+{% endif %}

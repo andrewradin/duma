@@ -1,0 +1,20 @@
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap.min.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+
+
+<style>
+/* This moves the sort icons left.  On the right they are confusing with
+   wide columns. */
+table.dataTable thead > tr > th {
+    padding-left: 20px !important;
+    padding-right: initial !important;
+}
+
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:after {
+    left: 0px !important;
+    right: auto !important;
+}
+</style>

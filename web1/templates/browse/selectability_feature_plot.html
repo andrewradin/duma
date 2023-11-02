@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Cross-WS Indication Feature Explorer
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+    <form method="post">
+        {% csrf_token %}
+        {{ calc_form.as_p }}
+        <input type="submit" name='calc_btn' value="Calculate"/>
+    </form>
+{% endblock header_left %}
+{% block body %}
+    {% if plotly_plots %}
+        {% for plot in plotly_plots %}
+            {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+            {% include "_plotly_clear.html" %}
+        {% endfor %}
+        {% include "_plotly_clear.html" %}
+	{% endif %}
+{% endblock body %}

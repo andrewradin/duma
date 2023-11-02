@@ -1,0 +1,30 @@
+{% extends "collapse_section.html" %}
+{% block section_label %}Patent Searches{% endblock %}
+{% block section_body %}
+{% load browse_tags %}
+<table class='table'>
+    <thead>
+        <tr><th>Search</th><th>Disease Names</th><th>Drug Names</th><th>Results</th><th>Relevant Patents</th></tr>
+    </thead>
+    <tbody>
+        {% for search in patent_searches %}
+            <tr>
+                <td>
+                    <a href='{% url "pats_resolve" ws.id search.id %}'>
+                    {{ search.drug_name }}
+                    </a>
+                </td>
+                <td>{{ search.query_data.disease|length }}
+                {% info_icon search.query_data.disease|join:', ' placement='top' %}
+                </td>
+                <td>{{ search.query_data.terms_used|length }}
+                {% info_icon search.query_data.terms_used|join:', ' placement='top' %}
+                </td>
+                <td>{{ search.patent_search_results | length }}</td>
+                <td>{{ search.resolution_summary.Relevant }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

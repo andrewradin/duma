@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+Known Treatment Clusters
+{% endblock headline %}
+{% block body %}
+    <form method="post">
+        {% csrf_token %}
+        {{ config_form.as_p }}
+        <input type='submit' name="redisplay_btn" value='Redisplay'/>
+    </form>
+    <br>
+    {% include "_table.html" %}
+{% endblock body %}

@@ -1,0 +1,25 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% load process %}
+{% block section_label %}{{ esga.1 }} information{% endblock %}
+{% block section_body %}
+	Source Job {% job_summary esga.0.0 '-status -settings' %}<br>
+    <table class="table">
+		<tr>
+            <th>Protein</th>
+            <th>DPI evidence</th>
+            <th>DPI direction</th>
+            {% for label in esga.2 %}
+            <th>esga {{ label }}</th>
+            {% endfor %}
+		</tr>
+		{% for p in esga.3 %}
+		<tr>
+            <td>{% protlink p.0.uniprot_id %}</td>
+            <td>{{ p.0.evidence|sci_fmt }}</td>
+			<td>{{ p.2 }}</td>
+			<td>{{ p.1.0|sci_fmt }}</td>
+		</tr>
+		{% endfor %}
+    </table>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+	{% if headline %}
+		{{ headline }}
+	{% else %}
+		Placeholder
+	{% endif %}
+{% endblock headline %}
+{% block header_right %}
+    {% for link in links %}
+        <a href="{{ link.1 }}">{{ link.0 }}</a><br>
+    {% endfor %}
+{% endblock header_right %}
+{% block body %}
+	<pre>
+	{{ note }}
+	</pre>
+{% endblock body %}

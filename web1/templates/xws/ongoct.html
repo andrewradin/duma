@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Ongoing Clinical Trials
+{% endblock headline %}
+{% block header_left %}
+    <form method=POST>
+        {% csrf_token %}
+        {{ filt_form.as_p }}
+        <button name='search_btn'>Search</button>
+    </form>
+{% endblock header_left %}
+{% block header_right %}
+	{% if download_link %}
+		<a href="{{ download_link }}">Download {{ tsv_filename }}</a>
+	{% endif %}
+{% endblock header_right %}
+{% block body %}
+	{% include '_table.html' with table=trial_table %}
+{% endblock body %}

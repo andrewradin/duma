@@ -1,0 +1,43 @@
+{% extends 'consultant/base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Molecules To Review
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+    {% for election, votes in election_to_votes.items %}
+    <div class='panel panel-primary'>
+        <div class='panel-heading panel-title'>
+        {{ election.ws.name }}
+        <small style='float:right'>Due: {{ election.due }}</small>
+        </div>
+        <table class='table table-condensed'>
+            <thead>
+                <tr>
+                    <th>Molecule</th>
+                    <th>Recommendation</th>
+                    <th>My Notes</th>
+                    <th>Study Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vote in votes %}
+                <tr>
+                    <td><a href='/consultant/{{ vote.drug.ws.id }}/molecule/{{ vote.drug.id }}/'>
+                            {{ vote.drug.agent.canonical }}
+                    </a></td>
+                    <td>{% vote_icon '' vote %}</td>
+                    <td>{% my_vote_note request.user vote %}</td>
+                    <td>{{ vote.drug.get_study_text }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+{% endblock body %}
+

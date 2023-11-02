@@ -1,0 +1,59 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Molecule structure attributes{% endblock %}
+{% block section_body %}
+<a href='{% url 'drug_edit_view' %}?wsa_id={{ drug_ws.id }}'>Edit Attributes</a>
+{% if struct_attrs %}
+    <table class='table'>
+	<h3> Structural Descriptors </h3>
+	<tr> <th>Attribute</th>
+	<th>Value</th>
+	<th>Source</th></tr>
+	{% for tup in struct_attrs %}
+		<tr>
+			<th>{{ tup.0 }}</th>
+			{% for inner_tup in tup.1 %}
+				{% if not forloop.first %}
+					</tr><tr><th>  </th>
+				{% endif %}
+				<td>{{ inner_tup.0 }}</td>
+				<td>{{ inner_tup.1 }}</td>
+			{% endfor %}
+		</tr>
+	{% endfor %}
+	</table>
+{% endif %}
+{% if mol_vals %}
+	<h3> Molecular Attributes </h3>
+	<table class='table'>
+	<tr><th>Attribute</th>
+	<th>Value</th>
+	<th>Source</th></tr>
+	{% for tup in mol_vals %}
+		<tr>
+			<td>{{ tup.0 }}</td>
+			{% for inner_tup in tup.1 %}
+				{% if not forloop.first %}
+					</tr><tr><th>  </th>
+				{% endif %}
+				<td>{{ inner_tup.0 }}</td>
+				<td>{{ inner_tup.1 }}</td>
+			{% endfor %}
+		</tr>
+	{% endfor %}
+	</table>
+{% endif %}
+{% if struct_alerts %}
+	<h3> Structural Alerts </h3>
+	<table class='table'>
+	<tr><th>Alert</th>
+	<th>Source</th></tr>
+	{% for tup in struct_alerts %}
+		<tr>
+		<td>{{ tup.0 }} </td>
+		<td>{{ tup.1 }} </td>
+		</tr>
+	{% endfor %}
+	</table>
+{% endif %}
+{% endblock %}

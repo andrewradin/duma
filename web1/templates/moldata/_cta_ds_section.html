@@ -1,0 +1,11 @@
+{% load process %}
+{% load browse_tags %}
+
+{% if dss %}
+    <b>CT status drugsets</b>
+    {% for ds in dss %}
+        <br>{{ ds }}
+    {% endfor %}
+{% else %}
+    No CT status drugsets found
+{% endif %}

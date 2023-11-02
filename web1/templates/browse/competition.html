@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    Competitive Intensity
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+
+{{ paste_instructions }}
+<form method='POST'>
+    {% csrf_token %}
+    {{ upload_form.as_p }}
+    {{ factors_form.as_p }}
+    <button name='analyze_btn'>Analyze</button>
+</form>
+
+<b>Total molecules:</b> {{ total_mols }}<br>
+<b>Unique molecules:</b> {{ unique_mols }}<br>
+<b>Unique targets:</b> {{ unique_targs }}<br>
+<b>Competition molecule score:</b> {{ comp_drug_score|floatformat }}<br>
+<b>Competition target score:</b> {{ comp_targ_score|floatformat }}<br>
+{% include "_table.html" with table=phase_table %}
+
+{% include "_tooltip_activator.html" %}
+{% endblock body %}

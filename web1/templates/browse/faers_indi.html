@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block headline %}
+	{{ headline }}
+{% endblock headline %}
+{% block header_left %}
+	{% if view.indi %}
+		<b>Events with indications matching:</b>
+		{% for pattern in view.indi %}
+			{{ pattern }}{% if forloop.last %}<br>{% else %},{% endif %}
+		{% endfor %}
+	{% elif drugnames %}
+		<b>Events with drugs matching:</b>
+		{% for name in drugnames %}
+			{{ name }}{% if forloop.last %}<br>{% else %},{% endif %}
+		{% endfor %}
+	{% endif %}
+	<br><b>Events found for 
+	{% if view.indi %}
+	base indications:
+	{% elif drugnames|length == 1 %}
+	drug:
+	{% else %}
+	drugset:
+	{% endif %}
+	</b> {{ match_total }}
+	<br><b>Events required for indication display:</b> {{ view.min_events }}
+	<br><b>Database used:</b> {{ view.cds }}
+{% endblock header_left %}
+{% block header_right %}
+    <form method='POST'>
+        {% csrf_token %}
+        <h3>Background Filters:</h3>
+        {{ bgfilt_form.as_p }}
+        <h3>Plot Options:</h3>
+        {{ config_form.as_p }}
+        <button name='redisplay_btn'>Re-Display</button>
+    </form>
+{% endblock header_right %}
+{% block body %}
+{% include "_plotly_div.html" with div_id="testdiv" src=plotclass %}
+{% endblock body %}

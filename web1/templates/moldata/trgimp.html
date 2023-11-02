@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+	{% if drug_name %}
+		{{ drug_name }}
+	{% endif %}
+	Target Importance Scoring
+{% endblock headline %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+    <form method="post">
+        {% csrf_token %}
+        {{ calc_form.as_p }}
+        <input type="submit" name='calc_btn' value="Calculate"/>
+    </form>
+{% endblock header_left %}
+{% block body %}
+    {% if plotly_plots %}
+        {% for plot in plotly_plots %}
+            {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+        {% endfor %}
+        {% include "_plotly_clear.html" %}
+	{% endif %}
+{% comment %}
+	{% if scores %}
+	    <table class="table">
+    	    <tr>
+        	    <th></th>
+            	{% for s in scores %}
+                	<th style="text-align:right">{{ s }}</th>
+            	{% endfor %}
+        	</tr>
+        	{% for v in prots%}
+            	<tr>
+                	<td>{% include 'browse/prot_link.html' with prot_id=v.0 %}</td>
+                {% for d in v.1 %}
+                    {{ d }}
+                {% endfor %}
+            	</tr>
+        	{% endfor %}
+		</table>
+	{% endif %}
+{% endcomment %}
+{% endblock body %}

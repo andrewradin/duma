@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+Disease Names
+{% endblock headline %}
+{% block body %}
+    {% include '_table.html' with table=vocab_table %}
+    {% load browse_tags %}
+    Update Status: {% workflow_status_button 'DiseaseNames' %}
+{% endblock body %}

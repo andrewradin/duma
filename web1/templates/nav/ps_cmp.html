@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block headline %}
+    ProtSet Compare
+{% endblock headline %}
+{% block javascript %}
+{% endblock javascript %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+    {% url 'nav_score_cmp' ws.id as here %}
+	{% if not sums_plots %}
+		<div class="well">
+			Choose 2 protSets and a PPI file, change default settings as needed, and then click Display.
+		</div>
+	{% endif %}
+	<form action="#" method="post">
+		{% csrf_token %}
+		{{ ps_cmp_form.as_p }}
+		<input type='submit' name="display_btn" value='Display'/>
+	</form>
+{% if sums_plots %}
+	<h3>Comparison</h3>
+	{% for lines,plot in sums_plots %}
+		{% for line in lines %}
+			{{ line }}<br>
+		{% endfor %}
+		<img src="{{ plot }}"></img>
+		<br>
+	{% endfor %}
+{% endif %}
+{% if pathway_enrichments %}
+	{% for table in pathway_enrichments %}
+	    <h3>{{ table.0 }}</h3>
+    	    {% with rows=table.1 %}
+        	    {% include 'nav/_ps_cmp_pathway_table.html' %}
+	        {% endwith %}
+    {% endfor %}
+{% endif %}
+{% endblock body %}

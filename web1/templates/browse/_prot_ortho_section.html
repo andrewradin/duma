@@ -1,0 +1,20 @@
+{% extends "collapse_section.html" %}
+{% load navtools %}
+{% block section_label %}Orthology Data{% endblock %}
+{% block section_body %}
+<style>
+</style>
+For BLAST orthology data (more details, different source), see <a href='https://web.expasy.org/cgi-bin/blast/blast.pl?seq={{protein.uniprot}}&curated=on'>Expasy BLAST for {{protein.uniprot}}</a>
+<br>There are sometimes differences and/or missing entries in either source, so it can be good to check both.
+    <table id='ortho_table' class='table'>
+    </table>
+    <script>
+        {
+            const columns = {{ ortho_table.headers_data | safe }};
+            const table = $('#ortho_table').DataTable({
+                data: {{ ortho_table.rows_data | safe }},
+                columns: columns,
+            });
+        }
+    </script>
+{% endblock %}

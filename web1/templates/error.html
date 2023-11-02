@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+	Error!!!
+{% endblock headline %}
+{% block header_left %}
+	<h3>
+	{{ message }}
+	</h3>
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+{% if detail %}
+<h2>Detail:</h2>
+{{ detail }}
+{% endif %}
+{% endblock body %}

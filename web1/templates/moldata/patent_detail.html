@@ -1,0 +1,30 @@
+
+{% extends 'base.html' %}
+{% load browse_tags %}
+{% block headline %}
+    {% drugname wsa %}
+{% block javascript %}
+    {% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% endblock headline %}
+{% block header_left %}
+    <h3>Patent Detail</h3>
+    <br><a href="{{ wsa.drug_url }}">
+                Return to drug page
+                </a>
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+	<b>SureChEMBL IDs:</b> {{ surechembl_ids }}
+    <br>
+    {% if patent_plots %}
+        {% for plot in patent_plots %}
+            {% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+        {% endfor %}
+        {% include "_plotly_clear.html" %}
+    {% endif %}
+    <br>
+    {% include '_table.html' with table=surechembl_table %}
+{% endblock body %}
+

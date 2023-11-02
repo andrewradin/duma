@@ -1,0 +1,8 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}{{ condensed_links|length }} Condensed drugs{% endblock %}
+{% block section_body %}
+    {% for l in condensed_links %}
+        {{ l }}
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Drug Collections{% endblock %}
+{% block section_body %}
+    <form method="post">
+        {% csrf_token %}
+		<br><b>Pending collection uploads:</b>
+		{% if coll_uploads %}
+            {% for file in coll_uploads %}
+                <br>{{ file }}
+            {% endfor %}
+        {% else %}
+            None
+        {% endif %}
+		<br><b>Pending molecule match uploads:</b>
+		{% if match_uploads %}
+            {% for file in match_uploads %}
+                <br>{{ file }}
+            {% endfor %}
+        {% else %}
+            None
+        {% endif %}
+		{% if coll_uploads or match_uploads %}
+            <br><input type="submit" name='versioned_drug_upload_btn'
+                    value="Upload All Pending"/>
+        {% endif %}
+		{% comment %}
+		<br><hr><h3>Legacy Upload Control</h3>
+        <b>{{ attr_form.csv.label }}</b>
+        {{ attr_form.csv }}<b>{{ attr_form.csv.errors }}</b>
+        <input type="submit" name='drug_import_btn' value="Import"/>
+        <input type="submit" name='drug_refresh_imported_btn' value="Refresh All Imported"/>
+		{% endcomment %}
+		<br><b>Latest uploads:</b>
+		{{ last_uploads_table }}
+    </form>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Molecule targets{% endblock %}
+{% block section_body %}
+    {% for key,l in bindings %}
+        <br><b>{{ key }}:</b>
+        {% for x in l %} {{ x }} {% endfor %}
+    {% endfor %}
+{% endblock %}

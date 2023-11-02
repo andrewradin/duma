@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+    {{ page_label }}
+{% endblock headline %}
+{% block header_left %}
+	Stuff on left
+{% endblock header_left %}
+{% block header_right %}
+    {% for x in links %}
+        <br>{{ x }}
+    {% endfor %}
+{% endblock header_right %}
+{% block body %}
+    Stuff in body
+    <ul>
+    {% for x in info %}
+        <li>{{ x }}</li>
+    {% endfor %}
+    </ul>
+{% endblock body %}

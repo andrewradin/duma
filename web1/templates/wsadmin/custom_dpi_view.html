@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Custom DPI
+{% endblock headline %}
+{% block javascript %}
+{% endblock javascript %}
+{% block header_left %}
+<div class='panel panel-info' style='display: inline-block'>
+    <div class='panel-heading'>Create Workspace Custom DPI</div>
+    <div class='panel-body'>
+        <form method=POST>
+            {% csrf_token %}
+            <table class='table table-condensed'>
+            {{ dpi_form.as_table }}
+
+            <tr><td><button name='create_btn'>Create</button></td></tr>
+            </table>
+        </form>
+    </div>
+</div>
+{% endblock header_left %}
+{% block body %}
+
+<div class='panel panel-primary'>
+    <div class='panel-heading'>Existing Workspace Custom DPI</div>
+    <div class='panel-body'>
+{% include "_table.html" %}
+    </div>
+</div>
+
+{% endblock body %}

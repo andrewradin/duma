@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block headline %}
+	Import Status
+{% endblock headline %}
+{% block header_right %}
+	WSA Count: {{ view.wsa_count }}<br>
+	Removed agents: {{ view.removed_count }}
+		({{ view.removed_ind_count }} with indications)
+		{% for wsa in removed_ind_agent_wsas %}
+			<a href="{{ wsa.drug_url }}">{{ wsa.prepared_name }}</a>
+		{% endfor %}
+	<br>Duplicate agents: {{ view.duplicate_count }}<br>
+	Valid molecules {{ view.valid_molecules }}<br>
+	{% if multi_wsa_clusters %}
+		Clusters with mutliple WSAs: {{ view.multi_wsa_clust_count }}
+		{% for wsa in multi_wsa_clusters %}
+			<a href="{{ wsa.drug_url }}">{{ wsa.prepared_name }}</a>
+		{% endfor %}
+	{% endif %}
+{% endblock header_right %}
+{% block body %}
+	{% include "_table.html" with table=view.collections_table %}
+	{% if view.full %}
+		<a href='?full=0'>See only active collections</a>
+	{% else %}
+		<a href='?full=1'>See all collections (slow)</a>
+	{% endif %}
+{% endblock body %}

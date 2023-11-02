@@ -1,0 +1,20 @@
+{% load browse_tags %}
+{% load process %}
+{% if faers_table %}
+    <a href="{% url 'faers_indi' ws.id %}?wsa_list={{ drug_ws.id }}">
+                FAERS Indications
+                </a><br>
+    <div style='display:inline-block'>
+    <table class='table table-condensed' id='faers_table'>
+    </table>
+    </div>
+    <script>
+        $('#faers_table').DataTable({
+            data: {{ faers_table.rows_data | safe_json }},
+            columns: {{ faers_table.headers_data | safe_json }},
+            order: [[1, 'desc']],
+        });
+    </script>
+{% else %}
+    This molecule was not found in the FAERS data
+{% endif %}

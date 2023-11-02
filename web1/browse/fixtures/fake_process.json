@@ -1,0 +1,12 @@
+[
+{
+    "pk": 1, 
+    "model": "runner.process", 
+    "fields": {
+        "name": "path_1_1", 
+        "rundir": "dir",
+        "cmd": "cmd",
+        "status": 2
+    }
+}
+]

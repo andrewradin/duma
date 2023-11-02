@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load process %}
+{% load navtools %}
+{% block javascript %}
+{% include "_plotly_load.html" %}
+{% endblock javascript %}
+{% block headline %}
+    Score Plot
+{% endblock headline %}
+{% block header_left %}
+{% if view.dtc == 'uniprot' %}
+	<p> <a href="{% url 'nav_scoreplot' ws.id 'wsa' %}"> View drug scores</a> </p>
+{% elif view.dtc == 'wsa' %}
+	<p><a href="{% url 'nav_scoreplot' ws.id 'uniprot' %}">View protein scores</a></p>
+{% endif %}
+{% endblock header_left %}
+{% block header_right %}
+    {% if view.job %}
+    <a href="{% url 'nav_score_cmp' ws.id view.dtc %}?ds={{ view.ds }}&x={{ view.score }}">
+    Compare
+    </a> <br>
+    {% endif %}
+    {% if view.dtc == 'uniprot' and view.ds and view.score %}
+    <a href="{% url 'nav_score_pi_overlap' ws.id view.dtc %}?ds={{ view.ds }}&score={{ view.score }}">
+    DPI/PPI Overlap
+    </a>
+    {% endif %}
+{% endblock header_right %}
+{% block body %}
+{% if view.mode == view.pick_mode %}
+		<div class="well">
+			Choose a score and click Display.
+		</div>
+	Get more scores:
+	{% url 'nav_scoreplot' ws.id as here %}
+	{% include "nav/_score_select_links.html" with source_types=view.sources.get_source_types %}
+	<form method="post">
+	{% csrf_token %}
+    {% include "_table.html" %}
+    {{ other_form.as_p }}
+	<input type='submit' name='display_btn' value='Display'/>
+	<input type='submit' name='defaults_btn' value='Reload Defaults'/>
+	</form>
+{% else %}
+    <a href="{% url_add_query mode=view.pick_mode %}">Edit parameters</a>
+	<table>
+	<tr><th>Selected Score:</th><td>{{ view.label }}</td></tr>
+	<tr><th>Source Job:</th><td>{% job_summary view.job %}</td></tr>
+	<tr><th>KTs shown:</th><td>{{ view.kts|length }}</td></tr>
+	<tr><th>Best p-value:</th><td>{{ best_p_val }}</td></tr>
+	<tr><th>&nbsp;&nbsp;&nbsp;at index:</th><td>{{ best_p_ind }}</td></tr>
+	{% for x in other_metrics %}
+	<tr><th>{{ x.0 }}</th><td>{{ x.1 }}</td></tr>
+	{% endfor %}
+	<form method="post">
+		{% csrf_token %}
+		<tr><th>
+		{{ cutoff_form.cutoff.label }}:
+		</th><td>
+		{{ cutoff_form.cutoff }}
+		<input type='submit' name='redisplay_btn' value='Redisplay'/>
+		</td></tr>
+	</form>
+	{% if view.cutoff_stats %}
+		<tr><th>P-value:</th><td>{{ view.cutoff_stats.p_value }}</td></tr>
+		<tr><th>Odds ratio:</th><td>{{ view.cutoff_stats.odds_ratio }}</td></tr>
+		<tr><th>95% CI:</th><td>{{ view.cutoff_stats.ci }}</td></tr>
+	{% endif %}
+	</table>
+	{% if view.dtc == 'wsa' %}
+		{% include '_table_section.html' with section_name="kts_above" section_label="KT Above Cutoff" table=above_table %}
+		{% include '_table_section.html' with section_name="kts_below" section_label="KT Below Cutoff" table=below_table %}
+	{% endif %}
+	{% for plot in plotly_plots %}
+		{% include "_plotly_div.html" with div_id=plot.0 src=plot.1 %}
+	{% endfor %}
+{% endif %}
+{% endblock body %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+Drug Review Clusters
+{% endblock headline %}
+{% block header_left %}
+{% endblock header_left %}
+{% block header_right %}
+{% endblock header_right %}
+{% block body %}
+    <form method="post">
+        {% csrf_token %}
+        {{ config_form.as_p }}
+        <input type='submit' name="redisplay_btn" value='Redisplay'/>
+    </form>
+    {% include "_table.html" %}
+{% endblock body %}

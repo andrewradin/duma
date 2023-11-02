@@ -1,0 +1,307 @@
+#!/usr/bin/env python
+
+# this program takes smiles codes for any number of drugs and 
+# calculates pariwise similarity scores between those drugs 
+# and known treatments (provided in an additional file)
+# You can also choose which program you would like to use
+# to calculate the similarity scores
+
+import sys
+import argparse
+
+parser=argparse.ArgumentParser(
+        description='calculate similarities to specified drugs',
+        )
+parser.add_argument('-s','--smiles_file'
+        ,type=str
+        ,default='smiles.tsv'
+        ,help='file of smiles codes (default %(default)s)'
+        )
+parser.add_argument('-l','--library_to_use'
+        ,type=str
+        ,default='indigo'
+        ,help='which program to use to calculate molecular similarity, indigo or rdkit (default %(default)s)'
+        )
+parser.add_argument('-t','--threshold'
+        ,type=float
+        ,help='threshold (default: use similarity metric, not boolean)'
+        )
+parser.add_argument('-f','--morgan_fingerprint_size'
+        ,type=int
+        ,help='threshold (default: use similarity metric, not boolean)'
+        )
+parser.add_argument('-m','--map'
+        ,action='store_true'
+        ,help='drugfile contains a second column with output column id'
+        )
+parser.add_argument('--report_bits'
+        ,dest='reportBits'
+        ,action='store_true'
+        ,help='write file containing molecule bits'
+        )
+parser.add_argument('--no_report_bits'
+        ,dest='reportBits'
+        ,action='store_false'
+        ,help='write file containing molecule bits'
+        )
+parser.add_argument('-b','--bitsOutputCsv'
+        ,type=str
+        ,default='moleculeBits.csv'
+        ,help='output filehandle for molecules bits (default %(default)s)'
+        )
+parser.add_argument('drugfile'
+        ,type=str
+        ,help='file of target drug ids, one per line'
+        )
+args = parser.parse_args()
+
+#========================================================================================
+# currently hardcoded parameters
+#========================================================================================
+# for rdkit
+morganFingerprintSize = args.morgan_fingerprint_size # 2 is equivalent to ECFP 4
+reportBits = args.reportBits
+
+f = open(args.smiles_file, 'rb')
+t = [row.strip().split('\t') for row in f]
+
+# a dict of fingerprints
+fp={}
+if reportBits:
+    bitFp={}
+    allBits={}
+
+if args.library_to_use == "indigo" :
+    # Load indigo
+    sys.path.append("indigo")
+    from indigo import *
+    indigo = Indigo()
+    
+    # for every drug provided in the smiles file, calculate the fingerprint using Indigo
+    for x in xrange(0,len(t)):
+        try:
+            m1 = indigo.loadMolecule(t[x][0])
+            m1.aromatize()
+            fp[t[x][1]] = m1.fingerprint("sim")
+        except:
+            pass
+    
+elif args.library_to_use == 'rdkit':
+    # Load RDKit
+    sys.path.append("/usr/lib/python2.7/dist-packages/")
+    from rdkit import Chem
+    from rdkit.Chem import AllChem
+    from rdkit import DataStructs
+    # define some functions that are used for smiles codes that would otherwise kick errors
+    # Modified from http://www.rdkit.org/docs/Cookbook.html
+    # By Aaron C Daugherty
+    # 20 October 2015
+    def _FragIndicesToMol(oMol,indices):
+        em = Chem.EditableMol(Chem.Mol())
+        
+        newIndices={}
+        for i,idx in enumerate(indices):
+            em.AddAtom(oMol.GetAtomWithIdx(idx))
+            newIndices[idx]=i
+        
+        for i,idx in enumerate(indices):
+            at = oMol.GetAtomWithIdx(idx)
+            for bond in at.GetBonds():
+                if bond.GetBeginAtomIdx()==idx:
+                    oidx = bond.GetEndAtomIdx()
+                else:
+                    oidx = bond.GetBeginAtomIdx()
+                # make sure every bond only gets added once:
+                if oidx<idx:
+                    continue
+                em.AddBond(newIndices[idx],newIndices[oidx],bond.GetBondType())
+        res = em.GetMol()
+        res.ClearComputedProps()
+        Chem.GetSymmSSSR(res)
+        res.UpdatePropertyCache(False)
+        res._idxMap=newIndices
+        return res
+    
+    def _recursivelyModifyNs(mol,matches,indices=None):
+        if indices is None:
+            indices=[]
+        res=None
+        while len(matches) and res is None:
+            tIndices=indices[:]
+            nextIdx = matches.pop(0)
+            tIndices.append(nextIdx)
+            nm = Chem.Mol(mol)
+            nm.GetAtomWithIdx(nextIdx).SetNoImplicit(True)
+            nm.GetAtomWithIdx(nextIdx).SetNumExplicitHs(1)
+            cp = Chem.Mol(nm)
+            try:
+                Chem.SanitizeMol(cp)
+            except ValueError:
+                res,indices = _recursivelyModifyNs(nm,matches,indices=tIndices)
+            else:
+                indices=tIndices
+                res=cp
+        return res,indices
+    
+    def AdjustAromaticNs(m,nitrogenPattern='[n&D2&H0;r5,r6]'):
+        # default nitrogen pattern matches Ns in 5 rings and 6 rings in order to be able
+        # to fix: O=c1ccncc1
+        Chem.GetSymmSSSR(m)
+        m.UpdatePropertyCache(False)
+        
+        # break non-ring bonds linking rings:
+        em = Chem.EditableMol(m)
+        linkers = m.GetSubstructMatches(Chem.MolFromSmarts('[r]!@[r]'))
+        plsFix=set()
+        for a,b in linkers:
+            em.RemoveBond(a,b)
+            plsFix.add(a)
+            plsFix.add(b)
+        nm = em.GetMol()
+        for at in plsFix:
+            at=nm.GetAtomWithIdx(at)
+            if at.GetIsAromatic() and at.GetAtomicNum()==7:
+                at.SetNumExplicitHs(1)
+                at.SetNoImplicit(True)
+        
+        # build molecules from the fragments:
+        fragLists = Chem.GetMolFrags(nm)
+        frags = [_FragIndicesToMol(nm,x) for x in fragLists]
+        
+        # loop through the fragments in turn and try to aromatize them:
+        ok=True
+        for i,frag in enumerate(frags):
+            cp = Chem.Mol(frag)
+            try:
+                Chem.SanitizeMol(cp)
+            except ValueError:
+                matches = [x[0] for x in frag.GetSubstructMatches(Chem.MolFromSmarts(nitrogenPattern))]
+                lres,indices=_recursivelyModifyNs(frag,matches)
+                if not lres:
+                    #print 'frag %d failed (%s)'%(i,str(fragLists[i]))
+                    ok=False
+                    break
+                else:
+                    revMap={}
+                    for k,v in frag._idxMap.iteritems():
+                        revMap[v]=k
+                    for idx in indices:
+                        oatom = m.GetAtomWithIdx(revMap[idx])
+                        oatom.SetNoImplicit(True)
+                        oatom.SetNumExplicitHs(1)
+        if not ok:
+            return None
+        return m
+        
+    # for every drug provided in the smiles file, calculate the fingerprint using RDKit
+    for x in xrange(0,len(t)):
+        try:
+            smiles = t[x][0]
+            m1 = Chem.MolFromSmiles(smiles,False)
+            try:
+                m1.UpdatePropertyCache(False)
+                cp = Chem.Mol(m1)
+                Chem.SanitizeMol(cp)
+                m1 = cp
+            except ValueError:
+                nm=AdjustAromaticNs(m1)
+                if nm is not None:
+                    Chem.SanitizeMol(nm)
+                    sys.stderr.write( 'fixed:' + str(Chem.MolToSmiles(nm)))
+                else:
+                    sys.stderr.write( 'still broken:' + str(smiles))
+                    pass
+
+#            m1 = Chem.MolFromSmiles(smiles)
+#            if m1 is None:
+#                # it didn't work. What to do?
+#                pass
+            
+            myBitInfo={} # when the fingerprint is calculated, you can save the bitinfo here
+            fp[t[x][1]] = AllChem.GetMorganFingerprint(m1, morganFingerprintSize, bitInfo = myBitInfo) # right now this is hardcoded above
+            # Do we need to turn the bits back into smiles codes (i.e. sub parts of the molecule)?
+            # Or do bits mean the same thing everytime? = YES they are universal
+            # Even if they do I think we might want them back to smiles code for interpretability
+            # However for the time being I'm leaving them as bits for ease
+            #
+            # I don't know if it's a setting or something I'm missing,
+            # but the bits include single molecules, or single bonds 
+            # (currently we're looking for 2)
+            # I couldn't find a way to change that, so I'm simply filtering
+            # For each bit, I check the radius, and only keep it if it is larger than 1
+            # because the MorganFingerprint size above is 2, 
+            # that means only radius 2 will be saved
+            if reportBits:
+                bitFp[t[x][1]] = {}
+                for bit in myBitInfo.keys():
+                    if myBitInfo[bit][0][1] > 1:
+                        bitFp[t[x][1]][bit] = 1
+                        allBits[bit] = 1
+        except:
+            pass
+    
+else:
+    # Ideally we'd have a warning that a library we don't recognize was selected
+    sys.stderr.write('Unrecognized library selected\n')
+
+# now identify which drugs are treatments so that we can calculate pairwise 
+# similarity scores with them and all other drugs
+treatments = []
+f = open(args.drugfile,'r')
+row = ['drug_id']
+
+for x in f:
+    kt = x.strip()
+    if args.map:
+        kt,title = kt.split('\t')
+    else:
+        title = kt
+    if kt in fp:
+        treatments.append(kt)
+        if args.threshold:
+            row.append("near_"+title)
+        else:
+            row.append("like_"+title)
+print ",".join(row)
+
+# now we go through and calculate the similarity score for all drugs versus all treatments
+for drug_id in fp:
+    fp1 = fp[drug_id]
+    row = [drug_id]
+    # for this drug, compare it to every known treatment
+    for kt in treatments:
+        # get the fingerprint of the KT
+        fp2 = fp[kt]
+        if args.library_to_use == "indigo" :
+            sim1 = indigo.similarity(fp1, fp2, "tanimoto");
+        elif args.library_to_use == 'rdkit':
+            sim1 = DataStructs.DiceSimilarity(fp1,fp2)
+        # this is if we're using a binary approach where you require a minimum similarity score
+        if args.threshold:
+            if sim1 > args.threshold:
+                row.append("1")
+            else:
+                row.append("0")
+        else:
+            row.append(str(sim1))
+    print ",".join(row)
+
+
+# this currently works, but prints out a super sparse csv matrix
+# I think we should either increase the fragment size
+# or filter the matrix somehow (require the bits to be in 5% of all molecules?)
+#
+if args.library_to_use == 'rdkit' and reportBits:
+    bitFile = open(args.bitsOutputCsv, 'w')
+    bitFile.write(",".join(str(x) for x in allBits.keys() ) + "\n")
+    for drug_id in bitFp.keys():
+        row = [drug_id]
+        # for this drug, list all bits it possess (1) or not (0)
+        for bits in allBits.keys():
+            if bits in bitFp[drug_id]:
+                row.append("1")
+            else:
+                row.append("0")
+        bitFile.write(",".join(row) + "\n")
+    bitFile.close()
+

@@ -1,0 +1,29 @@
+{% extends "collapse_section.html" %}
+{% block section_label %}
+Proteins by Known Treatment Count
+{% endblock %}
+{% block section_body %}
+<table class='table'>
+	<tr>
+		<th>KTs binding</th>
+		<th>Proteins</th>
+	</tr>
+	{% for level in kt_prot_levels %}
+        <tr>
+            <td>
+                {{ level.0 }}
+            </td>
+            <td>
+            {{ level.1|length }}:
+            {% if level.1|length >= 200 %}
+                proteins not displayed
+            {% else %}
+                {% for prot_id in level.1 %}
+                    {% include 'browse/prot_link.html' %}
+                {% endfor %}
+            {% endif %}
+            </td>
+        </tr>
+	{% endfor %}
+</table>
+{% endblock %}

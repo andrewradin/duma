@@ -1,0 +1,22 @@
+{% load process %}
+{% load browse_tags %}
+
+{% if mols_table %}
+    <table class='table' id='mol_table'></table>
+    <script>
+        $('#mol_table').DataTable({
+            data: {{ mols_table.rows_data | safe_json }},
+            columns: {{ mols_table.headers_data | safe_json }},
+            order: [[1, 'desc']],
+            searching: false,
+            lengthChange: false,
+        });
+	</script>
+{% else %}
+    {% if not moa_wsa_ids %}
+        No matching MOA molecule
+    {% endif %}
+    {% for m_id in moa_wsa_ids %}
+        <a href="{% url 'moldata:annotate' ws.id m_id %}">MOA molecule</a><br>
+    {% endfor %}
+{% endif %}

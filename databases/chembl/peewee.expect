@@ -1,0 +1,9 @@
+#!/usr/bin/expect
+
+set PW [lindex $argv 0]
+set DB_NAME [lindex $argv 1]
+
+spawn python3 -m pwiz -e mysql -u root -P $DB_NAME
+expect "Password:"
+send "$PW\r";
+interact

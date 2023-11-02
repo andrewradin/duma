@@ -1,0 +1,15 @@
+{% load browse_tags %}
+<table class="table table-condensed">
+	<tr>
+		<th>Path</th>
+		<th>Odds Ratio</th>
+		<th>p-value</th>
+	</tr>
+	{% for row in rows %}
+		<tr>
+			<td>{{ row.0 }}</td>
+			<td>{{ row.1|sci_fmt }}</td>
+			<td>{{ row.2|sci_fmt }}</td>
+		</tr>
+	{% endfor %}
+</table>

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block headline %}
+    {{ headline }}
+{% endblock headline %}
+{% block header_left %}
+	{% for nbr,label in drug_counts %}
+		{{ nbr }} {{ label }}<br>
+	{% endfor %}
+    <div class='well'>
+    <a href="{% url 'rvw:review' ws.id %}?flavor=hidden">Show hidden</a>
+    &nbsp;
+    <a href="{% url 'rvw:review' ws.id %}?flavor=all">Show all marked predictions</a>
+    &nbsp;
+    <a href="{% url 'rvw:review' ws.id %}?flavor=reviewed">Show Reviewed</a>
+    &nbsp;
+    <a href="{% url 'rvw:review' ws.id %}?flavor=patent">Show Selected</a>
+    &nbsp;
+    <a href="{% url 'rvw:review' ws.id %}?flavor=KT">Show KTs</a>
+    <br>
+    <br>
+
+    <form method=POST>
+    {% csrf_token %}
+    {{ search_form.as_p }}
+    <button name='search_btn'>Search</button>
+    </form>
+    </div>
+{% endblock header_left %}
+{% block header_right %}
+    <a href="{% url 'rvw:review_summary' ws.id %}"><b>Review Summary</b></a><br/>
+    <a href="{% url 'ws_hits' ws.id %}"><b>Hits Status</b></a><br/>
+    <a id='tsv-download' style='cursor:pointer'">Download as .tsv</a>
+    {% if elections %}
+        <h3>Selection Rounds</h3>
+        {% for link in elections %}
+            <a href="{{ link.0 }}">{{ link.1 }}</a>
+            <br>
+        {% endfor %}
+    {% endif %}
+{% endblock header_right %}
+{% load browse_tags %}
+{% block body %}
+<style>
+/* Prevent wrapping in the target-related columns, to keep lined up */
+td:nth-child(3), td:nth-child(4) {
+    white-space: nowrap;
+}
+</style>
+	{% include "_table.html" %}
+	{% include "_tooltip_activator.html" %}
+
+    <script src='/static/js/tsv.js'></script>
+    <script>
+    function fillArrow(table, name, content) {
+        for (const el of table.querySelectorAll(name)) {
+            el.innerHTML = content;
+        }
+    }
+    function download() {
+        const skipCols = [1];
+
+        // Convert the protein direction arrows to unicode.
+        // Avoiding all arrows because there are vote arrows in first col.
+        const tableCopy = $('table')[0].cloneNode(true);
+        const col = 'tr td:nth-child(3) ';
+        fillArrow(tableCopy, col + '.glyphicon-arrow-up', '&#x2191; ');
+        fillArrow(tableCopy, col + '.glyphicon-arrow-down', '&#x2193; ');
+        fillArrow(tableCopy, col + '.glyphicon-arrow-right', '&#x2194; ');
+
+        // Unshorten any links that go off platform.
+        for (const link of tableCopy.querySelectorAll('a')) {
+            if (link.hostname != location.hostname) {
+                link.textContent = ` (${link.href}) `;
+            }
+        }
+
+
+        const tsvStr = tableToTsv(tableCopy, skipCols);
+        downloadContent(tsvStr, 'review-{{ ws.id }}.tsv');
+    }
+    document.getElementById('tsv-download').addEventListener('click', download);
+    </script>
+{% endblock body %}

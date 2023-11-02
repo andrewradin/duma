@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+Treatment Name Bulk Review
+{% endblock headline %}
+{% block header_right %}
+    {% if name_list %}
+        <b><a href="{% url "kts_name_resolve" ws.id search.id %}">
+                Individual Review
+                </a></b>
+    {% endif %}
+{% endblock header_right %}
+{% block body %}
+	<h3>{{ quant_label }} Unresolved Names in search</h3>
+    {% if name_list %}
+        <form method="post">
+        {% csrf_token %}
+        <input type='submit' class="btn btn-primary"
+            name='reject_btn' value='Update All'
+            />
+        <p>
+        <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Search</th>
+            <th>Confirm Unmatched</th>
+        </tr>
+        {% for item in name_list %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.link }}</td>
+                <td>
+                    <input type="checkbox" name="rej_{{ item.id }}" />
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+        </form>
+    {% endif %}
+{% endblock body %}

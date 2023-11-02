@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+Disease Name Edit
+{% endblock headline %}
+{% block body %}
+	<form method="post">
+		{% csrf_token %}
+        {{ pattern_form }}
+		<input type='submit' class="btn btn-primary"
+			name='save_btn' value='Update'
+			/>
+	</form>
+{% endblock body %}

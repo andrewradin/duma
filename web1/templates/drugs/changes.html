@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load browse_tags %}
+
+{% block headline %}
+    Review Version Changes 
+{% endblock headline %}
+{% block javascript %}
+    {% include "_datatables_load.html" %}
+{% endblock javascript %}
+{% block header_left %}
+<p>Displays changes in DPI data for DUMA molecules between different versions.</p>
+<form method='POST'>
+{% csrf_token %}
+    {{ versions_form.as_p }}
+    <button type='submit' name='diff_btn'>Diff</button>
+</form>
+<br>
+{% endblock header_left %}
+{% block header_right %}
+<div class='panel panel-info'>
+    <div class='panel-heading'>
+        Version Info
+    </div>
+    <div class='panel-body'>
+        <table class='table table-condensed'>
+        {% for name, v in versions.items %}
+        <tr><td>{{name}}</td><td>{{v.0}}</td><td>{{v.1}}</td></tr>
+        {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock header_right %}
+{% block body %}
+<span>
+    <a href='#' onClick='render(false)'>Show Changed</a>
+    <a href='#' onClick='render(true)'>Show All</a>
+</span>
+<div id='main'>
+</div>
+
+<script>
+function render(includeUnchanged) {
+    function fromArray(el, data, columnNames) {
+        const columns = [];
+        for (const colName of columnNames) {
+            columns.push({title: colName});
+        }
+        columns.push({title: 'Change To'});
+
+        // Find the maximum value for each protein, so we know what to use for select all.
+        const protMax = {};
+        for (const row of data) {
+            const [prot, gene, evid, dir, startSources, endSources, changed] = row;
+            if (!(prot in protMax)) {
+                protMax[prot] = evid;
+            }
+            protMax[prot] = Math.max(protMax[prot], evid);
+        }
+
+        // Add a 'Change To' checkbox to each row.
+        for (const row of data) {
+            const [prot, gene, evid, dir, startSources, endSources, changed] = row;
+            const keep = endSources.indexOf('DUMA') != -1;
+            const isMax = evid == protMax[prot] ? 'max=true' : '';
+            row.push(`<input ${isMax} name="${prot}|${evid}|${dir}|${endSources}" prot="${prot}" type="checkbox" ${keep ? 'checked' : ''}></input>`);
+        }
+
+        // Modify directions to be arrows.
+        for (const row of data) {
+            const dirIdx = 3;
+            const dir = row[dirIdx];
+            let arrow;
+            if (dir == 1) {
+                arrow = '🡅' ;
+            } else if (dir == 0) {
+                arrow = '🡆';
+            } else {
+                arrow = '🡇';
+            }
+            row[dirIdx] = arrow;
+        }
+        el.DataTable({
+            data,
+            columns,
+            order: [[1, 'desc']],
+            paging: false,
+            ordering: false,
+            info: false,
+            filter: false,
+        });
+
+        el.find('tr').each((idx, rowEl) => {
+            const dataIdx = idx - 1; // ignore header
+            if (idx == 0 || dataIdx + 1 >= data.length || data[dataIdx][0] != data[dataIdx+1][0]) {
+                $(rowEl).find('td').each((_, cellEl) => {
+                    cellEl.style.borderBottom = '2px solid black';
+                });
+            }
+        });
+
+        el.find('input').on('change', (e) => {
+            const prot = e.target.getAttribute('prot');
+            el.find('input').each((i, input) => {
+                if (input != e.target && input.getAttribute('prot') == prot) {
+                    input.checked = false;
+                }
+            });
+        });
+    }
+
+    const columnNames = ['Prot', 'Gene', 'Evid', 'Dir', 'Start Sources', 'End Sources', 'Changed']
+    const kProtIdx = 0;
+    const kChangedIdx = columnNames.length - 1;
+    const data = {{ drugtables | safe_json }};
+    $('#main')[0].innerHTML = '';
+    for (let [drug, entry] of data) {
+        const origEntry = entry;
+        let excluded = [];
+        if (!includeUnchanged) {
+            const changedProts = {}
+            for (const row of entry) {
+                if (row[kChangedIdx] === true) {
+                    changedProts[row[kProtIdx]] = true;
+                }
+            }
+            const hasChanged = (row) => {
+                return row[kProtIdx] in changedProts;
+            };
+            // Track excluded so we know to add back those rows if needed.
+            excluded = entry.filter(x => !hasChanged(x));
+            entry = entry.filter(hasChanged);
+        }
+
+        if (entry.length == 0) {
+            continue;
+        }
+        const panelEl = $(`
+            <div class='panel panel-primary'>
+                <div class='panel-heading'>${drug.name}</div>
+                <div class='panel-body'>
+                        <a href='${drug.prop_url}'>View/Edit Proposal</a> | 
+                        <a href='${drug.wsa_url}'>WSA Link</a>
+                        <table class='table table-condensed'></table>
+                        <a style='cursor:pointer' id='selall'>Select Max Evid</a> | <a style='cursor:pointer' id='deselall'>Deselect All</a><br>
+                        <button class='btn btn-primary btn-sm'>Generate Proposal</button>
+                    </form>
+                </div>
+            </div>
+            `);
+
+        panelEl.find('#selall').on('click', () => {
+            panelEl.find('input').each((i, input) => {
+                if (input.getAttribute('max') == 'true' && !input.checked) {
+                    input.click();
+                }
+            });
+        });
+        panelEl.find('#deselall').on('click', () => {
+            panelEl.find('input').each((i, input) => {
+                input.checked = false;
+            });
+        });
+
+        panelEl.find("button").on('click', async (e) => {
+            const btn = e.target;
+            btn.innerHTML = '';
+            btn.disabled = true;
+            btn.classList.add('loader');
+
+            const selected = {};
+            const unselected = {};
+            panelEl.find('input').each((i, input) => {
+                if (input.checked) {
+                    selected[input.name] = true;
+                } else {
+                    unselected[input.name] = true;
+                }
+            });
+
+            // Add back in anything unchanged that we were hiding.
+            for (const row of excluded) {
+                const [prot, gene, evid, dir, startSources, endSources, changed] = row;
+                const keep = endSources.indexOf('DUMA') != -1;
+                const name = `${prot}|${evid}|${dir}|${endSources}`;
+                if (keep) {
+                    selected[name] = true;
+                } else {
+                    unselected[name] = true;
+                }
+            }
+            const query = {
+                selected,
+                unselected,
+                drug_id: drug.drug_id
+            }
+
+            const resp = await fetch(window.location.href, makePostOpts(query, {prop_btn: true}));
+            btn.classList.remove('loader');
+            if (resp.status == 200) {
+                btn.innerHTML = 'Done';
+            } else {
+                btn.innerHTML = 'Fail';
+            }
+        });
+
+        const tableEl = panelEl.find('table');
+                    
+        fromArray(tableEl, entry, columnNames);
+        $('#main').append(panelEl);
+    }
+    
+}
+render(false);
+</script>
+
+{% endblock body %}

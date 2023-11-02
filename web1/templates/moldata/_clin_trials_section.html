@@ -1,0 +1,16 @@
+{% extends "collapse_section.html" %}
+{% load browse_tags %}
+{% block section_label %}Clinical Trials{% endblock %}
+{% block section_body %}
+	<table id='ct_table' class='table'>
+    </table>
+
+    <script>
+        const columns = {{ ct_table.headers_data | safe }};
+        const table = $('#ct_table').DataTable({
+            data: {{ ct_table.rows_data | safe_json }},
+            columns: columns,
+            order: [[2, 'desc']],
+        });
+    </script>
+{% endblock %}

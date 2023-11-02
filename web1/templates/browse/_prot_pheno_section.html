@@ -1,0 +1,16 @@
+{% extends "collapse_section.html" %}
+{% load navtools %}
+{% block section_label %}Phenotypes{% endblock %}
+{% block section_body %}
+    <table id='pheno_table' class='table'>
+    </table>
+    <script>
+        {
+            const columns = {{ pheno_table.headers_data | safe }};
+            const table = $('#pheno_table').DataTable({
+                data: {{ pheno_table.rows_data | safe }},
+                columns: columns,
+            });
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,83 @@
+<html>
+<head>
+    <title>Duma</title>
+    <style>
+        {% include 'report_css.css' %}
+    </style>
+</head>
+<body>
+{% autoescape off %}
+	<h3>{{ ws.name }}</h3>
+    <h1>{{ page_label }}<h1>
+    <h2>{{ drug.name }}</h2>
+    {% for title,header,data,footnotes in drug.tables %}
+        <i>{{ title }}</i>
+        <table border=1 cellspacing=0 cellpadding=0>
+            {% if header %}
+                <tr>
+                    {% for col in header %}
+                        <th><i>{{ col }}</i></th>
+                    {% endfor %}
+                </tr>
+            {% endif %}
+            {% for row in data %}
+                <tr>
+                    {% for col in row %}
+                        <td>{{ col }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        {% if footnotes %}
+            <ul>
+                {% for txt in footnotes %}
+                    <li>{{ txt }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <br>
+    {% endfor %}
+    {% for heading,bullets in drug.evidence.items %}
+        <h3>{{ heading }}</h3>
+        <ul>
+        {% for item,subs in bullets %}
+        <li>{{ item }}</li>
+        <ul>
+        {% for s in subs %}
+            <li>{{ s }}</li>
+        {% endfor %}
+        </ul>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+
+    {% if not view.appendix %}
+    <h3>Chemical Structure</h3>
+    <img style='display:block; height: 400px; border: 1px solid black' src="{% url 'chem_image' wsa.agent.id %}">
+    {% endif %}
+    
+    {% for orig in origs %}
+        <br>
+        <h2>{{ drug.name }} was a replacement for {{ orig.name }} </h2>
+            {% for heading,bullets in orig.evidence.items %}
+                <h3>{{ heading }}</h3>
+                <ul>
+                {% for item,subs in bullets %}
+                <li>{{ item }}</li>
+                <ul>
+                {% for s in subs %}
+                    <li>{{ s }}</li>
+                {% endfor %}
+                </ul>
+                {% endfor %}
+                </ul>
+        {% endfor %}
+    {% endfor %}
+    {% for note in drug.notes %}
+        <b>{{ note.title }}:</b>
+        {{ note.txt|urlize|linebreaks }}
+    {% endfor %}
+	<span id='page_end_marker'> </span>
+{% endautoescape %}
+</body>
+</html>

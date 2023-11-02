@@ -1,0 +1,7 @@
+001 - original FAERS database, in use 2015/16
+002 - updated FAERS input from sprint 107
+003 - new FAERS mapping logic from PLAT-1334
+004 - record deduplication
+005 - Sprint 120 MedDRA indications mapping
+006 - plat1558 fix for new drugbank version
+007 - demographics added, moved ETL directory
