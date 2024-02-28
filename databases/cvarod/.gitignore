@@ -1,0 +1,9 @@
+drugsFromCVAROD_unmapped.txt
+drugsFromCVAROD.*
+diseasesFromCVAROD_unmapped.txt
+diseasesFromCVAROD.*
+demoFromCVAROD.*
+dateFromCVAROD.*
+name_map_output.txt
+data/
+clin_ev.CVAROD.*
