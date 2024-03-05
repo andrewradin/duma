@@ -1,0 +1,14 @@
+--- web1/bin/activate	2016-03-03 16:05:14.432124544 -0800
++++ web1/bin/activate	2016-03-03 15:43:47.120142105 -0800
+@@ -46,6 +46,11 @@
+ PATH="$VIRTUAL_ENV/bin:$PATH"
+ export PATH
+ 
++# RDKit stuff added by hand
++export RDBASE=/home/ubuntu/2xar/opt/rdkit-Release_2015_03_1
++export LD_LIBRARY_PATH=$RDBASE/lib:$LD_LIBRARY_PATH
++export PYTHONPATH=$RDBASE:$PYTHONPATH
++
+ # unset PYTHONHOME if set
+ # this will fail if PYTHONHOME is set to the empty string (which is bad anyway)
+ # could use `if (set -u; : $PYTHONHOME) ;` in bash

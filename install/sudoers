@@ -1,0 +1,1 @@
+www-data        ALL=(ubuntu) NOPASSWD:/home/ubuntu/2xar/twoxar-demo/secure/*
