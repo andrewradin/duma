@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Prints out a .sqlsv file as if it was a .tsv file.
+
+printf ".headers on\n.mode tabs\nSELECT * FROM data" | sqlite3 $1
