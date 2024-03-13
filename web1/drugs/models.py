@@ -883,8 +883,6 @@ class Drug(models.Model):
         """Returns either std_smiles or a bit smiles fingerprint."""
         std_smiles = self.std_smiles
         if std_smiles[0] == '{':
-            # Ono-style data where we're given the bitsmiles fingerprint
-            # directly rather than the full smiles.
             import json
             return json.loads(std_smiles)
         else:

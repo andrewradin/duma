@@ -1,0 +1,78 @@
+mindi	coior	coiqv
+anaemia	0.936272	1
+analgesic therapy	0.937024	1
+ankylosing spondylitis	0.983371	1
+antiemetic supportive care	1	1
+anxiety	1.24511	1
+arrhythmia	0.968016	1
+arthralgia	0.967601	1
+asthma	0.984232	1
+atrial fibrillation	0.967886	1
+attention deficit/hyperactivity disorder	0.981678	1
+back pain	1	1
+blood cholesterol increased	1	1
+breast cancer	0.911237	1
+breast cancer female	1	1
+breast cancer metastatic	0.9386	1
+cervix carcinoma	1	1
+crohn's disease	0.983371	1
+depression	1.18359	1
+dermatophytosis of nail	1.44363	1
+diabetes mellitus	0.96935	1
+eczema	1	1
+fibromyalgia	0.931241	1
+gastritis	0.953027	1
+gastrooesophageal reflux disease	0.984096	1
+headache	0.952337	1
+hepatitis	1.37125	1
+hepatitis c	0.95317	1
+hiv infection	1	1
+hormone replacement therapy	0.958607	1
+hypercholesterolaemia	0.98084	1
+hyperlipidaemia	0.967601	1
+hypersensitivity	0.958607	1
+hypertension	0.893939	1
+ill-defined disorder	0.964022	1
+infection	0.967822	1
+insomnia	0.984663	1
+insulin-requiring type 2 diabetes mellitus	1	1
+irritable bowel syndrome	0.952752	1
+low density lipoprotein increased	1	1
+lung neoplasm malignant	0.981213	1
+menopausal symptoms	0.984096	1
+menopause	1	1
+metastases to bone	0.98406	1
+migraine	1	1
+multiple sclerosis	1	1
+muscle relaxant therapy	0.931241	1
+myofascial pain syndrome	0.971452	1
+neck pain	0.958607	1
+neoplasm malignant	0.949375	1
+non-small cell lung cancer	1	1
+osteoarthritis	1	1
+osteopenia	1	1
+osteoporosis	1.29681	1
+ovarian cancer	0.953286	1
+pain	0.943311	1
+pancreatic carcinoma	1	1
+panic attack	0.953911	1
+parkinson's disease	1	1
+plasma cell myeloma	0.968153	1
+pneumonia	0.9838	1
+premedication	0.924343	1
+prophylaxis	0.953366	1
+psoriasis	1	1
+pulmonary hypertension	1	1
+pyrexia	0.937861	1
+rheumatoid arthritis	0.908328	1
+schizophrenia	1	1
+seizure	1	1
+sepsis	1	1
+sinusitis	0.983662	1
+thyroiditis	1.44363	1
+type 1 diabetes mellitus	1	1
+type 2 diabetes mellitus	0.96935	1
+unknown indication	0.968711	1
+upper respiratory tract inflammation	0.984043	1
+urinary tract infection	0.983516	1
+uterine leiomyoma	1	1

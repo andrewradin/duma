@@ -1,0 +1,10 @@
+{
+  "name": "nw.js-plotly.js",
+  "version": "2.0.0",
+  "description": "generate plotly.js images using nw.js",
+  "main": "index.html",
+  "window": { "show":false },
+  "scripts": {
+    "start": "nw ."
+  }
+}

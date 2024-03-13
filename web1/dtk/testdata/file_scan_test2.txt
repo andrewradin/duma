@@ -1,0 +1,6 @@
+line 1 s'ometimes known as the header
+line 2
+line 3 with a target string
+line 4 with another string that isn't the target
+line 5
+line 6

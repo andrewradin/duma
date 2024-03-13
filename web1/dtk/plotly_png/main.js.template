@@ -1,0 +1,49 @@
+/* thanks to https://gist.github.com/etpinard/d27a44bd5dbee5490f20 */
+'use strict';
+
+var fs = require('fs');
+var gui = require('nw.gui');
+
+REPLACE ME
+
+function generatePng() {
+  var div = document.createElement('div');
+
+  Plotly.newPlot(div, data, layout)
+    .then(toImage)
+    .then(decodeImage)
+    .then(saveToFile)
+    .then(quit);
+
+  function toImage(gd) {
+    return Plotly.toImage(gd,{ format: 'png' });
+  }
+
+  function decodeImage(img) {
+    return new Promise(function(resolve) {
+
+	  img = img.replace(/^data:image\/\w+;base64,/, '');
+      img = new Buffer(img, 'base64');
+      resolve(img);
+    });
+  }
+
+  function saveToFile(img) {
+    return new Promise(function(resolve, reject) {
+      fs.writeFile(outPath, img, function(err) {
+        if(err) reject(err);
+        resolve(outPath);
+      });
+    });
+  }
+
+  function quit() {
+    log('generated ' + outPath)
+    gui.App.quit();
+  }
+}
+
+function log(msg) {
+  process.stdout.write(msg + '\n');
+}
+generatePng();

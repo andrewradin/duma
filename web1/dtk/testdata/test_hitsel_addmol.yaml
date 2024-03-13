@@ -1,0 +1,76 @@
+interactions:
+- request:
+    body: tool=eutils&email=biocommons-dev%40googlegroups.com&retmode=xml&usehistory=y&retmax=250&db=pubmed&term=%28%22Drug1%22%5BTitle%2FAbstract%5D%29+AND+%28%22test+workspace%22%29
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '173'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      User-Agent:
+      - python-requests/2.24.0
+    method: POST
+    uri: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAALKxr8jNUShLLSrOzM+zVTLUM1BSSM1Lzk/JzEu3VQoNcdO1UFKwt+MCAAAA//+y
+        UXTxdw6JDHBVSA1OTSxKzghKLS7NKVEICHXy8XRWUNLV1/fz8dXXdwlxUUgtBqtQMDIwMDMwM7LQ
+        13f1U1JQyigpKSi20tdPLS3JzCnWy0tOytTLy8nVy8vM0EvPL4OK66eUpOjDdUKN0gMKKtlxAQAA
+        AP//ZFBda8JAEPwrR57q06UaTQvLgviBYmOpCfRBRKLZSDAmcLcW/fe9S6Ik7T3NzszuzS50/kaY
+        lNeC0QVZA9gQB/HNEg2yTMix4oarMXxdSd1XdMdXkE8M33SYFT8YTJbT/TB98wduknp97/Du+cPU
+        9XyfRsbfuGCZfGSaJUKk4kLnMZv7hcSdGoV9MFflBZk0g6xgzUYlOupxqoR0diqcbUDhQkSkLnon
+        Pjfi5elwtuM8F/OM8sRI4/VUOI+eltCzTf+ntlutwWbpsCBNmiqVbMfvVH+XM7c8nrHaxOS1ajXg
+        FwAA///MlcsKgkAUhvc9hqtaeU8FEYIuu5QoIlqZDhVFyjhRj99crNGcIrWglc6c4fjNf47/IQtP
+        GsLzVpXW8z06AnmwyRAMI0Q+Q6JMFPJlr3wA60N36QFWU/1eXLo3uqbHJAbe1JXvrwyaE4ho3slc
+        ZeJBAY9hWI6lCaFWzaCeC/FEw4MCGlVTdUXRrG+IJGiWujRm31Z1uzaMH3i4oV0ZP/PlZOYvguKG
+        P3usPqlvizvoju30m1zhPaLol6vFhd3QNMyWYBVpq6SXBB6yNIxAG1jL+EkX8HjZmagTMVcv2tcL
+        F6Lu2e3+jfn2aEah7r18PpVMeRnCE57OZPyQSycIxMEOhhmYJmiMNY9Zt/GMEskiOIaHWTGVXJ6u
+        nRsAAAD//wMA+2noqxsIAAA=
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - private
+      Connection:
+      - Keep-Alive
+      Content-Security-Policy:
+      - upgrade-insecure-requests
+      Content-Type:
+      - text/xml; charset=UTF-8
+      Date:
+      - Wed, 14 Oct 2020 17:09:51 GMT
+      Keep-Alive:
+      - timeout=4, max=40
+      NCBI-PHID:
+      - D0BD101BDA4C43C500003304845CF30D.1.1.m_1
+      NCBI-SID:
+      - 6A7B28723EEC0391_3605SID
+      Server:
+      - Finatra
+      Set-Cookie:
+      - ncbi_sid=6A7B28723EEC0391_3605SID; domain=.nih.gov; path=/; expires=Thu, 14
+        Oct 2021 17:09:51 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Transfer-Encoding:
+      - chunked
+      X-RateLimit-Limit:
+      - '3'
+      X-RateLimit-Remaining:
+      - '2'
+      X-UA-Compatible:
+      - IE=Edge
+      X-XSS-Protection:
+      - 1; mode=block
+      content-encoding:
+      - gzip
+    status:
+      code: 200
+      message: OK
+version: 1

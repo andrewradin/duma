@@ -1,0 +1,25 @@
+This directory holds RefreshGroup files built on dev07 for purposes of
+evaluating system changes. This file holds notes about the individual
+snapshots.
+
+Snapshots are created by running:
+./scripts/multi_refresh.py --result-json-file <snapshot_file> <user> 1 4 26 53 55 73 92 99 123
+
+Each time a new production database backup is loaded, all previous snapshots
+are lost, so this should be kept to a minimum. The first test batch was
+build from backup 2018.11.23.08.30.sql.gz. Several patches were applied to
+this database:
+	- ws 55 and 92 were cleared of unused chembl drugs, and drugbank and
+	  chembl.adme drugs were topped up
+	- ws 123 had its dgn disease name blanked out
+	- ws 92 had its dgn disease name set to C0699791
+	- ws 55 had its dgn disease name set to C0887833
+	- ws 123 had a XXX_dry_AMD disease name added (nonexudative
+	  age-related macular degeneration)
+
+2018-11-29_02-46-24.json - initial snapshot; this required multiple code and
+	db changes, and manual restarts, before it completed. It is recorded as
+	a test baseline; the next file should run cleanly from start to finish.
+2018-11-29_03-07-21.json - fresh re-run from the beginning against all the
+	patches above (i.e. patches were in place for all runs in the snapshot,
+	not just the later ones)

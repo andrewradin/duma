@@ -1,0 +1,55 @@
+wsa	rdkitScore	rdkitConnectingDrug	indigoScore	indigoConnectingDrug	prMaxScore	prMaxConnectingDrug	dirJacScore	dirJacConnectingDrug	indJacScore	indJacConnectingDrug	pathwayScore	pathwayConnectingDrug
+ACAT1?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+AKT1?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+ALOX5?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+ATR?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+B4DK78? CHRNA4?	0	-	0	-	0	ABT-089	0	ABT-089	0	ABT-089	0	-
+B4DK78? CHRNA4? CHRNB2?	0	-	0	-	0	ABT-089	0	ABT-089	0	ABT-089	0	-
+CCKAR?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+CCL2?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+CCR2? CCR2?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+CHRFAM7A? CHRNA7?	0	-	0	-	0	ABT-089	0	-	0	ABT-089	0	-
+CNR1? CNR1?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+CNR2?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+CRHR1? CRHR1? CRHR1? CRHR1?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+CXCR2?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+DRD2? DRD3? HTR6?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+EDNRA?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+EGFR?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+ELANE?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+ESR1? ESR1? ESR2? Q9UBT1?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+ESR2?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+FGFR1? FGFR2? FGFR2? FGFR3? FGFR3?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+FLT1? FLT4? KDR?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+GABBR1? GABBR2? Q59HG8?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+GCK?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+GCKR?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+GHSR?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+GRIN2A? GRIN2B?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+GRM2? Q86YG3?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+HRH1? HRH3? HRH3?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+HRH3? HRH3?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+HSD11B1?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+HTR1B?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+HTR2A? HTR2C? K9J958?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+HTR4?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+HTR7?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+IL18?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+MCHR1?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+MMP12? MMP9?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+MMP2?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+MPO?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+MTOR?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+NOS2?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+OPRD1?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+OPRL1? Q8IXB0?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+PGR?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+PIM1? PIM1? PIM2? PIM3?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+PPARA?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+PPARA? PPARG? PPARG?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+PTGDR2?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+SRC?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+STAT3?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+TACR3?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+TRPV1?	0	-	0	-	0	ABT-089	0	-	0	-	0	-
+WEE1?	0	-	0	-	0	ABT-089	0	-	0	-	0	-

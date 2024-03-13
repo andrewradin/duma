@@ -555,7 +555,7 @@ class PathHelper(object):
                         'default':['faers.v'],
                         # special per-workspace overrides, by workspace id
                         # (disabled to eliminate non-versioned cases)
-                        #123:['NashBio_dry_AMD','FAERS','CVAROD'],
+                        #123:['XXX_dry_AMD','FAERS','CVAROD'],
                         #115:['FAERS+MDF','FAERS','CVAROD'],
                         },
                 'monitor_AWS': False, # true on one machine running cronjob

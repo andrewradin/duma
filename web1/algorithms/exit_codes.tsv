@@ -1,0 +1,16 @@
+-1	aborted	Aborted by User
+2	missing	Process missing on cleanup
+3	launch_exception	Exception trying to launch process
+10	usageError
+11	multiplePlatformsError
+12	unknownGeoDataTypeError
+13	unknownIDTypeError
+14	mapperLoadingError
+15	toEGError
+16	illuminaBeadChipError
+17	unableToFindDataError
+18	expressionHeaderError
+19	noGenesFromGeoDE
+20	noKTs
+21	unexpectedDataFormat
+22	alreadyDone	This step has already finished. Proceed to the next
